@@ -15,12 +15,18 @@ import java.util.prefs.Preferences;
 
 public class MainMenuController {
 
-    @FXML private Button infoButton;
-    @FXML private Button playButton;
-    @FXML private Button exitButton;
-    @FXML private Button highscoresButton;
-    @FXML private Button soundButton;
-    @FXML private Button musicButton;
+    @FXML
+    private Button infoButton;
+    @FXML
+    private Button playButton;
+    @FXML
+    private Button exitButton;
+    @FXML
+    private Button highscoresButton;
+    @FXML
+    private Button soundButton;
+    @FXML
+    private Button musicButton;
 
     private Preferences preferences = Preferences.userRoot();
     private boolean initialized = false;
@@ -38,7 +44,14 @@ public class MainMenuController {
 
     @FXML
     protected void play() {
-        System.out.println("Play");
+        try {
+            Stage stage = (Stage) playButton.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("../Game/Game.fxml"));
+            root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
