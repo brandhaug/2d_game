@@ -26,8 +26,14 @@ public class MainMenuController {
     private boolean initialized = false;
 
     @FXML
-    protected void openInfo() {
-        System.out.println("Info");
+    protected void openInfo(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("../Info/Info.fxml"));
+        root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
+        Scene scene = new Scene(root);
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        stage.setScene(scene);
+        stage.show();
     }
 
     @FXML
