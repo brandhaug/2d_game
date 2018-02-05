@@ -17,14 +17,19 @@ public class MainMenuController {
 
     @FXML
     private Button infoButton;
+
     @FXML
     private Button playButton;
+
     @FXML
     private Button exitButton;
+
     @FXML
     private Button highscoresButton;
+
     @FXML
     private Button soundButton;
+
     @FXML
     private Button musicButton;
 
@@ -81,9 +86,9 @@ public class MainMenuController {
         }
 
         if (soundOn) {
-            soundButton.setStyle("-fx-graphic: 'file:assets/images/sound_on.png'");
+            soundButton.setStyle("-fx-graphic: 'file:res/images/buttons/sound_on.png'");
         } else {
-            soundButton.setStyle("-fx-graphic: 'file:assets/images/sound_off.png'");
+            soundButton.setStyle("-fx-graphic: 'file:res/images/buttons/sound_off.png'");
         }
     }
 
@@ -97,9 +102,9 @@ public class MainMenuController {
         }
 
         if (musicOn) {
-            musicButton.setStyle("-fx-graphic: 'file:assets/images/music_on.png'");
+            musicButton.setStyle("-fx-graphic: 'file:res/images/buttons/music_on.png'");
         } else {
-            musicButton.setStyle("-fx-graphic: 'file:assets/images/music_off.png'");
+            musicButton.setStyle("-fx-graphic: 'file:res/images/buttons/music_off.png'");
         }
     }
 

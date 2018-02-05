@@ -36,9 +36,9 @@ public class GameController {
     @FXML
     public void pause() {
         if (gamePaused) {
-            pauseButton.setStyle("-fx-graphic: 'file:assets/images/pause.png'");
+            pauseButton.setStyle("-fx-graphic: 'file:res/images/buttons/pause.png'");
         } else {
-            pauseButton.setStyle("-fx-graphic: 'file:assets/images/play.png'");
+            pauseButton.setStyle("-fx-graphic: 'file:res/images/buttons/play.png'");
         }
         soundButton.setVisible(!gamePaused);
         musicButton.setVisible(!gamePaused);
@@ -55,9 +55,9 @@ public class GameController {
         }
 
         if (soundOn) {
-            soundButton.setStyle("-fx-graphic: 'file:assets/images/sound_on.png'");
+            soundButton.setStyle("-fx-graphic: 'file:res/images/buttons/sound_on.png'");
         } else {
-            soundButton.setStyle("-fx-graphic: 'file:assets/images/sound_off.png'");
+            soundButton.setStyle("-fx-graphic: 'file:res/images/buttons/sound_off.png'");
         }
     }
 
@@ -71,9 +71,9 @@ public class GameController {
         }
 
         if (musicOn) {
-            musicButton.setStyle("-fx-graphic: 'file:assets/images/music_on.png'");
+            musicButton.setStyle("-fx-graphic: 'file:res/images/buttons/music_on.png'");
         } else {
-            musicButton.setStyle("-fx-graphic: 'file:assets/images/music_off.png'");
+            musicButton.setStyle("-fx-graphic: 'file:res/images/buttons/music_off.png'");
         }
     }
 
@@ -81,6 +81,6 @@ public class GameController {
     public void initialize() {
         initialized = true;
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.drawImage(new Image("file:assets/images/tiles/128/Dirt.png"), 0, 0, 128, 128);
+        gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), 0, 0, 128, 128);
     }
 }
