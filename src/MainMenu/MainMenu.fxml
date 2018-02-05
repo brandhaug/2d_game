@@ -9,21 +9,21 @@
    <children>
       <HBox layoutX="560.0" layoutY="328.0" prefHeight="64.0" prefWidth="160.0">
          <children>
-            <Button fx:id="playButton" mnemonicParsing="false" onAction="#play" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/play.png');">
+            <Button fx:id="playButton" mnemonicParsing="false" onAction="#play" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/play.png');" styleClass="button">
                <HBox.margin>
                   <Insets right="16.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="exitButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/exit.png');">
+            <Button fx:id="exitButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#exit" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/exit.png');" styleClass="button">
                <HBox.margin>
                   <Insets left="16.0" />
                </HBox.margin>
             </Button>
          </children>
       </HBox>
-      <Button fx:id="infoButton" layoutX="1184.0" layoutY="14.0" mnemonicParsing="false" onAction="#openInfo" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/info.png');" />
-      <Button fx:id="highscoresButton" layoutX="32.0" layoutY="624.0" mnemonicParsing="false" onAction="#openHighscores" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/highscores.png');" />
-      <Button fx:id="musicButton" layoutX="1184.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleMusic" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/music_on.png');" />
-      <Button fx:id="soundButton" layoutX="1088.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/sound_on.png');" />
+      <Button fx:id="infoButton" layoutX="1184.0" layoutY="14.0" mnemonicParsing="false" onAction="#openInfo" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/info.png');" styleClass="button" />
+      <Button fx:id="highscoresButton" layoutX="32.0" layoutY="624.0" mnemonicParsing="false" onAction="#openHighscores" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/highscores.png');" styleClass="button" />
+      <Button fx:id="musicButton" layoutX="1184.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleMusic" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/music_on.png');" styleClass="button" />
+      <Button fx:id="soundButton" layoutX="1088.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:assets/images/sound_on.png');" styleClass="button" />
    </children>
 </AnchorPane>
