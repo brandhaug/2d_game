@@ -15,7 +15,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("2D Game");
 
-        Parent root = FXMLLoader.load(getClass().getResource("MainMenu.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("MainMenu/MainMenu.fxml"));
         root.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
 
         Scene scene = new Scene(root);

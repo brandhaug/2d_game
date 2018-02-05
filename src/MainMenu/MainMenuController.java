@@ -1,3 +1,5 @@
+package MainMenu;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -47,9 +49,9 @@ public class MainMenuController {
         }
 
         if (soundOn) {
-            soundButton.setStyle("-fx-graphic: 'sound_on.png'");
+            soundButton.setStyle("-fx-graphic: 'file:assets/images/sound_on.png'");
         } else {
-            soundButton.setStyle("-fx-graphic: 'sound_off.png'");
+            soundButton.setStyle("-fx-graphic: 'file:assets/images/sound_off.png'");
         }
     }
 
@@ -63,9 +65,9 @@ public class MainMenuController {
         }
 
         if (musicOn) {
-            musicButton.setStyle("-fx-graphic: 'music_on.png'");
+            musicButton.setStyle("-fx-graphic: 'file:assets/images/music_on.png'");
         } else {
-            musicButton.setStyle("-fx-graphic: 'music_off.png'");
+            musicButton.setStyle("-fx-graphic: 'file:assets/images/music_off.png'");
         }
     }
 
