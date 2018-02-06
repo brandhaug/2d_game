@@ -109,27 +109,33 @@ public class GameController {
         initialized = true;
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
+        gc.drawImage(new Image("file:res/images/background.png"), 0, 0, WIDTH, HEIGHT);
+        Beginner level = new Beginner(gc);
+        Player player = new Player(gc);
+
         final long startNanoTime = System.nanoTime();
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                gameLoop(gc, startNanoTime, currentNanoTime);
+                gameLoop(gc, startNanoTime, currentNanoTime, player, level);
             }
         }.start();
-        gc.drawImage(new Image("file:res/images/background.png"), 0, 0, WIDTH, HEIGHT);
-        gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), 128, 128);
     }
 
-    private void gameLoop(GraphicsContext gc, long startNanoTime, long currentNanoTime) {
-        gc.drawImage(new Image("file:res/images/background.png"), 0, 0, 1280, 720);
+    private void gameLoop(GraphicsContext gc, long startNanoTime, long currentNanoTime, Player player, Beginner level) {
+        gc.clearRect(0, 0, WIDTH, HEIGHT);
+
+        gc.drawImage(new Image("file:res/images/background.png"), 0, 0, WIDTH, HEIGHT);
+
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
 
-        Beginner level = new Beginner(gc);
-        Player player = new Player(gc);
+        player.draw(gc, player.getNextColumn(), 128, 128);
 
-        double x = 232 + 128 * Math.cos(t);
-        double y = 232 + 128 * Math.sin(t);
-        gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), x, y);
+
+//        double x = 232 + 128 * Math.cos(t);
+//        double y = 232 + 128 * Math.sin(t);
+//        gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), x, y);
+
     }
 
 }

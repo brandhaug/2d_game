@@ -18,37 +18,25 @@ public class Player {
     private BufferedImage spriteSheet;
     private BufferedImage[] sprites;
 
-    final int spriteSheetWidth = 1024;
-    final int spriteSheetHeight = 256;
-    final int spriteSheetRows = 1;
-    final int spriteSheetCols = 11;
+    private final int spriteSheetWidth = 85;
+    private final int spriteSheetHeight = 74;
+    private final int spriteSheetCols = 11;
+    private int currentColumnIndex = 0;
 
     public Player(GraphicsContext gc) {
         try {
-            spriteSheet = ImageIO.read(new File("file:res/images/player/blink.png"));
-            sprites = new BufferedImage[spriteSheetRows * spriteSheetCols];
+            spriteSheet = ImageIO.read(new File("C:\\Users\\brandhaug-laptop\\IdeaProjects\\2d_game\\res\\images\\player\\blink3.png"));
+            sprites = new BufferedImage[spriteSheetCols];
 
-            for (int i = 0; i < spriteSheetRows; i++) {
-                for (int j = 0; j < spriteSheetCols; j++) {
-                    sprites[(i * spriteSheetCols) + j] = spriteSheet.getSubimage(
-                            j * spriteSheetWidth,
-                            i * spriteSheetHeight,
-                            spriteSheetWidth,
-                            spriteSheetHeight
-                    );
-
-                    draw(gc, sprites[(i * spriteSheetCols) + j], i * 64, j * 64);
-                }
+            for (int i = 0; i < spriteSheetCols; i++) {
+                sprites[i] = spriteSheet.getSubimage(i * spriteSheetWidth, 0, spriteSheetWidth, spriteSheetHeight);
             }
 
-
+            draw(gc, currentColumnIndex, spriteSheetWidth, spriteSheetHeight);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-// The above line thspriteSheetRows an checked IOException which must be caught.
-
-
     }
 
     public int getX() {
@@ -83,7 +71,18 @@ public class Player {
         this.velocityY = velocityY;
     }
 
-    public void draw(GraphicsContext gc, BufferedImage sprite, int x, int y) {
-        gc.drawImage(SwingFXUtils.toFXImage(sprite, null), x, y);
+    public void draw(GraphicsContext gc, int currentColumnIndex, int x, int y) {
+        Image sprite = SwingFXUtils.toFXImage(sprites[currentColumnIndex], null);
+        gc.drawImage(sprite, x, y);
+    }
+
+    public int getNextColumn() {
+        if (currentColumnIndex == sprites.length - 1) {
+            currentColumnIndex = 0;
+        } else {
+            currentColumnIndex++;
+        }
+
+        return currentColumnIndex;
     }
 }
