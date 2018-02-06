@@ -21,14 +21,14 @@ public class Player {
     private BufferedImage spriteSheet;
     private BufferedImage[] sprites;
 
-    private final int spriteSheetWidth = 85;
-    private final int spriteSheetHeight = 74;
-    private final int spriteSheetCols = 11;
+    private final int spriteSheetWidth = 144;
+    private final int spriteSheetHeight = 152;
+    private final int spriteSheetCols = 12;
     private int currentColumnIndex = 0;
 
     public Player(GraphicsContext gc) {
         try {
-            spriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/blink3.png").getPath()));
+            spriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/idle.png").getPath()));
             sprites = new BufferedImage[spriteSheetCols];
 
             for (int i = 0; i < spriteSheetCols; i++) {
