@@ -18,21 +18,44 @@ public class Player {
     private int velocityX = 0;
     private int velocityY = 10;
     private final int MAX_VELOCITY_X = 15;
-    private BufferedImage spriteSheet;
-    private BufferedImage[] sprites;
 
-    private final int spriteSheetWidth = 144;
-    private final int spriteSheetHeight = 152;
-    private final int spriteSheetCols = 12;
+
+    private BufferedImage idleSpriteSheet;
+    private BufferedImage[] idleSprites;
+    private final int idleSpriteSheetWidth = 144;
+    private final int idleSpriteSheetHeight = 152;
+    private final int idleSpriteSheetCols = 12;
+
+    private BufferedImage runSpriteSheet;
+    private BufferedImage[] runSprites;
+    private final int runSpriteSheetWidth = 198;
+    private final int runSpriteSheetHeight = 152;
+    private final int runSpriteSheetCols = 18;
+
+//    private BufferedImage jumpSpriteSheet;
+//    private BufferedImage[] jumpSprites;
+//    private final int jumpSpriteSheetWidth = 198;
+//    private final int jumpSpriteSheetHeight = 152;
+//    private final int jumpSpriteSheetCols = 18;
+
+
+
     private int currentColumnIndex = 0;
 
     public Player(GraphicsContext gc) {
         try {
-            spriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/idle.png").getPath()));
-            sprites = new BufferedImage[spriteSheetCols];
+            idleSpriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/idle.png").getPath()));
+            idleSprites = new BufferedImage[idleSpriteSheetCols];
 
-            for (int i = 0; i < spriteSheetCols; i++) {
-                sprites[i] = spriteSheet.getSubimage(i * spriteSheetWidth, 0, spriteSheetWidth, spriteSheetHeight);
+            for (int i = 0; i < idleSpriteSheetCols; i++) {
+                idleSprites[i] = idleSpriteSheet.getSubimage(i * idleSpriteSheetWidth, 0, idleSpriteSheetWidth, idleSpriteSheetHeight);
+            }
+
+            runSpriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/run.png").getPath()));
+            runSprites = new BufferedImage[runSpriteSheetCols];
+
+            for (int i = 0; i < runSpriteSheetCols; i++) {
+                runSprites[i] = runSpriteSheet.getSubimage(i * runSpriteSheetWidth, 0, runSpriteSheetWidth, runSpriteSheetHeight);
             }
 
             tick(gc);
@@ -78,25 +101,25 @@ public class Player {
         gc.setFill(Color.BLUE);
 
         //Bottom
-        gc.fillRect(x, y + spriteSheetHeight - 5, spriteSheetWidth, 5);
+        gc.fillRect(x, y + runSpriteSheetHeight - 5, runSpriteSheetWidth, 5);
 
         //Top
-        gc.fillRect(x, y, spriteSheetWidth, 5);
+        gc.fillRect(x, y, runSpriteSheetWidth, 5);
 
         gc.setFill(Color.GREEN);
 
         //Right
-        gc.fillRect(x + spriteSheetWidth - 5, y, 5, spriteSheetHeight);
+        gc.fillRect(x + runSpriteSheetWidth - 5, y, 5, runSpriteSheetHeight);
 
         //Left
-        gc.fillRect(x, y, 5, spriteSheetHeight);
+        gc.fillRect(x, y, 5, runSpriteSheetHeight);
 
-        Image sprite = SwingFXUtils.toFXImage(sprites[getNextColumn()], null);
+        Image sprite = SwingFXUtils.toFXImage(runSprites[getNextColumn()], null);
         gc.drawImage(sprite, x, y);
     }
 
     public int getNextColumn() {
-        if (currentColumnIndex == sprites.length - 1) {
+        if (currentColumnIndex == runSprites.length - 1) {
             currentColumnIndex = 0;
         } else {
             currentColumnIndex++;
