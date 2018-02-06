@@ -6,12 +6,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import java.util.prefs.Preferences;
 
-/**
- * Created by stgr99 on 05.02.2018.
- */
 public class GameController {
 
     private Preferences preferences = Preferences.userRoot();
