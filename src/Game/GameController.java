@@ -1,5 +1,6 @@
 package Game;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -24,6 +25,8 @@ public class GameController {
     private Button soundButton;
     @FXML
     private Button musicButton;
+
+    private boolean running = false;
 
     @FXML
     protected void exit() {
@@ -79,7 +82,24 @@ public class GameController {
     public void initialize() {
         initialized = true;
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.drawImage(new Image("file:res/images/background.png"), 0, 0, 1280, 720);
-        gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), 0, 0, 128, 128);
+
+        final long startNanoTime = System.nanoTime();
+
+        new AnimationTimer() {
+            public void handle(long currentNanoTime) {
+                gameLoop(gc, startNanoTime, currentNanoTime);
+            }
+        }.start();
     }
+
+    private void gameLoop(GraphicsContext gc, long startNanoTime, long currentNanoTime) {
+        gc.clearRect(0, 0, 1280, 720);
+        gc.drawImage(new Image("file:res/images/background.png"), 0, 0, 1280, 720);
+        double t = (currentNanoTime - startNanoTime) / 1000000000.0;
+
+        double x = 232 + 128 * Math.cos(t);
+        double y = 232 + 128 * Math.sin(t);
+        gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), x, y );
+    }
+
 }
