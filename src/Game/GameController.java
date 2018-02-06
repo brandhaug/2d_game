@@ -79,6 +79,7 @@ public class GameController {
     public void initialize() {
         initialized = true;
         GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.drawImage(new Image("file:res/images/background.png"), 0, 0, 1280, 720);
         gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), 0, 0, 128, 128);
     }
 }
