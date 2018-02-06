@@ -25,7 +25,7 @@ public class Player {
 
     public Player(GraphicsContext gc) {
         try {
-            spriteSheet = ImageIO.read(new File("C:\\Users\\brandhaug-laptop\\IdeaProjects\\2d_game\\res\\images\\player\\blink3.png"));
+            spriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/blink3.png").getPath()));
             sprites = new BufferedImage[spriteSheetCols];
 
             for (int i = 0; i < spriteSheetCols; i++) {

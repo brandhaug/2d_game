@@ -59,9 +59,9 @@ public class GameController {
     @FXML
     public void pause() {
         if (gamePaused) {
-            pauseButton.setStyle("-fx-graphic: 'file:res/images/buttons/pause.png'");
+            pauseButton.setStyle("-fx-graphic: 'Resources/buttons/pause.png'");
         } else {
-            pauseButton.setStyle("-fx-graphic: 'file:res/images/buttons/play.png'");
+            pauseButton.setStyle("-fx-graphic: 'Resources/buttons/play.png'");
         }
         soundButton.setVisible(!gamePaused);
         musicButton.setVisible(!gamePaused);
@@ -79,9 +79,9 @@ public class GameController {
         }
 
         if (soundOn) {
-            soundButton.setStyle("-fx-graphic: 'file:res/images/buttons/sound_on.png'");
+            soundButton.setStyle("-fx-graphic: 'Resources/buttons/sound_on.png'");
         } else {
-            soundButton.setStyle("-fx-graphic: 'file:res/images/buttons/sound_off.png'");
+            soundButton.setStyle("-fx-graphic: 'Resources/buttons/sound_off.png'");
         }
     }
 
@@ -95,9 +95,9 @@ public class GameController {
         }
 
         if (musicOn) {
-            musicButton.setStyle("-fx-graphic: 'file:res/images/buttons/music_on.png'");
+            musicButton.setStyle("-fx-graphic: 'Resources/buttons/music_on.png'");
         } else {
-            musicButton.setStyle("-fx-graphic: 'file:res/images/buttons/music_off.png'");
+            musicButton.setStyle("-fx-graphic: 'Resources/buttons/music_off.png'");
         }
     }
 
@@ -109,7 +109,7 @@ public class GameController {
         initialized = true;
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.drawImage(new Image("file:res/images/background.png"), 0, 0, WIDTH, HEIGHT);
+        gc.drawImage(new Image("Resources/background.png"), 0, 0, WIDTH, HEIGHT);
         Beginner level = new Beginner(gc);
         Player player = new Player(gc);
 
@@ -125,7 +125,7 @@ public class GameController {
     private void gameLoop(GraphicsContext gc, long startNanoTime, long currentNanoTime, Player player, Beginner level) {
         gc.clearRect(0, 0, WIDTH, HEIGHT);
 
-        gc.drawImage(new Image("file:res/images/background.png"), 0, 0, WIDTH, HEIGHT);
+        gc.drawImage(new Image("Resources/background.png"), 0, 0, WIDTH, HEIGHT);
 
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
 
@@ -134,7 +134,7 @@ public class GameController {
 
 //        double x = 232 + 128 * Math.cos(t);
 //        double y = 232 + 128 * Math.sin(t);
-//        gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), x, y);
+//        gc.drawImage(new Image("Resources/images/tiles/128/Dirt.png"), x, y);
 
     }
 

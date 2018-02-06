@@ -86,9 +86,9 @@ public class MainMenuController {
         }
 
         if (soundOn) {
-            soundButton.setStyle("-fx-graphic: 'file:res/images/buttons/sound_on.png'");
+            soundButton.setStyle("-fx-graphic: 'Resources/buttons/sound_on.png'");
         } else {
-            soundButton.setStyle("-fx-graphic: 'file:res/images/buttons/sound_off.png'");
+            soundButton.setStyle("-fx-graphic: 'Resources/buttons/sound_off.png'");
         }
     }
 
@@ -102,9 +102,9 @@ public class MainMenuController {
         }
 
         if (musicOn) {
-            musicButton.setStyle("-fx-graphic: 'file:res/images/buttons/music_on.png'");
+            musicButton.setStyle("-fx-graphic: 'Resources/buttons/music_on.png'");
         } else {
-            musicButton.setStyle("-fx-graphic: 'file:res/images/buttons/music_off.png'");
+            musicButton.setStyle("-fx-graphic: 'Resources/buttons/music_off.png'");
         }
     }
 
