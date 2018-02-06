@@ -3,7 +3,6 @@ package Game;
 import Game.Levels.Beginner;
 import Game.Player.Player;
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +11,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,6 +25,8 @@ public class GameController {
     public final static int BUTTON_SIZE = 64;
     public final static int TILE_SIZE = 128;
     public final static int MARGIN = 32;
+    private Beginner level;
+    private Player player;
 
     private Preferences preferences = Preferences.userRoot();
     private boolean gamePaused = false;
@@ -38,9 +40,6 @@ public class GameController {
     private Button soundButton;
     @FXML
     private Button musicButton;
-
-    private boolean running = false;
-
     @FXML
     private Button mainMenuButton;
 
@@ -102,6 +101,26 @@ public class GameController {
     }
 
     @FXML
+    private void handleKeyPressed(KeyEvent event) {
+        KeyCode code = event.getCode();
+
+        switch (code) {
+            case RIGHT:
+                player.setX(player.getX() + 25);
+                break;
+            case LEFT:
+                player.setX(player.getX() - 25);
+                break;
+            case UP:
+                player.setY(player.getY() - 100);
+                break;
+            case DOWN:
+                player.setY(player.getY() + 100);
+                break;
+        }
+    }
+
+    @FXML
     public void initialize() {
         musicButton.setVisible(false);
         soundButton.setVisible(false);
@@ -110,8 +129,10 @@ public class GameController {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         gc.drawImage(new Image("Resources/background.png"), 0, 0, WIDTH, HEIGHT);
-        Beginner level = new Beginner(gc);
-        Player player = new Player(gc);
+        level = new Beginner(gc);
+        player = new Player(gc);
+        player.setX(128);
+        player.setY(128);
 
         final long startNanoTime = System.nanoTime();
 
@@ -129,7 +150,8 @@ public class GameController {
 
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
 
-        player.draw(gc, player.getNextColumn(), 128, 128);
+        level.draw(gc);
+        player.draw(gc, player.getNextColumn(), player.getX(), player.getY());
 
 
 //        double x = 232 + 128 * Math.cos(t);
