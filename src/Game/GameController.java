@@ -1,5 +1,7 @@
 package Game;
 
+import Game.Levels.Beginner;
+import Game.Player.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -21,6 +23,7 @@ public class GameController {
     public final static int WIDTH = 1280;
     public final static int HEIGHT = 720;
     public final static int BUTTON_SIZE = 64;
+    public final static int TILE_SIZE = 128;
     public final static int MARGIN = 32;
 
     private Preferences preferences = Preferences.userRoot();
@@ -118,13 +121,15 @@ public class GameController {
     }
 
     private void gameLoop(GraphicsContext gc, long startNanoTime, long currentNanoTime) {
-        gc.clearRect(0, 0, 1280, 720);
         gc.drawImage(new Image("file:res/images/background.png"), 0, 0, 1280, 720);
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
 
+        Beginner level = new Beginner(gc);
+        Player player = new Player(gc);
+
         double x = 232 + 128 * Math.cos(t);
         double y = 232 + 128 * Math.sin(t);
-        gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), x, y );
+        gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), x, y);
     }
 
 }
