@@ -13,6 +13,9 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -42,6 +45,10 @@ public class GameController {
     private Button musicButton;
     @FXML
     private Button mainMenuButton;
+    @FXML
+    private Pane pausePane;
+    @FXML
+    private Text pauseText;
 
     @FXML
     protected void openMainMenu() {
@@ -65,6 +72,8 @@ public class GameController {
         soundButton.setVisible(!gamePaused);
         musicButton.setVisible(!gamePaused);
         mainMenuButton.setVisible(!gamePaused);
+        pausePane.setVisible(!gamePaused);
+        pauseText.setVisible(!gamePaused);
         gamePaused = !gamePaused;
     }
 
@@ -104,18 +113,22 @@ public class GameController {
     private void handleKeyPressed(KeyEvent event) {
         KeyCode code = event.getCode();
 
-        if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 2);
-        if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() -2);
-        if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(player.getVelocityY() - 5);
+        if (!gamePaused) {
+            if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 4);
+            if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() - 4);
+            if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(player.getVelocityY() - 5);
+        }
     }
 
     @FXML
     private void handleKeyReleased(KeyEvent event) {
         KeyCode code = event.getCode();
 
-        if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(0);
-        if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(0);
-        if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(-30);
+        if (!gamePaused) {
+            if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(0);
+            if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(0);
+            if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(-30);
+        }
     }
 
 
@@ -124,6 +137,10 @@ public class GameController {
         musicButton.setVisible(false);
         soundButton.setVisible(false);
         mainMenuButton.setVisible(false);
+        pausePane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7);");
+        pausePane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        pausePane.setVisible(false);
+        pauseText.setVisible(false);
         initialized = true;
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
@@ -131,7 +148,7 @@ public class GameController {
         level = new Beginner(gc);
         player = new Player(gc);
         player.setX(128);
-        player.setY(128);
+        player.setY(Beginner.GROUND_FLOOR_HEIGHT);
 
         final long startNanoTime = System.nanoTime();
 

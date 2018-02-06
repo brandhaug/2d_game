@@ -6,6 +6,9 @@ import javafx.scene.image.Image;
 
 
 public class Beginner {
+
+    public static final int GROUND_FLOOR_HEIGHT = 128;
+
     public Beginner(GraphicsContext gc) {
         draw(gc);
     }

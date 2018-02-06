@@ -17,8 +17,14 @@ public class Player {
     private int y;
     private int velocityX = 0;
     private int velocityY = 10;
-    private final int MAX_VELOCITY_X = 15;
+    private final int MAX_VELOCITY_X = 20;
 
+    private int PLAYER_IDLING = 0;
+    private int PLAYER_RUNNING_RIGHT = 1;
+    private int PLAYER_RUNNING_LEFT = 2;
+    private int PLAYER_JUMPING = 3;
+    private int currentSprite = 0;
+    private int lastSprite = 0;
 
     private BufferedImage idleSpriteSheet;
     private BufferedImage[] idleSprites;
@@ -26,40 +32,25 @@ public class Player {
     private final int idleSpriteSheetHeight = 152;
     private final int idleSpriteSheetCols = 12;
 
-    private BufferedImage runSpriteSheet;
-    private BufferedImage[] runSprites;
-    private final int runSpriteSheetWidth = 198;
-    private final int runSpriteSheetHeight = 152;
-    private final int runSpriteSheetCols = 18;
+    private BufferedImage rightRunSpriteSheet;
+    private BufferedImage[] rightRunSprites;
+    private final int rightRunSpriteSheetWidth = 198;
+    private final int rightRunSpriteSheetHeight = 152;
+    private final int rightRunSpriteSheetCols = 18;
 
-//    private BufferedImage jumpSpriteSheet;
-//    private BufferedImage[] jumpSprites;
-//    private final int jumpSpriteSheetWidth = 198;
-//    private final int jumpSpriteSheetHeight = 152;
-//    private final int jumpSpriteSheetCols = 18;
-
+    private BufferedImage jumpSpriteSheet;
+    private BufferedImage[] jumpSprites;
+    private final int jumpSpriteSheetWidth = 167;
+    private final int jumpSpriteSheetHeight = 155;
+    private final int jumpSpriteSheetCols = 2;
 
 
     private int currentColumnIndex = 0;
 
     public Player(GraphicsContext gc) {
         try {
-            idleSpriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/idle.png").getPath()));
-            idleSprites = new BufferedImage[idleSpriteSheetCols];
-
-            for (int i = 0; i < idleSpriteSheetCols; i++) {
-                idleSprites[i] = idleSpriteSheet.getSubimage(i * idleSpriteSheetWidth, 0, idleSpriteSheetWidth, idleSpriteSheetHeight);
-            }
-
-            runSpriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/run.png").getPath()));
-            runSprites = new BufferedImage[runSpriteSheetCols];
-
-            for (int i = 0; i < runSpriteSheetCols; i++) {
-                runSprites[i] = runSpriteSheet.getSubimage(i * runSpriteSheetWidth, 0, runSpriteSheetWidth, runSpriteSheetHeight);
-            }
-
+            initializeSprites();
             tick(gc);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,35 +91,83 @@ public class Player {
     public void draw(GraphicsContext gc) {
         gc.setFill(Color.BLUE);
 
-        //Bottom
-        gc.fillRect(x, y + runSpriteSheetHeight - 5, runSpriteSheetWidth, 5);
+        if (currentSprite == PLAYER_IDLING) {
+            //Bottom
+            gc.fillRect(x, y + idleSpriteSheetHeight, idleSpriteSheetWidth, 5);
 
-        //Top
-        gc.fillRect(x, y, runSpriteSheetWidth, 5);
+            //Top
+            gc.fillRect(x, y, idleSpriteSheetWidth, 5);
 
-        gc.setFill(Color.GREEN);
+            gc.setFill(Color.GREEN);
 
-        //Right
-        gc.fillRect(x + runSpriteSheetWidth - 5, y, 5, runSpriteSheetHeight);
+            //Right
+            gc.fillRect(x + idleSpriteSheetWidth - 5, y, 5, idleSpriteSheetHeight);
 
-        //Left
-        gc.fillRect(x, y, 5, runSpriteSheetHeight);
+            //Left
+            gc.fillRect(x, y, 5, idleSpriteSheetHeight);
 
-        Image sprite = SwingFXUtils.toFXImage(runSprites[getNextColumn()], null);
-        gc.drawImage(sprite, x, y);
+            Image sprite = SwingFXUtils.toFXImage(idleSprites[getNextColumn()], null);
+            gc.drawImage(sprite, x, y);
+        } else if (currentSprite == PLAYER_RUNNING_RIGHT || currentSprite == PLAYER_RUNNING_LEFT) {
+            //TODO: Implement for left running
+
+            //Bottom
+            gc.fillRect(x, y + rightRunSpriteSheetHeight - 5, rightRunSpriteSheetWidth, 5);
+
+            //Top
+            gc.fillRect(x, y, rightRunSpriteSheetWidth, 5);
+
+            gc.setFill(Color.GREEN);
+
+            //Right
+            gc.fillRect(x + rightRunSpriteSheetWidth - 5, y, 5, rightRunSpriteSheetHeight);
+
+            //Left
+            gc.fillRect(x, y, 5, rightRunSpriteSheetHeight);
+
+            Image sprite = SwingFXUtils.toFXImage(rightRunSprites[getNextColumn()], null);
+            gc.drawImage(sprite, x, y);
+        } else if (currentSprite == PLAYER_JUMPING) {
+            //Bottom
+            gc.fillRect(x, y + jumpSpriteSheetHeight - 5, jumpSpriteSheetWidth, 5);
+
+            //Top
+            gc.fillRect(x, y, jumpSpriteSheetWidth, 5);
+
+            gc.setFill(Color.GREEN);
+
+            //Right
+            gc.fillRect(x + jumpSpriteSheetWidth - 5, y, 5, jumpSpriteSheetHeight);
+
+            //Left
+            gc.fillRect(x, y, 5, jumpSpriteSheetHeight);
+
+            Image sprite = SwingFXUtils.toFXImage(jumpSprites[getNextColumn()], null);
+            gc.drawImage(sprite, x, y);
+        }
     }
 
     public int getNextColumn() {
-        if (currentColumnIndex == runSprites.length - 1) {
+        if (currentSprite != lastSprite) {
             currentColumnIndex = 0;
-        } else {
-            currentColumnIndex++;
+        }
+        //TODO: Implement for left running
+        if (currentSprite == PLAYER_RUNNING_RIGHT && currentColumnIndex == rightRunSprites.length - 1) {
+            return 0;
+        } else if (currentSprite == PLAYER_RUNNING_LEFT && currentColumnIndex == rightRunSprites.length - 1) {
+            return 0;
+        } else if (currentSprite == PLAYER_IDLING && currentColumnIndex == idleSprites.length - 1) {
+            return 0;
+        } else if (currentSprite == PLAYER_JUMPING && currentColumnIndex == jumpSprites.length - 1) {
+            return 0;
         }
 
-        return currentColumnIndex;
+        return currentColumnIndex++;
     }
 
     public void tick(GraphicsContext gc) {
+        lastSprite = currentSprite;
+
         if (velocityX >= MAX_VELOCITY_X) {
             x += MAX_VELOCITY_X;
         } else if (velocityX <= MAX_VELOCITY_X * -1) {
@@ -137,10 +176,20 @@ public class Player {
             x += velocityX;
         }
 
-        
+        if (velocityY != 0) {
+            currentSprite = 3;
+        } else if (velocityX > 0) {
+            currentSprite = 1;
+        } else if (velocityX < 0) {
+            currentSprite = 2;
+        } else {
+            currentSprite = 0;
+        }
+
+
         y += velocityY;
 
-        if (y > GameController.HEIGHT - runSpriteSheetHeight - 100) {
+        if (y > GameController.HEIGHT - rightRunSpriteSheetHeight - 100) {
             velocityY = 0;
         } else {
             velocityY += 5;
@@ -148,6 +197,30 @@ public class Player {
 
 
         draw(gc);
+
+    }
+
+    private void initializeSprites() throws IOException {
+        idleSpriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/idle.png").getPath()));
+        idleSprites = new BufferedImage[idleSpriteSheetCols];
+
+        for (int i = 0; i < idleSpriteSheetCols; i++) {
+            idleSprites[i] = idleSpriteSheet.getSubimage(i * idleSpriteSheetWidth, 0, idleSpriteSheetWidth, idleSpriteSheetHeight);
+        }
+
+        rightRunSpriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/run.png").getPath()));
+        rightRunSprites = new BufferedImage[rightRunSpriteSheetCols];
+
+        for (int i = 0; i < rightRunSpriteSheetCols; i++) {
+            rightRunSprites[i] = rightRunSpriteSheet.getSubimage(i * rightRunSpriteSheetWidth, 0, rightRunSpriteSheetWidth, rightRunSpriteSheetHeight);
+        }
+
+        jumpSpriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/jump.png").getPath()));
+        jumpSprites = new BufferedImage[jumpSpriteSheetCols];
+
+        for (int i = 0; i < jumpSpriteSheetCols; i++) {
+            jumpSprites[i] = jumpSpriteSheet.getSubimage(i * jumpSpriteSheetWidth, 0, jumpSpriteSheetWidth, jumpSpriteSheetHeight);
+        }
 
     }
 }
