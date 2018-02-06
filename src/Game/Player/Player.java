@@ -140,7 +140,7 @@ public class Player {
         
         y += velocityY;
 
-        if (y > GameController.HEIGHT - 190) {
+        if (y > GameController.HEIGHT - runSpriteSheetHeight - 100) {
             velocityY = 0;
         } else {
             velocityY += 5;
