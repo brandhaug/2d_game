@@ -104,21 +104,20 @@ public class GameController {
     private void handleKeyPressed(KeyEvent event) {
         KeyCode code = event.getCode();
 
-        switch (code) {
-            case RIGHT:
-                player.setX(player.getX() + 25);
-                break;
-            case LEFT:
-                player.setX(player.getX() - 25);
-                break;
-            case UP:
-                player.setY(player.getY() - 100);
-                break;
-            case DOWN:
-                player.setY(player.getY() + 100);
-                break;
-        }
+        if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 2);
+        if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() -2);
+        if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(player.getVelocityY() - 5);
     }
+
+    @FXML
+    private void handleKeyReleased(KeyEvent event) {
+        KeyCode code = event.getCode();
+
+        if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(0);
+        if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(0);
+        if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(10);
+    }
+
 
     @FXML
     public void initialize() {
@@ -151,7 +150,7 @@ public class GameController {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
 
         level.draw(gc);
-        player.draw(gc, player.getNextColumn(), player.getX(), player.getY());
+        player.tick(gc);
 
 
 //        double x = 232 + 128 * Math.cos(t);
