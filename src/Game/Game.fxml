@@ -7,8 +7,9 @@
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Game.GameController">
     <children>
       <Canvas fx:id="canvas" height="720.0" layoutX="-1.0" width="1280.0" />
-        <Button fx:id="musicButton" layoutX="1184.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleMusic" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:res/images/buttons/music_on.png');" visible="false" />
-        <Button fx:id="soundButton" layoutX="1088.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:res/images/buttons/sound_on.png');" visible="false" />
-      <Button fx:id="pauseButton" layoutX="1184.0" layoutY="14.0" mnemonicParsing="false" onAction="#pause" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:res/images/buttons/pause.png');" />
+        <Button fx:id="musicButton" layoutX="1184.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleMusic" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:res/images/buttons/music_on.png');" />
+        <Button fx:id="soundButton" layoutX="1088.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:res/images/buttons/sound_on.png');" />
+        <Button fx:id="mainMenuButton" layoutX="32.0" layoutY="624.0" mnemonicParsing="false" onAction="#openMainMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:res/images/buttons/home.png');" styleClass="button" />
+        <Button fx:id="pauseButton" layoutX="1184.0" layoutY="14.0" mnemonicParsing="false" onAction="#pause" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('file:res/images/buttons/pause.png');" />
     </children>
 </AnchorPane>

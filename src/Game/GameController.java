@@ -3,15 +3,25 @@ package Game;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.prefs.Preferences;
 
 public class GameController {
+
+    public final static int WIDTH = 1280;
+    public final static int HEIGHT = 720;
+    public final static int BUTTON_SIZE = 64;
+    public final static int MARGIN = 32;
 
     private Preferences preferences = Preferences.userRoot();
     private boolean gamePaused = false;
@@ -29,9 +39,18 @@ public class GameController {
     private boolean running = false;
 
     @FXML
-    protected void exit() {
-        Platform.exit();
-        System.exit(0);
+    private Button mainMenuButton;
+
+    @FXML
+    protected void openMainMenu() {
+        try {
+            Stage stage = (Stage) mainMenuButton.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("../MainMenu/MainMenu.fxml"));
+            root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -43,6 +62,7 @@ public class GameController {
         }
         soundButton.setVisible(!gamePaused);
         musicButton.setVisible(!gamePaused);
+        mainMenuButton.setVisible(!gamePaused);
         gamePaused = !gamePaused;
     }
 
@@ -80,6 +100,9 @@ public class GameController {
 
     @FXML
     public void initialize() {
+        musicButton.setVisible(false);
+        soundButton.setVisible(false);
+        mainMenuButton.setVisible(false);
         initialized = true;
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
@@ -90,6 +113,8 @@ public class GameController {
                 gameLoop(gc, startNanoTime, currentNanoTime);
             }
         }.start();
+        gc.drawImage(new Image("file:res/images/background.png"), 0, 0, WIDTH, HEIGHT);
+        gc.drawImage(new Image("file:res/images/tiles/128/Dirt.png"), 128, 128);
     }
 
     private void gameLoop(GraphicsContext gc, long startNanoTime, long currentNanoTime) {
