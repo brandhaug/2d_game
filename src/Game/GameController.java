@@ -115,7 +115,7 @@ public class GameController {
 
         if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(0);
         if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(0);
-        if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(10);
+        if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(-30);
     }
 
 

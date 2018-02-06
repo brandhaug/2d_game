@@ -106,10 +106,6 @@ public class Player {
     }
 
     public void tick(GraphicsContext gc) {
-        if (y > GameController.HEIGHT - 190) {
-            velocityY = 0;
-        }
-
         if (velocityX >= MAX_VELOCITY_X) {
             x += MAX_VELOCITY_X;
         } else if (velocityX <= MAX_VELOCITY_X * -1) {
@@ -118,7 +114,15 @@ public class Player {
             x += velocityX;
         }
 
+        
         y += velocityY;
+
+        if (y > GameController.HEIGHT - 190) {
+            velocityY = 0;
+        } else {
+            velocityY += 5;
+        }
+
 
         draw(gc);
 
