@@ -125,7 +125,8 @@ public class GameController {
             if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 4);
             if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() - 4);
             if (code == KeyCode.UP || code == KeyCode.W) {
-                if(player.getVelocityY() == 0 && currentHight >= player.getY()) player.setVelocityY(player.getVelocityY() - 40);
+                if (player.getVelocityY() == 0 && currentHight >= player.getY())
+                    player.setVelocityY(player.getVelocityY() - 40);
             }
         }
     }
@@ -162,7 +163,6 @@ public class GameController {
         level = new Beginner(gc);
         player = new Player(gc);
         coin = new Coin(gc);
-//        player.setX(Player.START_POSITION);
         player.setY(Beginner.GROUND_FLOOR_HEIGHT);
 
         final long startNanoTime = System.nanoTime();
@@ -196,7 +196,5 @@ public class GameController {
 
         gc.drawImage(new Image("Resources/background/background.png"), player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         gc.drawImage(new Image("Resources/background/background.png"), CANVAS_WIDTH + player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-
     }
 }
