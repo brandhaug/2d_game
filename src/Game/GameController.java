@@ -33,8 +33,6 @@ public class GameController {
     public final static int BUTTON_SIZE = 64;
     public final static int TILE_SIZE = 128;
     public final static int MARGIN = 32;
-    public final static int BACKGROUND_WIDTH = 1920;
-    private final static int DIFF = BACKGROUND_WIDTH - CANVAS_WIDTH;
 
     private Beginner level;
     private Player player;
@@ -161,11 +159,10 @@ public class GameController {
         }
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.drawImage(new Image("Resources/background/background.png"), 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         level = new Beginner(gc);
         player = new Player(gc);
         coin = new Coin(gc);
-        player.setX(Player.START_POSITION);
+//        player.setX(Player.START_POSITION);
         player.setY(Beginner.GROUND_FLOOR_HEIGHT);
 
         final long startNanoTime = System.nanoTime();
@@ -188,38 +185,18 @@ public class GameController {
 
     private void drawBackground(GraphicsContext gc) {
         System.out.println("X " + player.getX());
-        System.out.println("Diff " + Math.floor((int) player.getX() / DIFF));
+
         int tempX = player.getX();
 
-        while (tempX > DIFF) {
-            tempX -= DIFF;
+        while (tempX > CANVAS_WIDTH + player.getStartPosition()) {
+            tempX -= CANVAS_WIDTH;
         }
 
         System.out.println("TempX " + tempX);
 
-        BufferedImage subImage1 = background.getSubimage(tempX, 0, (int) BACKGROUND_WIDTH - tempX, CANVAS_HEIGHT);
-        gc.drawImage(SwingFXUtils.toFXImage(subImage1, null), 0, 0);
+        gc.drawImage(new Image("Resources/background/background.png"), player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        gc.drawImage(new Image("Resources/background/background.png"), CANVAS_WIDTH + player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-        if (tempX == 0) {
-            System.out.println("ZERO MAFACKA");
-        } else {
-            BufferedImage subImage2 = background.getSubimage(0, 0, tempX, CANVAS_HEIGHT);
-            gc.drawImage(SwingFXUtils.toFXImage(subImage2, null), BACKGROUND_WIDTH - tempX, 0);
-        }
 
-//        if (player.getX() + CANVAS_WIDTH < BACKGROUND_WIDTH) {
-//            System.out.println("Første if");
-//            BufferedImage subImage = background.getSubimage(player.getX(), 0, (int) CANVAS_WIDTH, CANVAS_HEIGHT);
-//            gc.drawImage(SwingFXUtils.toFXImage(subImage, null), 0, 0);
-//        } else {
-//            System.out.println("ELSE");
-//            BufferedImage subImage1 = background.getSubimage(player.getX(), 0, (int) BACKGROUND_WIDTH - player.getX(), CANVAS_HEIGHT);
-//            gc.drawImage(SwingFXUtils.toFXImage(subImage1, null), 0, 0);
-//
-//            if (player.getX() - DIFF != 0) {
-//                BufferedImage subImage2 = background.getSubimage(0, 0, player.getX() - DIFF, CANVAS_HEIGHT);
-//                gc.drawImage(SwingFXUtils.toFXImage(subImage2, null), BACKGROUND_WIDTH - player.getX(), 0);
-//            }
-//        }
     }
 }

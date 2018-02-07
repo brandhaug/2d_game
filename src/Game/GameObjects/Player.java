@@ -10,9 +10,8 @@ public class Player implements GameObject {
     private int y;
     private int velocityX = 0;
     private int velocityY = 10;
-    public static int relativeX = 128;
     private final int MAX_VELOCITY_X = 15;
-    public final static int START_POSITION = 200;
+    private final int START_POSITION = 200;
 
     private int PLAYER_IDLING = 0;
     private int PLAYER_RUNNING_RIGHT = 1;
@@ -41,6 +40,7 @@ public class Player implements GameObject {
     private final int jumpSpriteSheetCols = 2;
 
     public Player(GraphicsContext gc) {
+        this.x = START_POSITION;
         initializeSpriteSheets();
         tick(gc);
     }
@@ -75,6 +75,10 @@ public class Player implements GameObject {
 
     public void setVelocityY(int velocityY) {
         this.velocityY = velocityY;
+    }
+
+    public int getStartPosition() {
+        return START_POSITION;
     }
 
     public void draw(GraphicsContext gc) {
