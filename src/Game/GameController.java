@@ -161,19 +161,10 @@ public class GameController {
 
     private void gameLoop(GraphicsContext gc, long startNanoTime, long currentNanoTime, Player player, Beginner level) {
         gc.clearRect(0, 0, WIDTH, HEIGHT);
-
         gc.drawImage(new Image("Resources/background.png"), 0, 0, WIDTH, HEIGHT);
 
-        double t = (currentNanoTime - startNanoTime) / 1000000000.0;
-
-        level.draw(gc);
+        level.draw(startNanoTime, currentNanoTime);
         player.tick(gc);
-
-
-//        double x = 232 + 128 * Math.cos(t);
-//        double y = 232 + 128 * Math.sin(t);
-//        gc.drawImage(new Image("Resources/images/tiles/128/Dirt.png"), x, y);
-
     }
 
 }
