@@ -1,15 +1,8 @@
 package Game.GameObjects;
 
 import Game.GameController;
-import javafx.embed.swing.SwingFXUtils;
+import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class Player implements GameObject {
 
@@ -26,34 +19,28 @@ public class Player implements GameObject {
     private int currentSpriteState = 0;
     private int lastSpriteState = 0;
 
-    private BufferedImage idleSpriteSheet;
-    private BufferedImage[] idleSprites;
-    private final int idleSpriteSheetWidth = 144;
-    private final int idleSpriteSheetHeight = 152;
+    private SpriteSheet idleSpriteSheet;
+    private SpriteSheet rightRunSpriteSheet;
+    private SpriteSheet jumpSpriteSheet;
+
+    private final String idleSpriteSheetPath = "/Resources/player/idle.png";
+    private final int idleSpriteWidth = 144;
+    private final int idleSpriteHeight = 152;
     private final int idleSpriteSheetCols = 12;
 
-    private BufferedImage rightRunSpriteSheet;
-    private BufferedImage[] rightRunSprites;
-    private final int rightRunSpriteSheetWidth = 198;
-    private final int rightRunSpriteSheetHeight = 152;
+    private final String rightRunSpriteSheetPath = "/Resources/player/run.png";
+    private final int rightRunSpriteWidth = 198;
+    private final int rightRunSpriteHeight = 152;
     private final int rightRunSpriteSheetCols = 18;
 
-    private BufferedImage jumpSpriteSheet;
-    private BufferedImage[] jumpSprites;
-    private final int jumpSpriteSheetWidth = 167;
-    private final int jumpSpriteSheetHeight = 155;
+    private final String jumpSpriteSheetPath = "/Resources/player/jump.png";
+    private final int jumpSpriteWidth = 167;
+    private final int jumpSpriteHeight = 155;
     private final int jumpSpriteSheetCols = 2;
 
-
-    private int currentColumnIndex = 0;
-
     public Player(GraphicsContext gc) {
-        try {
-            initializeSprites();
-            tick(gc);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        initializeSpriteSheets();
+        tick(gc);
     }
 
     public int getX() {
@@ -89,80 +76,13 @@ public class Player implements GameObject {
     }
 
     public void draw(GraphicsContext gc) {
-        gc.setFill(Color.BLUE);
-
         if (currentSpriteState == PLAYER_IDLING) {
-            //Bottom
-            gc.fillRect(x, y + idleSpriteSheetHeight, idleSpriteSheetWidth, 5);
-
-            //Top
-            gc.fillRect(x, y, idleSpriteSheetWidth, 5);
-
-            gc.setFill(Color.GREEN);
-
-            //Right
-            gc.fillRect(x + idleSpriteSheetWidth - 5, y, 5, idleSpriteSheetHeight);
-
-            //Left
-            gc.fillRect(x, y, 5, idleSpriteSheetHeight);
-
-            Image sprite = SwingFXUtils.toFXImage(idleSprites[getNextColumn()], null);
-            gc.drawImage(sprite, x, y);
+            idleSpriteSheet.draw(gc, x, y, currentSpriteState, lastSpriteState);
         } else if (currentSpriteState == PLAYER_RUNNING_RIGHT || currentSpriteState == PLAYER_RUNNING_LEFT) {
-            //TODO: Implement for left running
-
-            //Bottom
-            gc.fillRect(x, y + rightRunSpriteSheetHeight - 5, rightRunSpriteSheetWidth, 5);
-
-            //Top
-            gc.fillRect(x, y, rightRunSpriteSheetWidth, 5);
-
-            gc.setFill(Color.GREEN);
-
-            //Right
-            gc.fillRect(x + rightRunSpriteSheetWidth - 5, y, 5, rightRunSpriteSheetHeight);
-
-            //Left
-            gc.fillRect(x, y, 5, rightRunSpriteSheetHeight);
-
-            Image sprite = SwingFXUtils.toFXImage(rightRunSprites[getNextColumn()], null);
-            gc.drawImage(sprite, x, y);
+            rightRunSpriteSheet.draw(gc, x, y, currentSpriteState, lastSpriteState);
         } else if (currentSpriteState == PLAYER_JUMPING) {
-            //Bottom
-            gc.fillRect(x, y + jumpSpriteSheetHeight - 5, jumpSpriteSheetWidth, 5);
-
-            //Top
-            gc.fillRect(x, y, jumpSpriteSheetWidth, 5);
-
-            gc.setFill(Color.GREEN);
-
-            //Right
-            gc.fillRect(x + jumpSpriteSheetWidth - 5, y, 5, jumpSpriteSheetHeight);
-
-            //Left
-            gc.fillRect(x, y, 5, jumpSpriteSheetHeight);
-
-            Image sprite = SwingFXUtils.toFXImage(jumpSprites[getNextColumn()], null);
-            gc.drawImage(sprite, x, y);
+            jumpSpriteSheet.draw(gc, x, y, currentSpriteState, lastSpriteState);
         }
-    }
-
-    public int getNextColumn() {
-        if (currentSpriteState != lastSpriteState) {
-            currentColumnIndex = 0;
-        }
-        //TODO: Implement for left running
-        if (currentSpriteState == PLAYER_RUNNING_RIGHT && currentColumnIndex == rightRunSprites.length - 1) {
-            return 0;
-        } else if (currentSpriteState == PLAYER_RUNNING_LEFT && currentColumnIndex == rightRunSprites.length - 1) {
-            return 0;
-        } else if (currentSpriteState == PLAYER_IDLING && currentColumnIndex == idleSprites.length - 1) {
-            return 0;
-        } else if (currentSpriteState == PLAYER_JUMPING && currentColumnIndex == jumpSprites.length - 1) {
-            return 0;
-        }
-
-        return currentColumnIndex++;
     }
 
     public void tick(GraphicsContext gc) {
@@ -189,33 +109,18 @@ public class Player implements GameObject {
 
         y += velocityY;
 
-        if (y > GameController.HEIGHT - rightRunSpriteSheetHeight - 100) {
+        if (y > GameController.HEIGHT - rightRunSpriteHeight - 100) {
             velocityY = 0;
         } else {
             velocityY += 5;
         }
 
-
         draw(gc);
     }
 
-    private void initializeSprites() throws IOException {
-        idleSpriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/idle.png").getPath()));
-        idleSprites = new BufferedImage[idleSpriteSheetCols];
-        for (int i = 0; i < idleSpriteSheetCols; i++) {
-            idleSprites[i] = idleSpriteSheet.getSubimage(i * idleSpriteSheetWidth, 0, idleSpriteSheetWidth, idleSpriteSheetHeight);
-        }
-
-        rightRunSpriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/run.png").getPath()));
-        rightRunSprites = new BufferedImage[rightRunSpriteSheetCols];
-        for (int i = 0; i < rightRunSpriteSheetCols; i++) {
-            rightRunSprites[i] = rightRunSpriteSheet.getSubimage(i * rightRunSpriteSheetWidth, 0, rightRunSpriteSheetWidth, rightRunSpriteSheetHeight);
-        }
-
-        jumpSpriteSheet = ImageIO.read(new File(getClass().getResource("/Resources/player/jump.png").getPath()));
-        jumpSprites = new BufferedImage[jumpSpriteSheetCols];
-        for (int i = 0; i < jumpSpriteSheetCols; i++) {
-            jumpSprites[i] = jumpSpriteSheet.getSubimage(i * jumpSpriteSheetWidth, 0, jumpSpriteSheetWidth, jumpSpriteSheetHeight);
-        }
+    private void initializeSpriteSheets() {
+        idleSpriteSheet = new SpriteSheet(idleSpriteSheetPath, idleSpriteSheetCols, idleSpriteWidth, idleSpriteHeight);
+        rightRunSpriteSheet = new SpriteSheet(rightRunSpriteSheetPath, rightRunSpriteSheetCols, rightRunSpriteWidth, rightRunSpriteHeight);
+        jumpSpriteSheet = new SpriteSheet(jumpSpriteSheetPath, jumpSpriteSheetCols, jumpSpriteWidth, jumpSpriteHeight);
     }
 }
