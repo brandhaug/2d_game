@@ -1,4 +1,4 @@
-package Game.Player;
+package Game.GameObjects;
 
 import Game.GameController;
 import javafx.embed.swing.SwingFXUtils;
@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class Player {
+public class Player implements GameObject {
 
     private int x;
     private int y;

@@ -1,7 +1,7 @@
 package Game;
 
 import Game.Levels.Beginner;
-import Game.Player.Player;
+import Game.GameObjects.Player;
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

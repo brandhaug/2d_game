@@ -1,6 +1,7 @@
 package Game.Levels;
 
 import Game.GameController;
+import Game.GameObjects.Enemy;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
@@ -39,8 +40,11 @@ public class Beginner {
 
     private void drawEnemies() {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
-        double x = 900 + 128 * Math.cos(t);
-        double y = 300 + 128 * Math.sin(t);
-        gc.drawImage(new Image("Resources/enemies/Mace.png"), x, y);
+
+        Enemy mace1 = new Enemy();
+        mace1.setX((int) (900 + 128 * Math.cos(t)));
+        mace1.setY((int) (300 + 128 * Math.sin(t)));
+
+        gc.drawImage(new Image("Resources/enemies/Mace.png"), mace1.getX(), mace1.getY());
     }
 }
