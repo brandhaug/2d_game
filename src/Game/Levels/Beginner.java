@@ -23,9 +23,9 @@ public class Beginner {
         this.startNanoTime = startNanoTime;
         this.currentNanoTime = currentNanoTime;
         drawTiles();
-        drawEnemies();
+        //drawEnemies();
         //drawObstacles();
-        drawCoin();
+        //drawCoin();
     }
 
     private void drawTiles() {
@@ -42,7 +42,7 @@ public class Beginner {
         }
     }
 
-    private void  drawCoin(){
+    private void drawCoin() {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
         Coin coin1 = new Coin(gc);
         coin1.setY((int) (300 + 128 * Math.sin(t)));
@@ -51,7 +51,6 @@ public class Beginner {
     private void drawEnemies() {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
 
-        /*
         Enemy mace1 = new Enemy();
         mace1.setX((int) (900 + 128 * Math.cos(t)));
         mace1.setY((int) (300 + 128 * Math.sin(t)));
@@ -61,15 +60,13 @@ public class Beginner {
         mace2.setX((int) (900 + 128 * Math.sin(t)));
         mace2.setY((int) (300 + 128 * Math.cos(t)));
         gc.drawImage(new Image("Resources/enemies/Mace.png"), mace2.getX(), mace2.getY());
-        */
     }
 
-    /*
-    private void drawObstacles(){
+    private void drawObstacles() {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
         Saw saw1 = new Saw();
         saw1.setY((int) (300 + 128 * Math.sin(t)));
-        gc.drawImage(new Image("Resources/obstacles/Saw.png"),saw1.getX(),saw1.getY());
+        gc.drawImage(new Image("Resources/obstacles/Saw.png"), saw1.getX(), saw1.getY());
     }
-    */
+
 }

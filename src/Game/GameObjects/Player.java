@@ -10,7 +10,7 @@ public class Player implements GameObject {
     private int y;
     private int velocityX = 0;
     private int velocityY = 10;
-    private final int MAX_VELOCITY_X = 15;
+    private final int MAX_VELOCITY_X = 12;
     private final int START_POSITION = 200;
 
     private int PLAYER_IDLING = 0;
@@ -22,6 +22,7 @@ public class Player implements GameObject {
 
     private SpriteSheet idleSpriteSheet;
     private SpriteSheet rightRunSpriteSheet;
+    private SpriteSheet leftRunSpriteSheet;
     private SpriteSheet jumpSpriteSheet;
 
     public Player(GraphicsContext gc) {
@@ -30,34 +31,44 @@ public class Player implements GameObject {
         tick(gc);
     }
 
+    @Override
     public int getX() {
         return x;
     }
 
+    @Override
     public void setX(int x) {
-        this.x = x;
+        if (x >= START_POSITION) {
+            this.x = x;
+        }
     }
 
+    @Override
     public int getY() {
         return y;
     }
 
+    @Override
     public void setY(int y) {
         this.y = y;
     }
 
+    @Override
     public int getVelocityX() {
         return velocityX;
     }
 
+    @Override
     public void setVelocityX(int velocityX) {
         this.velocityX = velocityX;
     }
 
+    @Override
     public int getVelocityY() {
         return velocityY;
     }
 
+    @Override
     public void setVelocityY(int velocityY) {
         this.velocityY = velocityY;
     }
@@ -69,8 +80,10 @@ public class Player implements GameObject {
     private void draw(GraphicsContext gc) {
         if (currentSpriteState == PLAYER_IDLING) {
             idleSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
-        } else if (currentSpriteState == PLAYER_RUNNING_RIGHT || currentSpriteState == PLAYER_RUNNING_LEFT) {
+        } else if (currentSpriteState == PLAYER_RUNNING_RIGHT) {
             rightRunSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
+        } else if (currentSpriteState == PLAYER_RUNNING_LEFT) {
+            leftRunSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
         } else if (currentSpriteState == PLAYER_JUMPING) {
             jumpSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
         }
@@ -78,15 +91,32 @@ public class Player implements GameObject {
 
     public void tick(GraphicsContext gc) {
         lastSpriteState = currentSpriteState;
+        setCurrentSpriteState();
+        handleVelocityX();
+        handleVelocityY();
+        draw(gc);
+    }
 
+    private void handleVelocityX() {
         if (velocityX >= MAX_VELOCITY_X) {
-            x += MAX_VELOCITY_X;
+            setX(getX() + MAX_VELOCITY_X);
         } else if (velocityX <= MAX_VELOCITY_X * -1) {
-            x -= MAX_VELOCITY_X;
+            setX(getX() - MAX_VELOCITY_X);
         } else {
-            x += velocityX;
+            setX(getX() + velocityX);
         }
+    }
 
+    private void handleVelocityY() {
+        setY(getY() + velocityY);
+        if (getY() > GameController.CANVAS_HEIGHT - 152 - 100) {
+            velocityY = 0;
+        } else {
+            velocityY += 2;
+        }
+    }
+
+    private void setCurrentSpriteState() {
         if (velocityY != 0) {
             currentSpriteState = PLAYER_JUMPING;
         } else if (velocityX > 0) {
@@ -96,22 +126,12 @@ public class Player implements GameObject {
         } else {
             currentSpriteState = PLAYER_IDLING;
         }
-
-
-        y += velocityY;
-
-        if (y > GameController.CANVAS_HEIGHT - 152 - 100) {
-            velocityY = 0;
-        } else {
-            velocityY += 2;
-        }
-
-        draw(gc);
     }
 
     private void initializeSpriteSheets() {
-        idleSpriteSheet = new SpriteSheet("/Resources/player/idle.png", 12, 144, 152);
-        rightRunSpriteSheet = new SpriteSheet("/Resources/player/run.png", 18, 198, 152);
-        jumpSpriteSheet = new SpriteSheet("/Resources/player/jump.png", 2, 167, 155);
+        idleSpriteSheet = new SpriteSheet("/Resources/player/idle.png", 12, 72, 76);
+        rightRunSpriteSheet = new SpriteSheet("/Resources/player/run_right.png", 18, 99, 77);
+        leftRunSpriteSheet = new SpriteSheet("/Resources/player/run_left.png", 18, 99, 77);
+        jumpSpriteSheet = new SpriteSheet("/Resources/player/jump.png", 2, 83, 78);
     }
 }

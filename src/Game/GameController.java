@@ -1,6 +1,5 @@
 package Game;
 
-import Game.GameObjects.Coin;
 import Game.Levels.Beginner;
 import Game.GameObjects.Player;
 import javafx.animation.AnimationTimer;
@@ -36,10 +35,11 @@ public class GameController {
 
     private Beginner level;
     private Player player;
-    private Coin coin;
-    private BufferedImage background;
-
     private Preferences preferences = Preferences.userRoot();
+
+    private Image background;
+    private GraphicsContext gc;
+
     private boolean gamePaused = false;
     private boolean initialized = false;
 
@@ -54,7 +54,9 @@ public class GameController {
     @FXML
     private Button mainMenuButton;
     @FXML
-    private Pane pausePane;
+    private Pane pauseInfoPane;
+    @FXML
+    private Pane pauseSettingsPane;
     @FXML
     private Text pauseText;
 
@@ -80,8 +82,9 @@ public class GameController {
         soundButton.setVisible(!gamePaused);
         musicButton.setVisible(!gamePaused);
         mainMenuButton.setVisible(!gamePaused);
-        pausePane.setVisible(!gamePaused);
+        pauseInfoPane.setVisible(!gamePaused);
         pauseText.setVisible(!gamePaused);
+        pauseSettingsPane.setVisible(!gamePaused);
         gamePaused = !gamePaused;
     }
 
@@ -120,7 +123,6 @@ public class GameController {
     @FXML
     private void handleKeyPressed(KeyEvent event) {
         KeyCode code = event.getCode();
-        int currentHight = player.getY();
         if (!gamePaused) {
             if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 4);
             if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() - 4);
@@ -148,38 +150,40 @@ public class GameController {
         musicButton.setVisible(false);
         soundButton.setVisible(false);
         mainMenuButton.setVisible(false);
-        pausePane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7);");
-        pausePane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        pausePane.setVisible(false);
         pauseText.setVisible(false);
+        pauseInfoPane.setVisible(false);
+        pauseInfoPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7);");
+        pauseInfoPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        pauseSettingsPane.setVisible(false);
+        pauseSettingsPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
+        gc = canvas.getGraphicsContext2D();
         initialized = true;
+
         try {
-            background = ImageIO.read(new File(getClass().getResource("/Resources/background/background.png").getPath()));
+            BufferedImage bufferedBackground = ImageIO.read(new File(getClass().getResource("/Resources/background/background.png").getPath()));
+            background = SwingFXUtils.toFXImage(bufferedBackground, null);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        GraphicsContext gc = canvas.getGraphicsContext2D();
 
         level = new Beginner(gc);
         player = new Player(gc);
-        coin = new Coin(gc);
         player.setY(Beginner.GROUND_FLOOR_HEIGHT);
 
         final long startNanoTime = System.nanoTime();
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                gameLoop(gc, startNanoTime, currentNanoTime, player, level);
+                gameLoop(startNanoTime, currentNanoTime);
             }
         }.start();
     }
 
-    private void gameLoop(GraphicsContext gc, long startNanoTime, long currentNanoTime, Player player, Beginner level) {
+    private void gameLoop(long startNanoTime, long currentNanoTime) {
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         drawBackground(gc);
         level.draw(startNanoTime, currentNanoTime);
         player.tick(gc);
-        coin.draw(gc);
     }
 
     private void drawBackground(GraphicsContext gc) {
@@ -188,7 +192,7 @@ public class GameController {
             tempX -= CANVAS_WIDTH;
         }
 
-        gc.drawImage(new Image("Resources/background/background.png"), player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        gc.drawImage(new Image("Resources/background/background.png"), CANVAS_WIDTH + player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        gc.drawImage(background, player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        gc.drawImage(background, CANVAS_WIDTH + player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
 }
