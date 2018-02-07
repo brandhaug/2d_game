@@ -11,6 +11,7 @@ public class Player implements GameObject {
     private int velocityX = 0;
     private int velocityY = 10;
     private final int MAX_VELOCITY_X = 15;
+    public final static int START_POSITION = 128;
 
     private int PLAYER_IDLING = 0;
     private int PLAYER_RUNNING_RIGHT = 1;
