@@ -1,5 +1,6 @@
 package Game;
 
+import Game.GameObjects.Coin;
 import Game.Levels.Beginner;
 import Game.GameObjects.Player;
 import javafx.animation.AnimationTimer;
@@ -37,6 +38,7 @@ public class GameController {
 
     private Beginner level;
     private Player player;
+    private Coin coin;
     private BufferedImage background;
 
     private Preferences preferences = Preferences.userRoot();
@@ -160,6 +162,7 @@ public class GameController {
         gc.drawImage(new Image("Resources/background.png"), 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         level = new Beginner(gc);
         player = new Player(gc);
+        coin = new Coin(gc);
         player.setX(Player.START_POSITION);
         player.setY(Beginner.GROUND_FLOOR_HEIGHT);
 
@@ -178,6 +181,7 @@ public class GameController {
         drawBackground(gc);
         level.draw(startNanoTime, currentNanoTime);
         player.tick(gc);
+        coin.draw(gc);
     }
 
     private void drawBackground(GraphicsContext gc) {
