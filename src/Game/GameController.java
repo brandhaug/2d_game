@@ -122,11 +122,13 @@ public class GameController {
     @FXML
     private void handleKeyPressed(KeyEvent event) {
         KeyCode code = event.getCode();
-
+        int currentHight = player.getY();
         if (!gamePaused) {
             if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 4);
             if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() - 4);
-            if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(player.getVelocityY() - 40);
+            if (code == KeyCode.UP || code == KeyCode.W) {
+                if(player.getVelocityY() == 0 && currentHight >= player.getY()) player.setVelocityY(player.getVelocityY() - 40);
+            }
         }
     }
 
@@ -153,13 +155,13 @@ public class GameController {
         pauseText.setVisible(false);
         initialized = true;
         try {
-            background = ImageIO.read(new File(getClass().getResource("/Resources/background.png").getPath()));
+            background = ImageIO.read(new File(getClass().getResource("/Resources/background/background.png").getPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.drawImage(new Image("Resources/background.png"), 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        gc.drawImage(new Image("Resources/background/background.png"), 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         level = new Beginner(gc);
         player = new Player(gc);
         coin = new Coin(gc);
