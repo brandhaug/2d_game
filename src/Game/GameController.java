@@ -27,7 +27,7 @@ public class GameController {
     public final static int HEIGHT = 720;
     public final static int BUTTON_SIZE = 64;
     public final static int TILE_SIZE = 128;
-    public final static int MARGIN = 33;
+    public final static int MARGIN = 32;
     private Beginner level;
     private Player player;
 
