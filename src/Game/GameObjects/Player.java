@@ -10,8 +10,9 @@ public class Player implements GameObject {
     private int y;
     private int velocityX = 0;
     private int velocityY = 10;
+    public static int relativeX = 128;
     private final int MAX_VELOCITY_X = 15;
-    public final static int START_POSITION = 128;
+    public final static int START_POSITION = 200;
 
     private int PLAYER_IDLING = 0;
     private int PLAYER_RUNNING_RIGHT = 1;
@@ -78,11 +79,11 @@ public class Player implements GameObject {
 
     public void draw(GraphicsContext gc) {
         if (currentSpriteState == PLAYER_IDLING) {
-            idleSpriteSheet.draw(gc, x, y, currentSpriteState, lastSpriteState);
+            idleSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
         } else if (currentSpriteState == PLAYER_RUNNING_RIGHT || currentSpriteState == PLAYER_RUNNING_LEFT) {
-            rightRunSpriteSheet.draw(gc, x, y, currentSpriteState, lastSpriteState);
+            rightRunSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
         } else if (currentSpriteState == PLAYER_JUMPING) {
-            jumpSpriteSheet.draw(gc, x, y, currentSpriteState, lastSpriteState);
+            jumpSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
         }
     }
 
