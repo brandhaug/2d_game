@@ -27,12 +27,13 @@ import java.util.prefs.Preferences;
 
 public class GameController {
 
-    public final static int WIDTH = 1280;
-    public final static int HEIGHT = 720;
+    public final static int CANVAS_WIDTH = 1280;
+    public final static int CANVAS_HEIGHT = 720;
     public final static int BUTTON_SIZE = 64;
     public final static int TILE_SIZE = 128;
     public final static int MARGIN = 32;
     public final static int BACKGROUND_WIDTH = 1920;
+    private final static int DIFF = BACKGROUND_WIDTH - CANVAS_WIDTH;
 
     private Beginner level;
     private Player player;
@@ -123,7 +124,7 @@ public class GameController {
         if (!gamePaused) {
             if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 4);
             if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() - 4);
-            if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(player.getVelocityY() - 5);
+            if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(player.getVelocityY() - 40);
         }
     }
 
@@ -134,7 +135,7 @@ public class GameController {
         if (!gamePaused) {
             if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(0);
             if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(0);
-            if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(-30);
+//            if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(0);
         }
     }
 
@@ -156,7 +157,7 @@ public class GameController {
         }
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        gc.drawImage(new Image("Resources/background.png"), 0, 0, WIDTH, HEIGHT);
+        gc.drawImage(new Image("Resources/background.png"), 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         level = new Beginner(gc);
         player = new Player(gc);
         player.setX(Player.START_POSITION);
@@ -172,7 +173,7 @@ public class GameController {
     }
 
     private void gameLoop(GraphicsContext gc, long startNanoTime, long currentNanoTime, Player player, Beginner level) {
-        gc.clearRect(0, 0, WIDTH, HEIGHT);
+        gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
         drawBackground(gc);
         level.draw(startNanoTime, currentNanoTime);
@@ -180,37 +181,39 @@ public class GameController {
     }
 
     private void drawBackground(GraphicsContext gc) {
-        double d = (player.getX() + WIDTH) / BACKGROUND_WIDTH;
-        int dInt = (int) Math.floor(d);
+        System.out.println("X " + player.getX());
+        System.out.println("Diff " + Math.floor((int) player.getX() / DIFF));
+        int tempX = player.getX();
 
-        for (int i = 0; i <= dInt; i++) {
-            if (player.getX() + WIDTH >= BACKGROUND_WIDTH) {
-                BufferedImage subImage = background.getSubimage(player.getX(), 0, WIDTH, HEIGHT);
-                gc.drawImage(SwingFXUtils.toFXImage(subImage, null), 0, 0);
-            } else {
-                BufferedImage subImage = background.getSubimage(player.getX() * i, 0, WIDTH, HEIGHT);
-                gc.drawImage(SwingFXUtils.toFXImage(subImage, null), 0, 0);
-            }
-
+        while (tempX > DIFF) {
+            tempX -= DIFF;
         }
 
+        System.out.println("TempX " + tempX);
 
-//        if (player.getX() + WIDTH >= BACKGROUND_WIDTH) {
+        BufferedImage subImage1 = background.getSubimage(tempX, 0, (int) BACKGROUND_WIDTH - tempX, CANVAS_HEIGHT);
+        gc.drawImage(SwingFXUtils.toFXImage(subImage1, null), 0, 0);
+
+        if (tempX == 0) {
+            System.out.println("ZERO MAFACKA");
+        } else {
+            BufferedImage subImage2 = background.getSubimage(0, 0, tempX, CANVAS_HEIGHT);
+            gc.drawImage(SwingFXUtils.toFXImage(subImage2, null), BACKGROUND_WIDTH - tempX, 0);
+        }
+
+//        if (player.getX() + CANVAS_WIDTH < BACKGROUND_WIDTH) {
+//            System.out.println("Første if");
+//            BufferedImage subImage = background.getSubimage(player.getX(), 0, (int) CANVAS_WIDTH, CANVAS_HEIGHT);
+//            gc.drawImage(SwingFXUtils.toFXImage(subImage, null), 0, 0);
+//        } else {
+//            System.out.println("ELSE");
+//            BufferedImage subImage1 = background.getSubimage(player.getX(), 0, (int) BACKGROUND_WIDTH - player.getX(), CANVAS_HEIGHT);
+//            gc.drawImage(SwingFXUtils.toFXImage(subImage1, null), 0, 0);
 //
+//            if (player.getX() - DIFF != 0) {
+//                BufferedImage subImage2 = background.getSubimage(0, 0, player.getX() - DIFF, CANVAS_HEIGHT);
+//                gc.drawImage(SwingFXUtils.toFXImage(subImage2, null), BACKGROUND_WIDTH - player.getX(), 0);
+//            }
 //        }
-//
-//
-//        BufferedImage subImage = background.getSubimage(player.getX(), 0, WIDTH, HEIGHT);
-//
-//        //Hvor langt den er inne i bildet
-//        player.getX();
-//
-//        //Det hele bildet sin bredde
-//        background.getWidth();
-//
-//
-//        //gc.drawImage(new Image("Resources/background.png"), 0, 0, WIDTH, HEIGHT);
-//        gc.drawImage(SwingFXUtils.toFXImage(subImage, null), 0, 0);
     }
-
 }

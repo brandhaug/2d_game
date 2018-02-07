@@ -34,7 +34,7 @@ public class Beginner {
             } else {
                 tile = new Image("Resources/tiles/GrassMid.png");
             }
-            gc.drawImage(tile, x, GameController.HEIGHT - GameController.TILE_SIZE);
+            gc.drawImage(tile, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE);
         }
     }
 

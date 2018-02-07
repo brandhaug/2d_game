@@ -111,10 +111,10 @@ public class Player implements GameObject {
 
         y += velocityY;
 
-        if (y > GameController.HEIGHT - rightRunSpriteHeight - 100) {
+        if (y > GameController.CANVAS_HEIGHT - rightRunSpriteHeight - 100) {
             velocityY = 0;
         } else {
-            velocityY += 5;
+            velocityY += 2;
         }
 
         draw(gc);
