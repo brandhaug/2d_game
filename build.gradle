@@ -1,9 +1,0 @@
-apply plugin:'java'
-
-repositories {
-    jcenter()
-}
-
-dependencies {
-    compile 'com.github.almasb:fxgl:0.4.2'
-}
