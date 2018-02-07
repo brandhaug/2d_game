@@ -11,10 +11,10 @@ public class Coin implements GameObject {
 
     private SpriteSheet coinSpriteSheet;
 
-    private final String coinRotatePath = "/Resources/coin/CoinAnimation2.png";
+    private final String coinRotatePath = "/Resources/coin/CoinAnimation3.png";
     private final int coinSpriteWidth = 64;
-    private final int coinSpriteHeight = 128;
-    private final int coinSpriteSheetCols = 17;
+    private final int coinSpriteHeight = 64;
+    private final int coinSpriteSheetCols = 16;
 
     private int currentSpriteState = 2;
     private int lastSpriteState = 16;
@@ -26,7 +26,7 @@ public class Coin implements GameObject {
 
 
     public void draw(GraphicsContext gc) {
-        coinSpriteSheet.draw(gc, 1, 1,1,1);
+        coinSpriteSheet.draw(gc, 200, 300,1,1);
     }
 
 

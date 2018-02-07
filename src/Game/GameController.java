@@ -125,7 +125,7 @@ public class GameController {
             if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 4);
             if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() - 4);
             if (code == KeyCode.UP || code == KeyCode.W) {
-                if (player.getVelocityY() == 0 && currentHight >= player.getY())
+                if (player.getVelocityY() == 0 && player.getY() == 478)
                     player.setVelocityY(player.getVelocityY() - 40);
             }
         }
@@ -181,6 +181,7 @@ public class GameController {
         level.draw(startNanoTime, currentNanoTime);
         player.tick(gc);
         coin.draw(gc);
+        //System.out.println("height is:" + player.getY());
     }
 
     private void drawBackground(GraphicsContext gc) {
