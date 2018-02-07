@@ -24,21 +24,6 @@ public class Player implements GameObject {
     private SpriteSheet rightRunSpriteSheet;
     private SpriteSheet jumpSpriteSheet;
 
-    private final String idleSpriteSheetPath = "/Resources/player/idle.png";
-    private final int idleSpriteWidth = 144;
-    private final int idleSpriteHeight = 152;
-    private final int idleSpriteSheetCols = 12;
-
-    private final String rightRunSpriteSheetPath = "/Resources/player/run.png";
-    private final int rightRunSpriteWidth = 198;
-    private final int rightRunSpriteHeight = 152;
-    private final int rightRunSpriteSheetCols = 18;
-
-    private final String jumpSpriteSheetPath = "/Resources/player/jump.png";
-    private final int jumpSpriteWidth = 167;
-    private final int jumpSpriteHeight = 155;
-    private final int jumpSpriteSheetCols = 2;
-
     public Player(GraphicsContext gc) {
         this.x = START_POSITION;
         initializeSpriteSheets();
@@ -81,7 +66,7 @@ public class Player implements GameObject {
         return START_POSITION;
     }
 
-    public void draw(GraphicsContext gc) {
+    private void draw(GraphicsContext gc) {
         if (currentSpriteState == PLAYER_IDLING) {
             idleSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
         } else if (currentSpriteState == PLAYER_RUNNING_RIGHT || currentSpriteState == PLAYER_RUNNING_LEFT) {
@@ -115,7 +100,7 @@ public class Player implements GameObject {
 
         y += velocityY;
 
-        if (y > GameController.CANVAS_HEIGHT - rightRunSpriteHeight - 100) {
+        if (y > GameController.CANVAS_HEIGHT - 152 - 100) {
             velocityY = 0;
         } else {
             velocityY += 2;
@@ -125,8 +110,8 @@ public class Player implements GameObject {
     }
 
     private void initializeSpriteSheets() {
-        idleSpriteSheet = new SpriteSheet(idleSpriteSheetPath, idleSpriteSheetCols, idleSpriteWidth, idleSpriteHeight);
-        rightRunSpriteSheet = new SpriteSheet(rightRunSpriteSheetPath, rightRunSpriteSheetCols, rightRunSpriteWidth, rightRunSpriteHeight);
-        jumpSpriteSheet = new SpriteSheet(jumpSpriteSheetPath, jumpSpriteSheetCols, jumpSpriteWidth, jumpSpriteHeight);
+        idleSpriteSheet = new SpriteSheet("/Resources/player/idle.png", 12, 144, 152);
+        rightRunSpriteSheet = new SpriteSheet("/Resources/player/run.png", 18, 198, 152);
+        jumpSpriteSheet = new SpriteSheet("/Resources/player/jump.png", 2, 167, 155);
     }
 }

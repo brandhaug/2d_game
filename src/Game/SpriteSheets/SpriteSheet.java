@@ -16,7 +16,6 @@ public class SpriteSheet {
     private int spriteWidth;
     private int spriteHeight;
 
-    private BufferedImage spriteSheet;
     private BufferedImage[] sprites;
 
     private int currentColumnIndex = 0;
@@ -35,7 +34,7 @@ public class SpriteSheet {
     }
 
     private void initializeSprites() throws IOException {
-        spriteSheet = ImageIO.read(new File(getClass().getResource(pathname).getPath()));
+        BufferedImage spriteSheet = ImageIO.read(new File(getClass().getResource(pathname).getPath()));
         sprites = new BufferedImage[cols];
         for (int i = 0; i < cols; i++) {
             sprites[i] = spriteSheet.getSubimage(i * spriteWidth, 0, spriteWidth, spriteHeight);

@@ -176,24 +176,17 @@ public class GameController {
 
     private void gameLoop(GraphicsContext gc, long startNanoTime, long currentNanoTime, Player player, Beginner level) {
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
         drawBackground(gc);
         level.draw(startNanoTime, currentNanoTime);
         player.tick(gc);
         coin.draw(gc);
-        //System.out.println("height is:" + player.getY());
     }
 
     private void drawBackground(GraphicsContext gc) {
-        System.out.println("X " + player.getX());
-
         int tempX = player.getX();
-
         while (tempX > CANVAS_WIDTH + player.getStartPosition()) {
             tempX -= CANVAS_WIDTH;
         }
-
-        System.out.println("TempX " + tempX);
 
         gc.drawImage(new Image("Resources/background/background.png"), player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         gc.drawImage(new Image("Resources/background/background.png"), CANVAS_WIDTH + player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
