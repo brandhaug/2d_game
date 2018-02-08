@@ -1,14 +1,23 @@
 package MainMenu;
 
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.prefs.Preferences;
@@ -16,20 +25,23 @@ import java.util.prefs.Preferences;
 public class MainMenuController {
 
     @FXML
-    private Button infoButton;
-
+    private Pane mapsPane;
     @FXML
-    private Button playButton;
-
+    private ImageView map1;
+    @FXML
+    private ImageView map2;
+    @FXML
+    private ImageView map3;
+    @FXML
+    private ImageView map4;
+    @FXML
+    private Button infoButton;
     @FXML
     private Button exitButton;
-
     @FXML
     private Button highscoresButton;
-
     @FXML
     private Button soundButton;
-
     @FXML
     private Button musicButton;
 
@@ -41,7 +53,7 @@ public class MainMenuController {
         Parent root = FXMLLoader.load(getClass().getResource("../Info/Info.fxml"));
         root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
         Scene scene = new Scene(root);
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
         stage.setScene(scene);
         stage.show();
@@ -50,7 +62,7 @@ public class MainMenuController {
     @FXML
     protected void play() {
         try {
-            Stage stage = (Stage) playButton.getScene().getWindow();
+            Stage stage = (Stage) mapsPane.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("../Game/Game.fxml"));
             root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
             stage.setScene(new Scene(root));
@@ -70,7 +82,7 @@ public class MainMenuController {
         Parent root = FXMLLoader.load(getClass().getResource("../Highscores/Highscores.fxml"));
         root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
         Scene scene = new Scene(root);
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
         stage.setScene(scene);
         stage.show();
@@ -110,8 +122,18 @@ public class MainMenuController {
 
     @FXML
     public void initialize() {
+        mapsPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.3);");
+        mapsPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         toggleSound();
         toggleMusic();
+        map1.setOnMouseEntered(event -> map1.setImage(new Image("Resources/background/map1.gif")));
+        map1.setOnMouseExited(event -> map1.setImage(new Image("Resources/background/map1_still_image.png")));
+        map2.setOnMouseEntered(event -> map2.setImage(new Image("Resources/background/map1.gif")));
+        map2.setOnMouseExited(event -> map2.setImage(new Image("Resources/background/map1_still_image.png")));
+        map3.setOnMouseEntered(event -> map3.setImage(new Image("Resources/background/map1.gif")));
+        map3.setOnMouseExited(event -> map3.setImage(new Image("Resources/background/map1_still_image.png")));
+        map4.setOnMouseEntered(event -> map4.setImage(new Image("Resources/background/map1.gif")));
+        map4.setOnMouseExited(event -> map4.setImage(new Image("Resources/background/map1_still_image.png")));
         initialized = true;
     }
 

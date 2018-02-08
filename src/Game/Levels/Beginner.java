@@ -12,6 +12,9 @@ public class Beginner {
 
     public static final int GROUND_FLOOR_HEIGHT = 128;
     private GraphicsContext gc;
+    private Image startingPointImage;
+    private Image maceImage;
+    private Image sawImage;
     private long startNanoTime;
     private long currentNanoTime;
     private static List<Tile> tiles;
@@ -20,25 +23,33 @@ public class Beginner {
     private Coin coin1;
     private Enemy mace1;
     private Enemy mace2;
-    private Saw saw1;
+    private Enemy saw1;
 
     public Beginner(GraphicsContext gc) {
         this.gc = gc;
+        this.maceImage = new Image("Resources/enemies/Mace.png");
+        this.sawImage = new Image("Resources/enemies/Mace.png");
+        this.startingPointImage = new Image("/Resources/start.png");
+
         this.tiles = new ArrayList<>();
         addTiles();
 
         coin1 = new Coin(gc);
         mace1 = new Enemy(gc);
         mace2 = new Enemy(gc);
-        saw1 = new Saw();
+        saw1 = new Enemy(gc);
 
         draw();
     }
 
-    public void draw() {
+    private void draw() {
+        drawStartingPoint();
         drawEnemies();
-        drawObstacles();
         drawCoin();
+    }
+
+    private void drawStartingPoint() {
+
     }
 
     private void drawCoin() {
@@ -48,21 +59,20 @@ public class Beginner {
 
     private void drawEnemies() {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
+
+        gc.drawImage(startingPointImage, 405 - playerX, (int) (150 + 25 * Math.sin(t)));
+
         mace1.setX((int) (1100 + (128 * Math.cos(t)) - playerX));
         mace1.setY((int) (300 + 128 * Math.sin(t)));
-        gc.drawImage(new Image("Resources/enemies/Mace.png"), mace1.getX(), mace1.getY());
+        gc.drawImage(maceImage, mace1.getX(), mace1.getY());
 
         mace2.setX((int) (1500 + 128 * Math.sin(t)) - playerX);
         mace2.setY((int) (300 + 128 * Math.cos(t)));
-        gc.drawImage(new Image("Resources/enemies/Mace.png"), mace2.getX(), mace2.getY());
-    }
-
-    private void drawObstacles() {
-        double t = (currentNanoTime - startNanoTime) / 1000000000.0;
+        gc.drawImage(maceImage, mace2.getX(), mace2.getY());
 
         saw1.setX(2000 - playerX);
         saw1.setY((int) (300 + 128 * Math.sin(t)));
-        gc.drawImage(new Image("Resources/obstacles/Saw.png"), saw1.getX(), saw1.getY());
+        gc.drawImage(sawImage, saw1.getX(), saw1.getY());
     }
 
     private void addTiles() {
