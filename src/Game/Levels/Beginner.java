@@ -16,6 +16,7 @@ public class Beginner {
     private long currentNanoTime;
     private static List<Tile> tiles;
     private final int tileCount = 30;
+    private int playerX;
 
     public Beginner(GraphicsContext gc) {
         this.gc = gc;
@@ -39,12 +40,12 @@ public class Beginner {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
 
         Enemy mace1 = new Enemy();
-        mace1.setX((int) (900 + 128 * Math.cos(t)));
+        mace1.setX((int) (1100 + (128 * Math.cos(t)) - playerX));
         mace1.setY((int) (300 + 128 * Math.sin(t)));
         gc.drawImage(new Image("Resources/enemies/Mace.png"), mace1.getX(), mace1.getY());
 
         Enemy mace2 = new Enemy();
-        mace2.setX((int) (900 + 128 * Math.sin(t)));
+        mace2.setX((int) (1500 + 128 * Math.sin(t)) - playerX);
         mace2.setY((int) (300 + 128 * Math.cos(t)));
         gc.drawImage(new Image("Resources/enemies/Mace.png"), mace2.getX(), mace2.getY());
     }
@@ -59,16 +60,20 @@ public class Beginner {
     private void addTiles() {
         for (int x = 0; x <= 1280 - GameController.TILE_SIZE; x += GameController.TILE_SIZE) {
             if (x == 0) {
-                tiles.add(new Tile(gc, TileType.GRASS_LEFT, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE));
+                for (int y = 0; y < 12 * GameController.TILE_SIZE; y += GameController.TILE_SIZE) {
+                    tiles.add(new Tile(gc, TileType.GRASS_LEFT, x, y));
+                }
             } else if (x == 1280 - GameController.TILE_SIZE) {
                 tiles.add(new Tile(gc, TileType.GRASS_LEFT, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE));
             } else {
-                tiles.add(new Tile(gc, TileType.GRASS_LEFT, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE));
+                tiles.add(new Tile(gc, TileType.GRASS_LEFT, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE - 64));
+                tiles.add(new Tile(gc, TileType.GRASS_MID, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE));
             }
         }
     }
 
-    public void tick(long startNanoTime, long currentNanoTime) {
+    public void tick(long startNanoTime, long currentNanoTime, int playerX) {
+        this.playerX = playerX;
         this.startNanoTime = startNanoTime;
         this.currentNanoTime = currentNanoTime;
         draw();

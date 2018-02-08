@@ -1,6 +1,5 @@
 package Game.GameObjects;
 
-import Game.GameController;
 import Game.Levels.Beginner;
 import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,14 +8,17 @@ import java.awt.*;
 
 public class Player implements GameObject {
 
+    private GraphicsContext gc;
+
+    // Position and Velocity
     private int x;
     private int y;
     private int velocityX = 0;
     private int velocityY = 5;
-    private final int MAX_VELOCITY_X = 12;
-    private final int MAX_VELOCITY_Y = 20;
+
     private final int START_POSITION = 200;
 
+    // States
     private int PLAYER_IDLING = 0;
     private int PLAYER_RUNNING_RIGHT = 1;
     private int PLAYER_RUNNING_LEFT = 2;
@@ -26,6 +28,7 @@ public class Player implements GameObject {
     private int currentSpriteState = 0;
     private int lastSpriteState = 0;
 
+    // Spritesheets
     private SpriteSheet idleSpriteSheet;
     private SpriteSheet rightRunSpriteSheet;
     private SpriteSheet leftRunSpriteSheet;
@@ -33,9 +36,10 @@ public class Player implements GameObject {
     private SpriteSheet currentSpriteSheet;
 
     public Player(GraphicsContext gc) {
+        this.gc = gc;
         this.x = START_POSITION;
         initializeSpriteSheets();
-        tick(gc);
+        tick();
     }
 
     @Override
@@ -84,27 +88,18 @@ public class Player implements GameObject {
         return START_POSITION;
     }
 
-    private void draw(GraphicsContext gc) {
-        if (currentSpriteState == PLAYER_IDLING) {
-            idleSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
-        } else if (currentSpriteState == PLAYER_RUNNING_RIGHT) {
-            rightRunSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
-        } else if (currentSpriteState == PLAYER_RUNNING_LEFT) {
-            leftRunSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
-        } else if (currentSpriteState == PLAYER_JUMPING || currentSpriteState == PLAYER_FALLING) {
-            jumpSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
-        }
-    }
-
-    public void tick(GraphicsContext gc) {
+    public void tick() {
         lastSpriteState = currentSpriteState;
         setCurrentSpriteState();
+        handleCollision();
         handleVelocityX();
         handleVelocityY();
-        draw(gc);
+        render(gc);
     }
 
     private void handleVelocityX() {
+        int MAX_VELOCITY_X = 12;
+
         if (velocityX >= MAX_VELOCITY_X) {
             setX(getX() + MAX_VELOCITY_X);
         } else if (velocityX <= MAX_VELOCITY_X * -1) {
@@ -115,7 +110,7 @@ public class Player implements GameObject {
     }
 
     private void handleVelocityY() {
-        collision();
+        int MAX_VELOCITY_Y = 20;
 
         if (velocityY >= MAX_VELOCITY_Y) {
             setY(getY() + MAX_VELOCITY_Y);
@@ -166,20 +161,40 @@ public class Player implements GameObject {
         return new Rectangle(x, y + 5, 5, currentSpriteSheet.getSpriteHeight() - 10);
     }
 
-    public void collision() {
-        boolean intersected = false;
+    public void handleCollision() {
+        velocityY += 2;
+
         for (Tile tile : Beginner.getTiles()) {
             if (this.getBoundsBottom().intersects(tile.getBoundsTop()) && currentSpriteState != PLAYER_JUMPING) {
-                intersected = true;
-                this.setY(tile.getY() - this.currentSpriteSheet.getSpriteHeight() + 10);
-                break;
+                handleBottomCollision(tile.getY());
+            }
+
+            if (this.getBoundsTop().intersects(tile.getBoundsBottom())) {
+                handleTopCollision();
+            }
+
+            if ((this.getBoundsLeft().intersects(tile.getBoundsRight()) && currentSpriteState == PLAYER_RUNNING_LEFT) ||
+                    (this.getBoundsRight().intersects(tile.getBoundsLeft()) && currentSpriteState == PLAYER_RUNNING_RIGHT)) {
+                handleSideCollision();
             }
         }
-
-        if (intersected) {
-            velocityY = 0;
-        } else {
-            velocityY += 2;
-        }
     }
+
+    public void handleBottomCollision(int tileY) {
+        y = tileY - this.currentSpriteSheet.getSpriteHeight() + 10;
+        velocityY = 0;
+    }
+
+    public void handleTopCollision() {
+        velocityY = 0;
+    }
+
+    public void handleSideCollision() {
+        velocityX = 0;
+    }
+
+    private void render(GraphicsContext gc) {
+        currentSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
+    }
+
 }

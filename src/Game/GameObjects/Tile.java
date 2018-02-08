@@ -23,7 +23,6 @@ public class Tile implements GameObject {
 
     private final int SIZE = 128;
 
-
     public Tile(GraphicsContext gc, TileType tileType, int x, int y) {
         this.gc = gc;
         this.tileType = tileType;

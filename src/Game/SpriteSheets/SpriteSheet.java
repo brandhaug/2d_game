@@ -109,30 +109,21 @@ public class SpriteSheet {
     }
     
     public void draw(GraphicsContext gc, int x, int y, int currentSpriteState, int lastSpriteState) {
-        gc.drawImage(sprites[getNextColumn(currentSpriteState, lastSpriteState)], x, y);
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(2);
-
-        //Bottom
-        gc.strokeRect(x + 10, y + spriteHeight/2, spriteWidth - 20, spriteHeight/2);
-
-        gc.setStroke(Color.RED);
-
-        //Top
-        gc.strokeRect(x + 10, y, spriteWidth - 20, spriteHeight/2);
-
-        gc.setStroke(Color.GREEN);
-
-        //Right
-        gc.strokeRect(x + spriteWidth - 5, y + 5, 5, spriteHeight - 10);
-
-        gc.setStroke(Color.YELLOW);
-
-        //Left
-        gc.strokeRect(x, y + 5, 5, spriteHeight - 10);
+        gc.drawImage(sprites[getNextColumnIndex(currentSpriteState, lastSpriteState)], x, y);
+//        gc.setStroke(Color.BLUE);
+//        gc.strokeRect(x + 10, y + spriteHeight/2, spriteWidth - 20, spriteHeight/2); //Bottom
+//
+//        gc.setStroke(Color.RED);
+//        gc.strokeRect(x + 10, y, spriteWidth - 20, spriteHeight/2); //Top
+//
+//        gc.setStroke(Color.GREEN);
+//        gc.strokeRect(x + spriteWidth - 5, y + 5, 5, spriteHeight - 10); //Right
+//
+//        gc.setStroke(Color.YELLOW);
+//        gc.strokeRect(x, y + 5, 5, spriteHeight - 10); //Left
     }
 
-    private int getNextColumn(int currentSpriteState, int lastSpriteState) {
+    private int getNextColumnIndex(int currentSpriteState, int lastSpriteState) {
         if (currentSpriteState != lastSpriteState || currentColumnIndex == cols - 1) {
             currentColumnIndex = 0;
         }

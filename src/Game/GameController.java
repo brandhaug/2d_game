@@ -167,7 +167,6 @@ public class GameController {
 
         level = new Beginner(gc);
         player = new Player(gc);
-        player.setY(Beginner.GROUND_FLOOR_HEIGHT);
 
         final long startNanoTime = System.nanoTime();
 
@@ -181,8 +180,8 @@ public class GameController {
     private void gameLoop(long startNanoTime, long currentNanoTime) {
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         drawBackground(gc);
-        level.tick(startNanoTime, currentNanoTime);
-        player.tick(gc);
+        level.tick(startNanoTime, currentNanoTime, player.getX());
+        player.tick();
     }
 
     private void drawBackground(GraphicsContext gc) {
