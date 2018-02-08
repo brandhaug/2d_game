@@ -6,22 +6,25 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 public class SpriteSheet {
-    private String pathname;
+    private String pathName;
     private int cols;
     private int spriteWidth;
     private int spriteHeight;
+    private int x;
+    private int y;
 
-    private BufferedImage[] sprites;
+    private Image[] sprites;
 
     private int currentColumnIndex = 0;
 
-    public SpriteSheet(String pathname, int cols, int spriteWidth, int spriteHeight) {
-        this.pathname = pathname;
+    public SpriteSheet(String pathName, int cols, int spriteWidth, int spriteHeight) {
+        this.pathName = pathName;
         this.cols = cols;
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;
@@ -33,33 +36,100 @@ public class SpriteSheet {
         }
     }
 
+    public String getPathName() {
+        return pathName;
+    }
+
+    public void setPathName(String pathName) {
+        this.pathName = pathName;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public void setCols(int cols) {
+        this.cols = cols;
+    }
+
+    public int getSpriteWidth() {
+        return spriteWidth;
+    }
+
+    public void setSpriteWidth(int spriteWidth) {
+        this.spriteWidth = spriteWidth;
+    }
+
+    public int getSpriteHeight() {
+        return spriteHeight;
+    }
+
+    public void setSpriteHeight(int spriteHeight) {
+        this.spriteHeight = spriteHeight;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public Image[] getSprites() {
+        return sprites;
+    }
+
+    public void setSprites(Image[] sprites) {
+        this.sprites = sprites;
+    }
+
+    public int getCurrentColumnIndex() {
+        return currentColumnIndex;
+    }
+
+    public void setCurrentColumnIndex(int currentColumnIndex) {
+        this.currentColumnIndex = currentColumnIndex;
+    }
+
     private void initializeSprites() throws IOException {
-        BufferedImage spriteSheet = ImageIO.read(new File(getClass().getResource(pathname).getPath()));
-        sprites = new BufferedImage[cols];
+        BufferedImage spriteSheet = ImageIO.read(new File(getClass().getResource(pathName).getPath()));
+        sprites = new Image[cols];
         for (int i = 0; i < cols; i++) {
-            sprites[i] = spriteSheet.getSubimage(i * spriteWidth, 0, spriteWidth, spriteHeight);
+            sprites[i] = SwingFXUtils.toFXImage(spriteSheet.getSubimage(i * spriteWidth, 0, spriteWidth, spriteHeight), null);
         }
     }
     
     public void draw(GraphicsContext gc, int x, int y, int currentSpriteState, int lastSpriteState) {
-        gc.setFill(Color.BLUE);
+        gc.drawImage(sprites[getNextColumn(currentSpriteState, lastSpriteState)], x, y);
+        gc.setStroke(Color.BLUE);
+        gc.setLineWidth(2);
 
         //Bottom
-        gc.fillRect(x, y + spriteHeight, spriteWidth, 5);
+        gc.strokeRect(x + 10, y + spriteHeight/2, spriteWidth - 20, spriteHeight/2);
+
+        gc.setStroke(Color.RED);
 
         //Top
-        gc.fillRect(x, y, spriteWidth, 5);
+        gc.strokeRect(x + 10, y, spriteWidth - 20, spriteHeight/2);
 
-        gc.setFill(Color.GREEN);
+        gc.setStroke(Color.GREEN);
 
         //Right
-        gc.fillRect(x + spriteWidth - 5, y, 5, spriteHeight);
+        gc.strokeRect(x + spriteWidth - 5, y + 5, 5, spriteHeight - 10);
+
+        gc.setStroke(Color.YELLOW);
 
         //Left
-        gc.fillRect(x, y, 5, spriteHeight);
-
-        Image sprite = SwingFXUtils.toFXImage(sprites[getNextColumn(currentSpriteState, lastSpriteState)], null);
-        gc.drawImage(sprite, x, y);
+        gc.strokeRect(x, y + 5, 5, spriteHeight - 10);
     }
 
     private int getNextColumn(int currentSpriteState, int lastSpriteState) {

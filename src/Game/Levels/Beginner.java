@@ -1,12 +1,12 @@
 package Game.Levels;
 
 import Game.GameController;
-import Game.GameObjects.Coin;
-import Game.GameObjects.Enemy;
-import Game.GameObjects.Saw;
+import Game.GameObjects.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class Beginner {
 
@@ -14,32 +14,19 @@ public class Beginner {
     private GraphicsContext gc;
     private long startNanoTime;
     private long currentNanoTime;
+    private static List<Tile> tiles;
+    private final int tileCount = 30;
 
     public Beginner(GraphicsContext gc) {
         this.gc = gc;
+        this.tiles = new ArrayList<>();
+        addTiles();
     }
 
-    public void draw(long startNanoTime, long currentNanoTime) {
-        this.startNanoTime = startNanoTime;
-        this.currentNanoTime = currentNanoTime;
-        drawTiles();
-        //drawEnemies();
-        //drawObstacles();
-        //drawCoin();
-    }
-
-    private void drawTiles() {
-        Image tile;
-        for (int x = 0; x <= 1280 - GameController.TILE_SIZE; x += GameController.TILE_SIZE) {
-            if (x == 0) {
-                tile = new Image("Resources/tiles/GrassLeft.png");
-            } else if (x == 1280 - GameController.TILE_SIZE) {
-                tile = new Image("Resources/tiles/GrassRight.png");
-            } else {
-                tile = new Image("Resources/tiles/GrassMid.png");
-            }
-            gc.drawImage(tile, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE);
-        }
+    public void draw() {
+        drawEnemies();
+        drawObstacles();
+        drawCoin();
     }
 
     private void drawCoin() {
@@ -69,4 +56,29 @@ public class Beginner {
         gc.drawImage(new Image("Resources/obstacles/Saw.png"), saw1.getX(), saw1.getY());
     }
 
+    private void addTiles() {
+        for (int x = 0; x <= 1280 - GameController.TILE_SIZE; x += GameController.TILE_SIZE) {
+            if (x == 0) {
+                tiles.add(new Tile(gc, TileType.GRASS_LEFT, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE));
+            } else if (x == 1280 - GameController.TILE_SIZE) {
+                tiles.add(new Tile(gc, TileType.GRASS_LEFT, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE));
+            } else {
+                tiles.add(new Tile(gc, TileType.GRASS_LEFT, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE));
+            }
+        }
+    }
+
+    public void tick(long startNanoTime, long currentNanoTime) {
+        this.startNanoTime = startNanoTime;
+        this.currentNanoTime = currentNanoTime;
+        draw();
+
+        for (Tile tile : tiles) {
+            tile.tick();
+        }
+    }
+
+    public static List<Tile> getTiles() {
+        return tiles;
+    }
 }

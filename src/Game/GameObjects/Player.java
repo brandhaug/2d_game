@@ -1,22 +1,28 @@
 package Game.GameObjects;
 
 import Game.GameController;
+import Game.Levels.Beginner;
 import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
+
+import java.awt.*;
 
 public class Player implements GameObject {
 
     private int x;
     private int y;
     private int velocityX = 0;
-    private int velocityY = 10;
+    private int velocityY = 5;
     private final int MAX_VELOCITY_X = 12;
+    private final int MAX_VELOCITY_Y = 20;
     private final int START_POSITION = 200;
 
     private int PLAYER_IDLING = 0;
     private int PLAYER_RUNNING_RIGHT = 1;
     private int PLAYER_RUNNING_LEFT = 2;
     private int PLAYER_JUMPING = 3;
+    private int PLAYER_FALLING = 4;
+
     private int currentSpriteState = 0;
     private int lastSpriteState = 0;
 
@@ -24,6 +30,7 @@ public class Player implements GameObject {
     private SpriteSheet rightRunSpriteSheet;
     private SpriteSheet leftRunSpriteSheet;
     private SpriteSheet jumpSpriteSheet;
+    private SpriteSheet currentSpriteSheet;
 
     public Player(GraphicsContext gc) {
         this.x = START_POSITION;
@@ -84,7 +91,7 @@ public class Player implements GameObject {
             rightRunSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
         } else if (currentSpriteState == PLAYER_RUNNING_LEFT) {
             leftRunSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
-        } else if (currentSpriteState == PLAYER_JUMPING) {
+        } else if (currentSpriteState == PLAYER_JUMPING || currentSpriteState == PLAYER_FALLING) {
             jumpSpriteSheet.draw(gc, START_POSITION, y, currentSpriteState, lastSpriteState);
         }
     }
@@ -108,23 +115,31 @@ public class Player implements GameObject {
     }
 
     private void handleVelocityY() {
-        setY(getY() + velocityY);
-        if (getY() > GameController.CANVAS_HEIGHT - 152 - 100) {
-            velocityY = 0;
+        collision();
+
+        if (velocityY >= MAX_VELOCITY_Y) {
+            setY(getY() + MAX_VELOCITY_Y);
         } else {
-            velocityY += 2;
+            setY(getY() + velocityY);
         }
     }
 
     private void setCurrentSpriteState() {
-        if (velocityY != 0) {
+        if (velocityY < 0) {
             currentSpriteState = PLAYER_JUMPING;
+            currentSpriteSheet = jumpSpriteSheet;
+        } else if (velocityY > 0) {
+            currentSpriteState = PLAYER_FALLING;
+            currentSpriteSheet = jumpSpriteSheet;
         } else if (velocityX > 0) {
             currentSpriteState = PLAYER_RUNNING_RIGHT;
+            currentSpriteSheet = rightRunSpriteSheet;
         } else if (velocityX < 0) {
             currentSpriteState = PLAYER_RUNNING_LEFT;
+            currentSpriteSheet = leftRunSpriteSheet;
         } else {
             currentSpriteState = PLAYER_IDLING;
+            currentSpriteSheet = idleSpriteSheet;
         }
     }
 
@@ -133,5 +148,38 @@ public class Player implements GameObject {
         rightRunSpriteSheet = new SpriteSheet("/Resources/player/run_right.png", 18, 99, 77);
         leftRunSpriteSheet = new SpriteSheet("/Resources/player/run_left.png", 18, 99, 77);
         jumpSpriteSheet = new SpriteSheet("/Resources/player/jump.png", 2, 83, 78);
+    }
+
+    public Rectangle getBoundsBottom() {
+        return new Rectangle(x + 10, y + currentSpriteSheet.getSpriteHeight() / 2, currentSpriteSheet.getSpriteWidth() - 20, currentSpriteSheet.getSpriteHeight() / 2);
+    }
+
+    public Rectangle getBoundsTop() {
+        return new Rectangle(x + 10, y, currentSpriteSheet.getSpriteWidth() - 20, currentSpriteSheet.getSpriteHeight() / 2);
+    }
+
+    public Rectangle getBoundsRight() {
+        return new Rectangle(x + currentSpriteSheet.getSpriteWidth() - 5, y + 5, 5, currentSpriteSheet.getSpriteHeight() - 10);
+    }
+
+    public Rectangle getBoundsLeft() {
+        return new Rectangle(x, y + 5, 5, currentSpriteSheet.getSpriteHeight() - 10);
+    }
+
+    public void collision() {
+        boolean intersected = false;
+        for (Tile tile : Beginner.getTiles()) {
+            if (this.getBoundsBottom().intersects(tile.getBoundsTop()) && currentSpriteState != PLAYER_JUMPING) {
+                intersected = true;
+                this.setY(tile.getY() - this.currentSpriteSheet.getSpriteHeight() + 10);
+                break;
+            }
+        }
+
+        if (intersected) {
+            velocityY = 0;
+        } else {
+            velocityY += 2;
+        }
     }
 }

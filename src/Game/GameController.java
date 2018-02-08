@@ -126,9 +126,8 @@ public class GameController {
         if (!gamePaused) {
             if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 4);
             if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() - 4);
-            if (code == KeyCode.UP || code == KeyCode.W) {
-                if (player.getVelocityY() == 0 && player.getY() == 478)
-                    player.setVelocityY(player.getVelocityY() - 40);
+            if ((code == KeyCode.UP || code == KeyCode.W) && player.getVelocityY() == 0) {
+                player.setVelocityY(-35);
             }
         }
     }
@@ -182,7 +181,7 @@ public class GameController {
     private void gameLoop(long startNanoTime, long currentNanoTime) {
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         drawBackground(gc);
-        level.draw(startNanoTime, currentNanoTime);
+        level.tick(startNanoTime, currentNanoTime);
         player.tick(gc);
     }
 
