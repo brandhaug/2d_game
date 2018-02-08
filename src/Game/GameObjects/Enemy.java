@@ -1,5 +1,7 @@
 package Game.GameObjects;
 
+import javafx.scene.canvas.GraphicsContext;
+
 /**
  * Created by stgr99 on 07.02.2018.
  */
@@ -8,6 +10,11 @@ public class Enemy implements GameObject {
     private int y;
     private int velocityX;
     private int velocityY;
+    private GraphicsContext gc;
+
+    public Enemy(GraphicsContext gc) {
+        this.gc = gc;
+    }
 
     @Override
     public void setX(int x) {

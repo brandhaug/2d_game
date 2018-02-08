@@ -76,8 +76,8 @@ public class Tile implements GameObject {
         currentSpriteSheet = spriteSheet;
     }
 
-    public void tick() {
-        spriteSheet.draw(gc, x, y, 0, 1);
+    public void tick(int playerX) {
+        spriteSheet.draw(gc, x - playerX, y, 0, 1);
     }
 
     public Rectangle getBoundsBottom() {
