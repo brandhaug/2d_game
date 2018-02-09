@@ -1,6 +1,5 @@
 package Game;
 
-import Game.GameObjects.Coin;
 import Game.Levels.Beginner;
 import Game.GameObjects.Player;
 import javafx.animation.AnimationTimer;
@@ -148,30 +147,15 @@ public class GameController {
 
     @FXML
     public void initialize() {
-        musicButton.setVisible(false);
-        soundButton.setVisible(false);
-        mainMenuButton.setVisible(false);
-        pauseText.setVisible(false);
-        pauseInfoPane.setVisible(false);
-        pauseInfoPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7);");
-        pauseInfoPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        pauseSettingsPane.setVisible(false);
-        pauseSettingsPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
+        initializeGUI();
+        initializeBackground();
         gc = canvas.getGraphicsContext2D();
-        initialized = true;
-
-        try {
-            BufferedImage bufferedBackground = ImageIO.read(new File(getClass().getResource("/Resources/background/background.png").getPath()));
-            background = SwingFXUtils.toFXImage(bufferedBackground, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        level = new Beginner(gc);
-        player = new Player(gc);
-        collisionHandler = new CollisionHandler(player,level);
-
+        level = new Beginner();
+        player = new Player(200, 200);
+        collisionHandler = new CollisionHandler(player, level);
         final long startNanoTime = System.nanoTime();
+
+        initialized = true;
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
@@ -181,12 +165,37 @@ public class GameController {
     }
 
     private void gameLoop(long startNanoTime, long currentNanoTime) {
+        double time = (currentNanoTime - startNanoTime) / 1000000000.0;
+
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         drawBackground(gc);
-        level.tick(startNanoTime, currentNanoTime, player.getX());
-        level.drawCoins();
-        player.tick();
+        level.tick(gc, player.getVelocityX(), time);
+        player.tick(gc);
         collisionHandler.handleCollision();
+    }
+
+    private void initializeGUI() {
+        //TODO: Move to FXML
+        musicButton.setVisible(false);
+        soundButton.setVisible(false);
+        mainMenuButton.setVisible(false);
+        pauseText.setVisible(false);
+        pauseInfoPane.setVisible(false);
+        pauseInfoPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7);");
+        pauseInfoPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        pauseSettingsPane.setVisible(false);
+        pauseSettingsPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
+
+        initializeBackground();
+    }
+
+    private void initializeBackground() {
+        try {
+            BufferedImage bufferedBackground = ImageIO.read(new File(getClass().getResource("/Resources/background/background.png").getPath()));
+            background = SwingFXUtils.toFXImage(bufferedBackground, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void drawBackground(GraphicsContext gc) {

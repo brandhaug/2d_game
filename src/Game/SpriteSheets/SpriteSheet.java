@@ -16,8 +16,6 @@ public class SpriteSheet {
     private int cols;
     private int spriteWidth;
     private int spriteHeight;
-    private int x;
-    private int y;
 
     private Image[] sprites;
 
@@ -36,68 +34,12 @@ public class SpriteSheet {
         }
     }
 
-    public String getPathName() {
-        return pathName;
-    }
-
-    public void setPathName(String pathName) {
-        this.pathName = pathName;
-    }
-
-    public int getCols() {
-        return cols;
-    }
-
-    public void setCols(int cols) {
-        this.cols = cols;
-    }
-
     public int getSpriteWidth() {
         return spriteWidth;
     }
 
-    public void setSpriteWidth(int spriteWidth) {
-        this.spriteWidth = spriteWidth;
-    }
-
     public int getSpriteHeight() {
         return spriteHeight;
-    }
-
-    public void setSpriteHeight(int spriteHeight) {
-        this.spriteHeight = spriteHeight;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public Image[] getSprites() {
-        return sprites;
-    }
-
-    public void setSprites(Image[] sprites) {
-        this.sprites = sprites;
-    }
-
-    public int getCurrentColumnIndex() {
-        return currentColumnIndex;
-    }
-
-    public void setCurrentColumnIndex(int currentColumnIndex) {
-        this.currentColumnIndex = currentColumnIndex;
     }
 
     private void initializeSprites() throws IOException {
@@ -107,14 +49,18 @@ public class SpriteSheet {
             sprites[i] = SwingFXUtils.toFXImage(spriteSheet.getSubimage(i * spriteWidth, 0, spriteWidth, spriteHeight), null);
         }
     }
-    
+
     public void draw(GraphicsContext gc, int x, int y, int currentSpriteState, int lastSpriteState) {
         gc.drawImage(sprites[getNextColumnIndex(currentSpriteState, lastSpriteState)], x, y);
+        drawBounds(gc, x, y);
+    }
+
+    private void drawBounds(GraphicsContext gc, int x, int y) {
         gc.setStroke(Color.BLUE);
-        gc.strokeRect(x + 10, y + spriteHeight/2, spriteWidth - 20, spriteHeight/2); //Bottom
+        gc.strokeRect(x + 10, y + spriteHeight / 2, spriteWidth - 20, spriteHeight / 2); //Bottom
 
         gc.setStroke(Color.RED);
-        gc.strokeRect(x + 10, y, spriteWidth - 20, spriteHeight/2); //Top
+        gc.strokeRect(x + 10, y, spriteWidth - 20, spriteHeight / 2); //Top
 
         gc.setStroke(Color.GREEN);
         gc.strokeRect(x + spriteWidth - 5, y + 5, 5, spriteHeight - 10); //Right

@@ -1,5 +1,10 @@
 package Game.GameObjects;
 
+import Game.SpriteSheets.SpriteSheet;
+import javafx.scene.canvas.GraphicsContext;
+
+import java.awt.*;
+
 /**
  * Created by stgr99 on 07.02.2018.
  */
@@ -8,37 +13,93 @@ public abstract class GameObject {
     private int x;
     private int y;
     private int velocityX = 0;
-    private int velocityY = 5;
+    private int velocityY = 0;
 
-    void setX(int x) {
+    private SpriteSheet currentSpriteSheet;
+
+    private int currentSpriteState = 0;
+    private int lastSpriteState = 1;
+
+    public GameObject(int x, int y) {
         this.x = x;
-    }
-
-    int getX() {
-        return x;
-    }
-
-    void setY(int y) {
         this.y = y;
     }
 
-    int getY() {
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
         return y;
     }
 
-    void setVelocityX(int velocityX) {
-        this.velocityX = velocityX;
+    public void setY(int y) {
+        this.y = y;
     }
 
-    int getVelocityX() {
+    public int getVelocityX() {
         return velocityX;
     }
 
-    void setVelocityY(int velocityY) {
+    public void setVelocityX(int velocityX) {
+        this.velocityX = velocityX;
+    }
+
+    public int getVelocityY() {
+        return velocityY;
+    }
+
+    public void setVelocityY(int velocityY) {
         this.velocityY = velocityY;
     }
 
-    int getVelocityY() {
-        return velocityY;
+    public SpriteSheet getCurrentSpriteSheet() {
+        return currentSpriteSheet;
+    }
+
+    public void setCurrentSpriteSheet(SpriteSheet currentSpriteSheet) {
+        this.currentSpriteSheet = currentSpriteSheet;
+    }
+
+    public int getCurrentSpriteState() {
+        return currentSpriteState;
+    }
+
+    public void setCurrentSpriteState(int currentSpriteState) {
+        this.currentSpriteState = currentSpriteState;
+    }
+
+    public int getLastSpriteState() {
+        return lastSpriteState;
+    }
+
+    public void setLastSpriteState(int lastSpriteState) {
+        this.lastSpriteState = lastSpriteState;
+    }
+
+    public abstract void initializeSpriteSheets();
+
+    public Rectangle getBoundsBottom() {
+        return new Rectangle(x + 10, y + currentSpriteSheet.getSpriteHeight() / 2, currentSpriteSheet.getSpriteWidth() - 20, currentSpriteSheet.getSpriteHeight() / 2);
+    }
+
+    public Rectangle getBoundsTop() {
+        return new Rectangle(x + 10, y, currentSpriteSheet.getSpriteWidth() - 20, currentSpriteSheet.getSpriteHeight() / 2);
+    }
+
+    public Rectangle getBoundsRight() {
+        return new Rectangle(x + currentSpriteSheet.getSpriteWidth() - 5, y + 5, 5, currentSpriteSheet.getSpriteHeight() - 10);
+    }
+
+    public Rectangle getBoundsLeft() {
+        return new Rectangle(x, y + 5, 5, currentSpriteSheet.getSpriteHeight() - 10);
+    }
+
+    public void render(GraphicsContext gc) {
+        currentSpriteSheet.draw(gc, x, y, currentSpriteState, lastSpriteState);
     }
 }
