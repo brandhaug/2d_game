@@ -22,7 +22,6 @@ public class Beginner {
     public static List<Coin> coins;
     private final int tileCount = 30;
     private int playerX;
-    private Coin coin1;
     private Enemy mace1;
     private Enemy mace2;
     private Enemy saw1;
@@ -46,7 +45,6 @@ public class Beginner {
         this.coins = new ArrayList<>();
         addCoins();
 
-        coin1 = new Coin(gc);
         mace1 = new Enemy(gc);
         mace2 = new Enemy(gc);
         saw1 = new Enemy(gc);
@@ -124,5 +122,8 @@ public class Beginner {
 
     public List<Tile> getTiles() {
         return tiles;
+    }
+    public List<Coin> getCoins() {
+        return coins;
     }
 }
