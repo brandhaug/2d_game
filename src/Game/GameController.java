@@ -149,10 +149,13 @@ public class GameController {
     public void initialize() {
         initializeGUI();
         initializeBackground();
+
         gc = canvas.getGraphicsContext2D();
+
         level = new Beginner();
         player = new Player(200, 200);
         collisionHandler = new CollisionHandler(player, level);
+
         final long startNanoTime = System.nanoTime();
 
         initialized = true;

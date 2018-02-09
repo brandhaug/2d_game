@@ -93,4 +93,9 @@ public class Player extends GameObject {
         leftRunSpriteSheet = new SpriteSheet("/Resources/player/run_left.png", 18, 99, 77);
         jumpSpriteSheet = new SpriteSheet("/Resources/player/jump.png", 2, 83, 78);
     }
+
+    @Override
+    public void render(GraphicsContext gc) {
+        getCurrentSpriteSheet().draw(gc, START_POSITION, getY(), getCurrentSpriteState(), getLastSpriteState());
+    }
 }
