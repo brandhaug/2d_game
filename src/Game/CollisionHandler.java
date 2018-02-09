@@ -14,35 +14,39 @@ public class CollisionHandler {
         this.level = level;
     }
 
-    public void handleCollision() {
+    public void tick() {
+        handleTileCollision();
+    }
+
+    public void handleTileCollision() {
         player.setVelocityY(player.getVelocityY() + 2);
 
         for (Tile tile : level.getTiles()) {
             if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && player.getCurrentSpriteState() != Player.PLAYER_JUMPING) {
-                handleBottomCollision(tile.getY());
+                handleTileBottomCollision(tile.getY());
             }
 
             if (player.getBoundsTop().intersects(tile.getBoundsBottom())) {
-                handleTopCollision();
+                handleTileTopCollision();
             }
 
             if ((player.getBoundsLeft().intersects(tile.getBoundsRight()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT) ||
                     (player.getBoundsRight().intersects(tile.getBoundsLeft()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT)) {
-                handleSideCollision();
+                handleTileSideCollision();
             }
         }
     }
 
-    public void handleBottomCollision(int tileY) {
+    public void handleTileBottomCollision(int tileY) {
         player.setY(tileY - player.getCurrentSpriteSheet().getSpriteHeight() + 10);
         player.setVelocityY(0);
     }
 
-    public void handleTopCollision() {
+    public void handleTileTopCollision() {
         player.setVelocityY(0);
     }
 
-    public void handleSideCollision() {
+    public void handleTileSideCollision() {
         player.setVelocityX(0);
     }
 }

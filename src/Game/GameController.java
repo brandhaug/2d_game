@@ -174,7 +174,7 @@ public class GameController {
         drawBackground(gc);
         level.tick(gc, player.getVelocityX(), time);
         player.tick(gc);
-        collisionHandler.handleCollision();
+        collisionHandler.tick();
     }
 
     private void initializeGUI() {
