@@ -15,9 +15,11 @@ public class Beginner {
     private Image startingPointImage;
     private Image maceImage;
     private Image sawImage;
+    private Image coinImage;
     private long startNanoTime;
     private long currentNanoTime;
-    private List<Tile> tiles;
+    private static List<Tile> tiles;
+    public static List<Coin> coins;
     private final int tileCount = 30;
     private int playerX;
     private Coin coin1;
@@ -25,14 +27,24 @@ public class Beginner {
     private Enemy mace2;
     private Enemy saw1;
 
+    public int [][]coinArray = {
+            /*x*/{400,500,600},
+            /*y*/{400,350,400}
+
+
+    };
+
     public Beginner(GraphicsContext gc) {
         this.gc = gc;
         this.maceImage = new Image("Resources/enemies/Mace.png");
         this.sawImage = new Image("Resources/enemies/Mace.png");
         this.startingPointImage = new Image("/Resources/start.png");
+        this.coinImage= new Image("/Resources/coin/CoinAnimation3.png");
 
         this.tiles = new ArrayList<>();
         addTiles();
+        this.coins = new ArrayList<>();
+        addCoins();
 
         coin1 = new Coin(gc);
         mace1 = new Enemy(gc);
@@ -45,7 +57,6 @@ public class Beginner {
     private void draw() {
         drawStartingPoint();
         drawEnemies();
-        drawCoin();
     }
 
     private void drawStartingPoint() {
@@ -53,10 +64,6 @@ public class Beginner {
         gc.drawImage(startingPointImage, 405 - playerX, (int) (150 + 25 * Math.sin(t)));
     }
 
-    private void drawCoin() {
-        double t = (currentNanoTime - startNanoTime) / 1000000000.0;
-        coin1.setY((int) (300 + 128 * Math.sin(t)));
-    }
 
     private void drawEnemies() {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
@@ -72,6 +79,20 @@ public class Beginner {
         saw1.setX(2000 - playerX);
         saw1.setY((int) (300 + 128 * Math.sin(t)));
         gc.drawImage(sawImage, saw1.getX(), saw1.getY());
+    }
+
+    private void addCoins(){
+        if(coinArray[0].length == coinArray[1].length) {
+            for (int i = 0; i < coinArray[0].length; i++) {
+                coins.add(new Coin(gc, coinArray[0][i], coinArray[1][i]));
+            }
+        }
+    }
+
+    public void drawCoins(){
+        for (Coin coin : coins){
+            coin.draw(gc,playerX);
+        }
     }
 
     private void addTiles() {

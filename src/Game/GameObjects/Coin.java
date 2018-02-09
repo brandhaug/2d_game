@@ -10,27 +10,52 @@ public class Coin extends GameObject {
     private int velocityY;
 
     private SpriteSheet coinSpriteSheet;
+    private GraphicsContext gc;
+
 
     private final String coinRotatePath = "/Resources/coin/CoinAnimation3.png";
     private final int coinSpriteWidth = 64;
     private final int coinSpriteHeight = 64;
     private final int coinSpriteSheetCols = 16;
 
-    private int currentSpriteState = 2;
-    private int lastSpriteState = 16;
+    //private int currentSpriteState;
+    //private int lastSpriteState;
 
+
+    public Coin(GraphicsContext gc, int x, int y) {
+        initializeSpriteSheets();
+        this.gc = gc;
+        this.x = x;
+        this.y = y;
+    }
 
     public Coin(GraphicsContext gc) {
         initializeSpriteSheets();
+        this.gc = gc;
+        this.x = x;
+        this.y = y;
+    }
+
+    public void draw(GraphicsContext gc, int playerX) {
+        coinSpriteSheet.draw(gc, x - playerX, y,0,0);
+    }
+
+    /*
+    public void draw(GraphicsContext gc, int c[][]) {
+        for(int i=0;i<c.length;i++){
+                coinSpriteSheet.draw(gc, c[0][i], c[1][i],0,0);
+            }
+    }
+    */
+
+    public void delete(int ca[][]){
+
     }
 
 
-    public void draw(GraphicsContext gc) {
-        coinSpriteSheet.draw(gc, 200, 300, 1, 1);
-    }
 
 
-    @Override
+        @Override
     public void setX(int x) {
         this.x = x;
     }

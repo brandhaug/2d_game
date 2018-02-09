@@ -1,5 +1,6 @@
 package Game;
 
+import Game.GameObjects.Coin;
 import Game.Levels.Beginner;
 import Game.GameObjects.Player;
 import javafx.animation.AnimationTimer;
@@ -168,7 +169,7 @@ public class GameController {
 
         level = new Beginner(gc);
         player = new Player(gc);
-        collisionHandler = new CollisionHandler(player, level);
+        collisionHandler = new CollisionHandler(player,level);
 
         final long startNanoTime = System.nanoTime();
 
@@ -183,6 +184,7 @@ public class GameController {
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         drawBackground(gc);
         level.tick(startNanoTime, currentNanoTime, player.getX());
+        level.drawCoins();
         player.tick();
         collisionHandler.handleCollision();
     }
