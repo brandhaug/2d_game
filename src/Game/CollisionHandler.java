@@ -21,7 +21,7 @@ public class CollisionHandler {
         player.setVelocityY(player.getVelocityY() + 2);
 
         for (Tile tile : level.getTiles()) {
-            if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && player.getCurrentSpriteState() != Player.PLAYER_JUMPING) {
+            if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && player.getCurrentSpriteState() != Player.PLAYER_JUMPING_RIGHT && player.getCurrentSpriteState() != Player.PLAYER_JUMPING_LEFT) {
                 handleTileBottomCollision(tile.getY());
             }
 

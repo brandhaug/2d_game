@@ -5,9 +5,6 @@ import javafx.scene.canvas.GraphicsContext;
 
 import java.awt.*;
 
-/**
- * Created by stgr99 on 07.02.2018.
- */
 public abstract class GameObject {
 
     private int x;
