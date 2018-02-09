@@ -110,17 +110,17 @@ public class SpriteSheet {
     
     public void draw(GraphicsContext gc, int x, int y, int currentSpriteState, int lastSpriteState) {
         gc.drawImage(sprites[getNextColumnIndex(currentSpriteState, lastSpriteState)], x, y);
-//        gc.setStroke(Color.BLUE);
-//        gc.strokeRect(x + 10, y + spriteHeight/2, spriteWidth - 20, spriteHeight/2); //Bottom
-//
-//        gc.setStroke(Color.RED);
-//        gc.strokeRect(x + 10, y, spriteWidth - 20, spriteHeight/2); //Top
-//
-//        gc.setStroke(Color.GREEN);
-//        gc.strokeRect(x + spriteWidth - 5, y + 5, 5, spriteHeight - 10); //Right
-//
-//        gc.setStroke(Color.YELLOW);
-//        gc.strokeRect(x, y + 5, 5, spriteHeight - 10); //Left
+        gc.setStroke(Color.BLUE);
+        gc.strokeRect(x + 10, y + spriteHeight/2, spriteWidth - 20, spriteHeight/2); //Bottom
+
+        gc.setStroke(Color.RED);
+        gc.strokeRect(x + 10, y, spriteWidth - 20, spriteHeight/2); //Top
+
+        gc.setStroke(Color.GREEN);
+        gc.strokeRect(x + spriteWidth - 5, y + 5, 5, spriteHeight - 10); //Right
+
+        gc.setStroke(Color.YELLOW);
+        gc.strokeRect(x, y + 5, 5, spriteHeight - 10); //Left
     }
 
     private int getNextColumnIndex(int currentSpriteState, int lastSpriteState) {

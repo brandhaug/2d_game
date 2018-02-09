@@ -7,7 +7,7 @@ import javafx.scene.image.Image;
 
 import java.awt.*;
 
-public class Tile implements GameObject {
+public class Tile extends GameObject {
 
     private TileType tileType;
     private int x;

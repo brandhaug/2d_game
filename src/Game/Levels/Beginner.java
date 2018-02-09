@@ -86,6 +86,8 @@ public class Beginner {
                 tiles.add(new Tile(gc, TileType.GRASS_MID, x, GameController.CANVAS_HEIGHT - GameController.TILE_SIZE));
             }
         }
+
+        tiles.add(new Tile(gc, TileType.GRASS_MID, 500 + 200 - playerX, 400));
     }
 
     public void tick(long startNanoTime, long currentNanoTime, int playerX) {

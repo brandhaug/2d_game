@@ -6,7 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 
 import java.awt.*;
 
-public class Player implements GameObject {
+public class Player extends GameObject {
 
     private GraphicsContext gc;
 

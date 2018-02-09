@@ -3,7 +3,7 @@ package Game.GameObjects;
 import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
 
-public class Coin implements GameObject {
+public class Coin extends GameObject {
     private int x;
     private int y;
     private int velocityX;
@@ -26,13 +26,11 @@ public class Coin implements GameObject {
 
 
     public void draw(GraphicsContext gc) {
-        coinSpriteSheet.draw(gc, 200, 300,1,1);
+        coinSpriteSheet.draw(gc, 200, 300, 1, 1);
     }
 
 
-
-
-        @Override
+    @Override
     public void setX(int x) {
         this.x = x;
     }

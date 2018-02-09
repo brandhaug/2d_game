@@ -3,21 +3,42 @@ package Game.GameObjects;
 /**
  * Created by stgr99 on 07.02.2018.
  */
-public interface GameObject {
+public abstract class GameObject {
 
-    void setX(int x);
+    private int x;
+    private int y;
+    private int velocityX = 0;
+    private int velocityY = 5;
 
-    int getX();
+    void setX(int x) {
+        this.x = x;
+    }
 
-    void setY(int y);
+    int getX() {
+        return x;
+    }
 
-    int getY();
+    void setY(int y) {
+        this.y = y;
+    }
 
-    void setVelocityX(int velocityX);
+    int getY() {
+        return y;
+    }
 
-    int getVelocityX();
+    void setVelocityX(int velocityX) {
+        this.velocityX = velocityX;
+    }
 
-    void setVelocityY(int velocityY);
+    int getVelocityX() {
+        return velocityX;
+    }
 
-    int getVelocityY();
+    void setVelocityY(int velocityY) {
+        this.velocityY = velocityY;
+    }
+
+    int getVelocityY() {
+        return velocityY;
+    }
 }

@@ -5,7 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 /**
  * Created by stgr99 on 07.02.2018.
  */
-public class Enemy implements GameObject {
+public class Enemy extends GameObject {
     private int x;
     private int y;
     private int velocityX;
