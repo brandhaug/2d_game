@@ -17,7 +17,7 @@ public class Beginner {
     private Image sawImage;
     private long startNanoTime;
     private long currentNanoTime;
-    private static List<Tile> tiles;
+    private List<Tile> tiles;
     private final int tileCount = 30;
     private int playerX;
     private Coin coin1;
@@ -49,7 +49,8 @@ public class Beginner {
     }
 
     private void drawStartingPoint() {
-
+        double t = (currentNanoTime - startNanoTime) / 1000000000.0;
+        gc.drawImage(startingPointImage, 405 - playerX, (int) (150 + 25 * Math.sin(t)));
     }
 
     private void drawCoin() {
@@ -59,8 +60,6 @@ public class Beginner {
 
     private void drawEnemies() {
         double t = (currentNanoTime - startNanoTime) / 1000000000.0;
-
-        gc.drawImage(startingPointImage, 405 - playerX, (int) (150 + 25 * Math.sin(t)));
 
         mace1.setX((int) (1100 + (128 * Math.cos(t)) - playerX));
         mace1.setY((int) (300 + 128 * Math.sin(t)));
@@ -100,7 +99,7 @@ public class Beginner {
         }
     }
 
-    public static List<Tile> getTiles() {
+    public List<Tile> getTiles() {
         return tiles;
     }
 }

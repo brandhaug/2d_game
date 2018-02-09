@@ -19,11 +19,11 @@ public class Player implements GameObject {
     private final int START_POSITION = 200;
 
     // States
-    private int PLAYER_IDLING = 0;
-    private int PLAYER_RUNNING_RIGHT = 1;
-    private int PLAYER_RUNNING_LEFT = 2;
-    private int PLAYER_JUMPING = 3;
-    private int PLAYER_FALLING = 4;
+    public final static int PLAYER_IDLING = 0;
+    public final static int PLAYER_RUNNING_RIGHT = 1;
+    public final static int PLAYER_RUNNING_LEFT = 2;
+    public final static int PLAYER_JUMPING = 3;
+    public final static int PLAYER_FALLING = 4;
 
     private int currentSpriteState = 0;
     private int lastSpriteState = 0;
@@ -88,10 +88,17 @@ public class Player implements GameObject {
         return START_POSITION;
     }
 
+    public int getCurrentSpriteState() {
+        return currentSpriteState;
+    }
+
+    public SpriteSheet getCurrentSpriteSheet() {
+        return currentSpriteSheet;
+    }
+
     public void tick() {
         lastSpriteState = currentSpriteState;
         setCurrentSpriteState();
-        handleCollision();
         handleVelocityX();
         handleVelocityY();
         render(gc);
@@ -159,38 +166,6 @@ public class Player implements GameObject {
 
     public Rectangle getBoundsLeft() {
         return new Rectangle(x, y + 5, 5, currentSpriteSheet.getSpriteHeight() - 10);
-    }
-
-    public void handleCollision() {
-        velocityY += 2;
-
-        for (Tile tile : Beginner.getTiles()) {
-            if (this.getBoundsBottom().intersects(tile.getBoundsTop()) && currentSpriteState != PLAYER_JUMPING) {
-                handleBottomCollision(tile.getY());
-            }
-
-            if (this.getBoundsTop().intersects(tile.getBoundsBottom())) {
-                handleTopCollision();
-            }
-
-            if ((this.getBoundsLeft().intersects(tile.getBoundsRight()) && currentSpriteState == PLAYER_RUNNING_LEFT) ||
-                    (this.getBoundsRight().intersects(tile.getBoundsLeft()) && currentSpriteState == PLAYER_RUNNING_RIGHT)) {
-                handleSideCollision();
-            }
-        }
-    }
-
-    public void handleBottomCollision(int tileY) {
-        y = tileY - this.currentSpriteSheet.getSpriteHeight() + 10;
-        velocityY = 0;
-    }
-
-    public void handleTopCollision() {
-        velocityY = 0;
-    }
-
-    public void handleSideCollision() {
-        velocityX = 0;
     }
 
     private void render(GraphicsContext gc) {

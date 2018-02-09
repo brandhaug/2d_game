@@ -35,6 +35,7 @@ public class GameController {
 
     private Beginner level;
     private Player player;
+    private CollisionHandler collisionHandler;
     private Preferences preferences = Preferences.userRoot();
 
     private Image background;
@@ -167,6 +168,7 @@ public class GameController {
 
         level = new Beginner(gc);
         player = new Player(gc);
+        collisionHandler = new CollisionHandler(player, level);
 
         final long startNanoTime = System.nanoTime();
 
@@ -182,6 +184,7 @@ public class GameController {
         drawBackground(gc);
         level.tick(startNanoTime, currentNanoTime, player.getX());
         player.tick();
+        collisionHandler.handleCollision();
     }
 
     private void drawBackground(GraphicsContext gc) {
