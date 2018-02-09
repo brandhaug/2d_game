@@ -1,6 +1,5 @@
 package Game;
 
-
 import Game.GameObjects.Player;
 import Game.GameObjects.Tile;
 import Game.Levels.Beginner;

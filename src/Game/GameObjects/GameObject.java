@@ -45,8 +45,16 @@ public abstract class GameObject {
         return velocityX;
     }
 
-    public void setVelocityX(int velocityX) {
-        this.velocityX = velocityX;
+    public void setVelocityX(int inputVelocityX) {
+        int MAX_VELOCITY_X = 12;
+
+        if (inputVelocityX >= MAX_VELOCITY_X) {
+            velocityX = MAX_VELOCITY_X;
+        } else if (inputVelocityX <= MAX_VELOCITY_X * -1) {
+            velocityX = MAX_VELOCITY_X * -1;
+        } else {
+            velocityX = inputVelocityX;
+        }
     }
 
     public int getVelocityY() {

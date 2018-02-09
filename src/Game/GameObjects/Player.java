@@ -48,15 +48,7 @@ public class Player extends GameObject {
     }
 
     private void handleVelocityX() {
-        int MAX_VELOCITY_X = 12;
-
-        if (getVelocityX() >= MAX_VELOCITY_X) {
-            setX(getX() + MAX_VELOCITY_X);
-        } else if (getVelocityX() <= MAX_VELOCITY_X * -1) {
-            setX(getX() - MAX_VELOCITY_X);
-        } else {
-            setX(getX() + getVelocityX());
-        }
+        setX(getX() + getVelocityX());
     }
 
     private void handleVelocityY() {
@@ -100,21 +92,22 @@ public class Player extends GameObject {
     public void render(GraphicsContext gc) {
         getCurrentSpriteSheet().draw(gc, START_POSITION, getY(), getCurrentSpriteState(), getLastSpriteState());
     }
-    
+
     @Override
     public Rectangle getBoundsBottom() {
         return new Rectangle(START_POSITION + 10, getY() + getCurrentSpriteSheet().getSpriteHeight() / 2, getCurrentSpriteSheet().getSpriteWidth() - 20, getCurrentSpriteSheet().getSpriteHeight() / 2);
     }
-    
+
     @Override
     public Rectangle getBoundsTop() {
         return new Rectangle(START_POSITION + 10, getY(), getCurrentSpriteSheet().getSpriteWidth() - 20, getCurrentSpriteSheet().getSpriteHeight() / 2);
     }
-    
+
     @Override
     public Rectangle getBoundsRight() {
         return new Rectangle(START_POSITION + getCurrentSpriteSheet().getSpriteWidth() - 5, getY() + 5, 5, getCurrentSpriteSheet().getSpriteHeight() - 10);
     }
+
     @Override
     public Rectangle getBoundsLeft() {
         return new Rectangle(START_POSITION, getY() + 5, 5, getCurrentSpriteSheet().getSpriteHeight() - 10);

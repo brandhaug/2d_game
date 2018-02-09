@@ -17,15 +17,15 @@ public class Beginner extends Level {
     }
 
 
-    public void tick(GraphicsContext gc, int playerX, double time) {
-        render(gc, playerX, time);
+    public void tick(GraphicsContext gc, int playerVelocityX, double time) {
+        render(gc, playerVelocityX, time);
     }
 
-    private void render(GraphicsContext gc, int playerX, double time) {
-        renderStartingPoint(gc, playerX);
-        renderTiles(gc, playerX);
-        renderCoins(gc, playerX, time);
-        renderEnemies(gc, playerX, time);
+    private void render(GraphicsContext gc, int playerVelocityX, double time) {
+        renderStartingPoint(gc, playerVelocityX);
+        renderTiles(gc, playerVelocityX);
+        renderCoins(gc, playerVelocityX, time);
+        renderEnemies(gc, playerVelocityX, time);
     }
     
     private void addTiles() {
@@ -52,27 +52,27 @@ public class Beginner extends Level {
         getEnemies().add(new Enemy(800, 500));
     }
     
-    private void renderStartingPoint(GraphicsContext gc, int playerX) {
-        gc.drawImage(startingPointImage, 405 - playerX, 400);
+    private void renderStartingPoint(GraphicsContext gc, int playerVelocityX) {
+//        gc.drawImage(startingPointImage, 405 - playerVelocityX, 400);
     }
 
-    private void renderTiles(GraphicsContext gc, int playerX) {
+    private void renderTiles(GraphicsContext gc, int playerVelocityX) {
         for (Tile tile : getTiles()) {
-            tile.setX(tile.getX() - playerX);
+            tile.setX(tile.getX() - playerVelocityX);
             tile.render(gc);
         }
     }
 
-    private void renderCoins(GraphicsContext gc, int playerX, double time) {
+    private void renderCoins(GraphicsContext gc, int playerVelocityX, double time) {
         for (Coin coin : getCoins()) {
-            coin.setX((int) (300 + 128 * Math.sin(time)) - playerX);
+            coin.setX(coin.getX() - playerVelocityX);
             coin.render(gc);
         }
     }
 
-    private void renderEnemies(GraphicsContext gc, int playerX, double time) {
+    private void renderEnemies(GraphicsContext gc, int playerVelocityX, double time) {
         for (Enemy enemy : getEnemies()) {
-            enemy.setX((int) (1100 + (128 * Math.cos(time))) - playerX);
+            enemy.setX(enemy.getX() - playerVelocityX);
             enemy.setY((int) (300 + 128 * Math.sin(time)));
             enemy.render(gc);
         }
