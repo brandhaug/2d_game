@@ -59,14 +59,14 @@ public class Beginner extends Level {
     private void renderTiles(GraphicsContext gc, int playerVelocityX) {
         for (Tile tile : getTiles()) {
             tile.setX(tile.getX() - playerVelocityX);
-            tile.render(gc);
+            tile.tick(gc);
         }
     }
 
     private void renderCoins(GraphicsContext gc, int playerVelocityX, double time) {
         for (Coin coin : getCoins()) {
             coin.setX(coin.getX() - playerVelocityX);
-            coin.render(gc);
+            coin.tick(gc);
         }
     }
 
@@ -74,7 +74,7 @@ public class Beginner extends Level {
         for (Enemy enemy : getEnemies()) {
             enemy.setX(enemy.getX() - playerVelocityX);
             enemy.setY((int) (300 + 128 * Math.sin(time)));
-            enemy.render(gc);
+            enemy.tick(gc);
         }
     }
 }

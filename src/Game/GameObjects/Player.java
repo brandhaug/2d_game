@@ -67,7 +67,8 @@ public class Player extends GameObject {
         }
     }
 
-    private void handleSpriteState() {
+    @Override
+    public void handleSpriteState() {
         setLastSpriteState(getCurrentSpriteState());
 
         if (getVelocityY() < 0 && getVelocityX() > 0 || getVelocityY() < 0 && getVelocityX() == 0) {

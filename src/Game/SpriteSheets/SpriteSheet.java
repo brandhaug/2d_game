@@ -69,6 +69,7 @@ public class SpriteSheet {
         gc.strokeRect(x, y + 5, 5, spriteHeight - 10); //Left
     }
 
+    //TODO: Make method more effective
     private int getNextColumnIndex(int currentSpriteState, int lastSpriteState) {
         if (currentSpriteState != lastSpriteState || currentColumnIndex == cols - 1 || cols == 1) {
             currentColumnIndex = 0;

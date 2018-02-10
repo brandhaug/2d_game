@@ -15,11 +15,16 @@ public abstract class GameObject {
     private SpriteSheet currentSpriteSheet;
 
     private int currentSpriteState = 0;
-    private int lastSpriteState = 1;
+    private int lastSpriteState = 0;
 
     public GameObject(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public void tick(GraphicsContext gc) {
+        handleSpriteState();
+        render(gc);
     }
 
     public int getX() {
@@ -102,6 +107,10 @@ public abstract class GameObject {
 
     public Rectangle getBoundsLeft() {
         return new Rectangle(x, y + 5, 5, currentSpriteSheet.getSpriteHeight() - 10);
+    }
+
+    public void handleSpriteState(){
+        setLastSpriteState(currentSpriteState);
     }
 
     public void render(GraphicsContext gc) {
