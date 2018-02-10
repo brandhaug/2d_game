@@ -70,7 +70,7 @@ public class SpriteSheet {
     }
 
     private int getNextColumnIndex(int currentSpriteState, int lastSpriteState) {
-        if (currentSpriteState != lastSpriteState || currentColumnIndex == cols - 1) {
+        if (currentSpriteState != lastSpriteState || currentColumnIndex == cols - 1 || cols == 1) {
             currentColumnIndex = 0;
         }
 
