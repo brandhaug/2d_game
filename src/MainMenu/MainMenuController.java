@@ -19,6 +19,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import javax.sound.sampled.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.prefs.Preferences;
 
@@ -46,6 +48,10 @@ public class MainMenuController {
     private Button musicButton;
 
     private Preferences preferences = Preferences.userRoot();
+
+    private Clip musicClip;
+    private AudioInputStream musicStream;
+
     private boolean initialized = false;
 
     @FXML
@@ -66,6 +72,7 @@ public class MainMenuController {
             Parent root = FXMLLoader.load(getClass().getResource("../Game/Game.fxml"));
             root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
             stage.setScene(new Scene(root));
+            musicClip.stop();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,7 +112,7 @@ public class MainMenuController {
     }
 
     @FXML
-    protected void toggleMusic() {
+    protected void toggleMusic() throws IOException, LineUnavailableException, UnsupportedAudioFileException {
         boolean musicOn = preferences.getBoolean("music", true);
 
         if (initialized) {
@@ -115,8 +122,10 @@ public class MainMenuController {
 
         if (musicOn) {
             musicButton.setStyle("-fx-graphic: 'Resources/buttons/music_on.png'");
+            musicClip.start();
         } else {
             musicButton.setStyle("-fx-graphic: 'Resources/buttons/music_off.png'");
+            musicClip.stop();
         }
     }
 
@@ -124,8 +133,14 @@ public class MainMenuController {
     public void initialize() {
         mapsPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.3);");
         mapsPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        toggleSound();
-        toggleMusic();
+        try {
+            initializeMusic();
+            toggleMusic();
+            toggleSound();
+        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+        
         map1.setOnMouseEntered(event -> map1.setImage(new Image("Resources/background/map1.gif")));
         map1.setOnMouseExited(event -> map1.setImage(new Image("Resources/background/map1_still_image.png")));
         map2.setOnMouseEntered(event -> map2.setImage(new Image("Resources/background/map1.gif")));
@@ -137,4 +152,17 @@ public class MainMenuController {
         initialized = true;
     }
 
+
+    /*
+    Create an AudioInputStream from a given sound file
+    Acquire music format and create a DataLine.Infoobject
+    Obtain the Clip
+    Open the AudioInputStream and start playing
+     */
+    public void initializeMusic() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+        musicStream = AudioSystem.getAudioInputStream(new File(getClass().getResource("/Resources/music/main_song.wav").getPath()));
+        musicClip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, musicStream.getFormat()));
+        musicClip.open(musicStream);
+        musicClip.start();
+    }
 }
