@@ -153,11 +153,15 @@ public class MainMenuController {
     }
 
 
-    /*
-    Create an AudioInputStream from a given sound file
-    Acquire music format and create a DataLine.Infoobject
-    Obtain the Clip
-    Open the AudioInputStream and start playing
+    /**
+     * Create an AudioInputStream from a given sound file
+     * Acquire music format and create a DataLine.Infoobject
+     * Obtain the Clip
+     * Open the AudioInputStream and start playing
+     *
+     * @throws IOException
+     * @throws UnsupportedAudioFileException
+     * @throws LineUnavailableException
      */
     public void initializeMusic() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         musicStream = AudioSystem.getAudioInputStream(new File(getClass().getResource("/Resources/music/main_song.wav").getPath()));
