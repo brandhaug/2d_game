@@ -19,4 +19,8 @@ public class Tile extends GameObject {
         spriteSheet = new SpriteSheet("/Resources/tiles/" + tileType.getFileName() + ".png", tileType.getCols(), SIZE, SIZE);
         setCurrentSpriteSheet(spriteSheet);
     }
+
+    public int getSize(){
+        return SIZE;
+    }
 }

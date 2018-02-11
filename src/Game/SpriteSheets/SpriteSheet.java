@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

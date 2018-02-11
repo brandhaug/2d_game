@@ -25,8 +25,8 @@ public class CollisionHandler {
                 handleTileBottomCollision(tile.getY());
             }
 
-            if (player.getBoundsTop().intersects(tile.getBoundsBottom())) {
-                handleTileTopCollision();
+            if (player.getBoundsTop().intersects(tile.getBoundsBottom()) && player.getCurrentSpriteState() != Player.PLAYER_FALLING_LEFT && player.getCurrentSpriteState() != Player.PLAYER_FALLING_RIGHT) {
+                handleTileTopCollision(tile.getY(), tile.getSize());
             }
 
             if ((player.getBoundsLeft().intersects(tile.getBoundsRight())) || (player.getBoundsRight().intersects(tile.getBoundsLeft()))) {
@@ -40,8 +40,9 @@ public class CollisionHandler {
         player.setVelocityY(0);
     }
 
-    public void handleTileTopCollision() {
-        player.setVelocityY(0);
+    public void handleTileTopCollision(int tileY, int tileHeight) {
+        player.setY(tileY + tileHeight);
+        player.setVelocityY(1);
     }
 
     public void handleTileSideCollision() {
