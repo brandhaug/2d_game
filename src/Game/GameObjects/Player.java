@@ -29,6 +29,8 @@ public class Player extends GameObject {
     private SpriteSheet jumpRightSpriteSheet;
     private SpriteSheet fallRightSpriteSheet;
 
+    private boolean lastSpriteRight = true;
+
     public Player(int x, int y) {
         super(x, y);
         initializeSpriteSheets();
@@ -71,27 +73,40 @@ public class Player extends GameObject {
     public void handleSpriteState() {
         setLastSpriteState(getCurrentSpriteState());
 
-        if (getVelocityY() < 0 && getVelocityX() > 0 || getVelocityY() < 0 && getVelocityX() == 0) {
+        if (getVelocityX() == 0 && getVelocityY() == 0) {
+            if (lastSpriteRight) {
+                lastSpriteRight = true;
+                setCurrentSpriteState(PLAYER_IDLING_RIGHT);
+                setCurrentSpriteSheet(idleRightSpriteSheet);
+            } else {
+                lastSpriteRight = false;
+                setCurrentSpriteState(PLAYER_IDLING_LEFT);
+                setCurrentSpriteSheet(idleLeftSpriteSheet);
+            }
+        } else if (getVelocityY() < 0 && (getVelocityX() > 0 || getVelocityX() == 0 && lastSpriteRight)) {
+            lastSpriteRight = true;
             setCurrentSpriteState(PLAYER_JUMPING_RIGHT);
             setCurrentSpriteSheet(jumpRightSpriteSheet);
-        } else if (getVelocityY() < 0 && getVelocityX() < 0) {
+        } else if (getVelocityY() < 0 && getVelocityX() <= 0) {
+            lastSpriteRight = false;
             setCurrentSpriteState(PLAYER_JUMPING_LEFT);
             setCurrentSpriteSheet(jumpLeftSpriteSheet);
-        }  else if (getVelocityY() > 0 && getVelocityX() > 0 || getVelocityY() > 0 && getVelocityX() == 0) {
+        } else if (getVelocityY() > 0 && (getVelocityX() > 0 || getVelocityX() == 0 && lastSpriteRight)) {
+            lastSpriteRight = true;
             setCurrentSpriteState(PLAYER_FALLING_RIGHT);
             setCurrentSpriteSheet(fallRightSpriteSheet);
-        } else if (getVelocityY() > 0 && getVelocityX() < 0) {
+        } else if (getVelocityY() > 0 && getVelocityX() <= 0) {
+            lastSpriteRight = false;
             setCurrentSpriteState(PLAYER_FALLING_LEFT);
             setCurrentSpriteSheet(fallLeftSpriteSheet);
         } else if (getVelocityX() > 0) {
+            lastSpriteRight = true;
             setCurrentSpriteState(PLAYER_RUNNING_RIGHT);
             setCurrentSpriteSheet(runRightSpriteSheet);
         } else if (getVelocityX() < 0) {
+            lastSpriteRight = false;
             setCurrentSpriteState(PLAYER_RUNNING_LEFT);
             setCurrentSpriteSheet(runLeftSpriteSheet);
-        } else {
-            setCurrentSpriteState(PLAYER_IDLING_RIGHT);
-            setCurrentSpriteSheet(idleRightSpriteSheet);
         }
     }
 

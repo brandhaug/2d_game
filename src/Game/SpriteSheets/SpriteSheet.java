@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class SpriteSheet {
-    private String pathName;
     private int cols;
     private int spriteWidth;
     private int spriteHeight;
@@ -22,13 +21,12 @@ public class SpriteSheet {
     private int currentColumnIndex = 0;
 
     public SpriteSheet(String pathName, int cols, int spriteWidth, int spriteHeight) {
-        this.pathName = pathName;
         this.cols = cols;
         this.spriteWidth = spriteWidth;
         this.spriteHeight = spriteHeight;
 
         try {
-            initializeSprites();
+            initializeSprites(pathName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,7 +40,7 @@ public class SpriteSheet {
         return spriteHeight;
     }
 
-    private void initializeSprites() throws IOException {
+    private void initializeSprites(String pathName) throws IOException {
         BufferedImage spriteSheet = ImageIO.read(new File(getClass().getResource(pathName).getPath()));
         sprites = new Image[cols];
         for (int i = 0; i < cols; i++) {

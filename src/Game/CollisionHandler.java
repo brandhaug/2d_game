@@ -29,8 +29,7 @@ public class CollisionHandler {
                 handleTileTopCollision();
             }
 
-            if ((player.getBoundsLeft().intersects(tile.getBoundsRight()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT) ||
-                    (player.getBoundsRight().intersects(tile.getBoundsLeft()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT)) {
+            if ((player.getBoundsLeft().intersects(tile.getBoundsRight())) || (player.getBoundsRight().intersects(tile.getBoundsLeft()))) {
                 handleTileSideCollision();
             }
         }
