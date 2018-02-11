@@ -60,10 +60,11 @@ public class Player extends GameObject {
     }
 
     private void handleVelocityY() {
-        int MAX_VELOCITY_Y = 20;
+        int MAX_VELOCITY_Y = 15;
 
         if (getVelocityY() >= MAX_VELOCITY_Y) {
             setY(getY() + MAX_VELOCITY_Y);
+
         } else {
             setY(getY() + getVelocityY());
         }

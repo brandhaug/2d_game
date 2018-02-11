@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.prefs.Preferences;
 
@@ -149,6 +150,15 @@ public class GameController {
     public void initialize() {
         initializeGUI();
         initializeBackground();
+
+        MapReader mapReader = new MapReader();
+
+
+        try {
+            mapReader.loadMap("beginner");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         gc = canvas.getGraphicsContext2D();
 
