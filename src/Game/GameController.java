@@ -186,14 +186,8 @@ public class GameController {
 
     private void initializeGUI() {
         //TODO: Move to FXML
-        musicButton.setVisible(false);
-        soundButton.setVisible(false);
-        mainMenuButton.setVisible(false);
-        pauseText.setVisible(false);
-        pauseInfoPane.setVisible(false);
         pauseInfoPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7);");
         pauseInfoPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        pauseSettingsPane.setVisible(false);
         pauseSettingsPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
 
         initializeBackground();
