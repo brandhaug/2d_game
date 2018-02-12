@@ -30,6 +30,8 @@ public class Player extends GameObject {
     private SpriteSheet fallRightSpriteSheet;
 
     private boolean lastSpriteRight = true;
+    private boolean rightCollision = false;
+    private boolean leftCollision = false;
 
     public Player(int x, int y) {
         super(x, y);
@@ -51,7 +53,6 @@ public class Player extends GameObject {
     public void tick(GraphicsContext gc) {
         handleVelocityX();
         handleVelocityY();
-        //handleSpriteState(); -- Gets handled in game-controller
         render(gc);
     }
 
@@ -60,11 +61,13 @@ public class Player extends GameObject {
     }
 
     private void handleVelocityY() {
-        int MAX_VELOCITY_Y = 15;
+        int MAX_VELOCITY_FALLING = 13;
+        int MAX_VELOCITY_JUMPING = -35;
 
-        if (getVelocityY() >= MAX_VELOCITY_Y) {
-            setY(getY() + MAX_VELOCITY_Y);
-
+        if (getVelocityY() >= MAX_VELOCITY_FALLING) {
+            setY(getY() + MAX_VELOCITY_FALLING);
+        } else if (getY() <= MAX_VELOCITY_JUMPING) {
+            setY(getY() + MAX_VELOCITY_JUMPING);
         } else {
             setY(getY() + getVelocityY());
         }
@@ -74,7 +77,7 @@ public class Player extends GameObject {
     public void handleSpriteState() {
         setLastSpriteState(getCurrentSpriteState());
 
-        if (getVelocityX() == 0 && getVelocityY() == 0) {
+        if (getVelocityX() == 0 && getVelocityY() == 0 && (!leftCollision && !rightCollision)) {
             if (lastSpriteRight) {
                 lastSpriteRight = true;
                 setCurrentSpriteState(PLAYER_IDLING_RIGHT);
@@ -100,11 +103,11 @@ public class Player extends GameObject {
             lastSpriteRight = false;
             setCurrentSpriteState(PLAYER_FALLING_LEFT);
             setCurrentSpriteSheet(fallLeftSpriteSheet);
-        } else if (getVelocityX() > 0) {
+        } else if (getVelocityX() > 0 || rightCollision) {
             lastSpriteRight = true;
             setCurrentSpriteState(PLAYER_RUNNING_RIGHT);
             setCurrentSpriteSheet(runRightSpriteSheet);
-        } else if (getVelocityX() < 0) {
+        } else if (getVelocityX() < 0 || leftCollision) {
             lastSpriteRight = false;
             setCurrentSpriteState(PLAYER_RUNNING_LEFT);
             setCurrentSpriteSheet(runLeftSpriteSheet);
@@ -146,5 +149,13 @@ public class Player extends GameObject {
     @Override
     public Rectangle getBoundsLeft() {
         return new Rectangle(START_POSITION, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
+    }
+
+    public void setRightCollision(boolean rightCollision) {
+        this.rightCollision = rightCollision;
+    }
+
+    public void setLeftCollision(boolean leftCollision) {
+        this.leftCollision = leftCollision;
     }
 }

@@ -127,10 +127,10 @@ public class GameController {
         KeyCode code = event.getCode();
         if (!gamePaused) {
             if (code == KeyCode.RIGHT || code == KeyCode.D) {
-                player.setVelocityX(player.getVelocityX() + 4);
+                player.setVelocityX(player.getVelocityX() + 7);
             }
             if (code == KeyCode.LEFT || code == KeyCode.A) {
-                player.setVelocityX(player.getVelocityX() - 4);
+                player.setVelocityX(player.getVelocityX() - 7);
             }
             if ((code == KeyCode.UP || code == KeyCode.W) && player.getVelocityY() == 0) {
                 player.setVelocityY(-35);
@@ -143,8 +143,14 @@ public class GameController {
         KeyCode code = event.getCode();
 
         if (!gamePaused) {
-            if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(0);
-            if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(0);
+            if (code == KeyCode.RIGHT || code == KeyCode.D) {
+                player.setVelocityX(0);
+                player.setRightCollision(false);
+            }
+            if (code == KeyCode.LEFT || code == KeyCode.A) {
+                player.setVelocityX(0);
+                player.setLeftCollision(false);
+            }
 //            if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(0);
         }
     }
@@ -185,7 +191,7 @@ public class GameController {
         drawBackground(gc);
         player.handleSpriteState();
         collisionHandler.tick();
-        level.tick(gc, player.getVelocityX(), time);
+        level.tick(gc, player.getVelocityX(), player.getVelocityY(), time);
         player.tick(gc);
     }
 

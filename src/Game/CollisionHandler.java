@@ -24,6 +24,9 @@ public class CollisionHandler {
     }
 
     public void handleTileCollision() {
+        player.setLeftCollision(false);
+        player.setRightCollision(false);
+
         player.setVelocityY(player.getVelocityY() + 2);
 
         for (Tile tile : level.getTiles()) {
@@ -35,41 +38,59 @@ public class CollisionHandler {
                 handleTileTopCollision(tile.getY(), tile.getSize());
             }
 
-            if ((player.getBoundsRight().intersects(tile.getBoundsLeft()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT) ||
-                    (player.getBoundsLeft().intersects(tile.getBoundsRight()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT)) {
-                handleTileSideCollision();
+            if (player.getBoundsLeft().intersects(tile.getBoundsRight()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT) {
+                handleTileRightCollision();
+            }
+
+            if (player.getBoundsRight().intersects(tile.getBoundsLeft()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT) {
+                handleTileLeftCollision();
             }
         }
     }
 
 
-    public void handleCoinCollision(){
+    public void handleCoinCollision() {
         Iterator<Coin> iterator = level.getCoins().iterator();
-                while (iterator.hasNext()) {
-                    Coin c = iterator.next();
-                    if (c.getBoundsBottom().intersects(player.getBoundsTop()) || c.getBoundsBottom().intersects(player.getBoundsRight())
-                            || c.getBoundsBottom().intersects(player.getBoundsBottom()) || c.getBoundsBottom().intersects(player.getBoundsLeft())) {
-                        iterator.remove();
-                        level.addCoinCounter();
-                    }
-                }
+        while (iterator.hasNext()) {
+            Coin c = iterator.next();
+            if (c.getBoundsBottom().intersects(player.getBoundsTop()) || c.getBoundsBottom().intersects(player.getBoundsRight())
+                    || c.getBoundsBottom().intersects(player.getBoundsBottom()) || c.getBoundsBottom().intersects(player.getBoundsLeft())) {
+                iterator.remove();
+                level.addCoinCounter();
+            }
+        }
     }
 
-    public void handleCoinBottomCollision(int coinY){
-        player.setY(coinY -  player.getCurrentSpriteSheet().getSpriteHeight() - 10);
+    public void handleCoinBottomCollision(int coinY) {
+        player.setY(coinY - player.getCurrentSpriteSheet().getSpriteHeight() - 10);
+        player.setVelocityY(0);
     }
 
     public void handleTileBottomCollision(int tileY) {
-        player.setY(tileY - player.getCurrentSpriteSheet().getSpriteHeight() + 10);
+        //        Commented out to avoid hard coding coordinate.
+//        player.setY(tileY - player.getCurrentSpriteSheet().getSpriteHeight() + 10);
         player.setVelocityY(0);
     }
 
     public void handleTileTopCollision(int tileY, int tileHeight) {
-        player.setY(tileY + tileHeight);
+//        Commented out to avoid hard coding coordinate.
+//        player.setY(tileY + tileHeight);
         player.setVelocityY(1);
     }
 
-    public void handleTileSideCollision() {
-        player.setVelocityX(0);
+    public void handleTileRightCollision() {
+        if (player.getVelocityX() != 0) {
+            player.setLeftCollision(true);
+            player.setVelocityX(0);
+        }
+
+
+    }
+
+    public void handleTileLeftCollision() {
+        if (player.getVelocityX() != 0) {
+            player.setRightCollision(true);
+            player.setVelocityX(0);
+        }
     }
 }
