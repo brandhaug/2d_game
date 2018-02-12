@@ -168,6 +168,7 @@ public class GameController {
         collisionHandler = new CollisionHandler(player, level);
 
         final long startNanoTime = System.nanoTime();
+
         initialized = true;
 
         new AnimationTimer() {
@@ -186,7 +187,6 @@ public class GameController {
         collisionHandler.tick();
         level.tick(gc, player.getVelocityX(), time);
         player.tick(gc);
-        collisionHandler.tick();
     }
 
     private void initializeGUI() {

@@ -7,6 +7,8 @@ import Game.Levels.Level;
 
 import java.util.Iterator;
 
+import java.util.Iterator;
+
 public class CollisionHandler {
     private Player player;
     private Level level;
