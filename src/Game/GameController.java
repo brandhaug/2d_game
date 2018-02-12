@@ -1,7 +1,7 @@
 package Game;
 
-import Game.Levels.Beginner;
 import Game.GameObjects.Player;
+import Game.Levels.Level;
 import javafx.animation.AnimationTimer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -34,7 +34,7 @@ public class GameController {
     public final static int TILE_SIZE = 128;
     public final static int MARGIN = 32;
 
-    private Beginner level;
+    private Level level;
     private Player player;
     private CollisionHandler collisionHandler;
     private Preferences preferences = Preferences.userRoot();
@@ -151,18 +151,15 @@ public class GameController {
         initializeGUI();
         initializeBackground();
 
-        MapReader mapReader = new MapReader();
-
+        gc = canvas.getGraphicsContext2D();
 
         try {
-            mapReader.loadMap("beginner");
+            level = new Level("beginner");
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        gc = canvas.getGraphicsContext2D();
-
-        level = new Beginner();
         player = new Player(200, 400);
         collisionHandler = new CollisionHandler(player, level);
 

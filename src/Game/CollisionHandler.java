@@ -2,13 +2,13 @@ package Game;
 
 import Game.GameObjects.Player;
 import Game.GameObjects.Tile;
-import Game.Levels.Beginner;
+import Game.Levels.Level;
 
 public class CollisionHandler {
     private Player player;
-    private Beginner level;
+    private Level level;
 
-    public CollisionHandler(Player player, Beginner level) {
+    public CollisionHandler(Player player, Level level) {
         this.player = player;
         this.level = level;
     }
