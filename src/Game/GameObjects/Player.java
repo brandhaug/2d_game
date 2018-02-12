@@ -51,7 +51,7 @@ public class Player extends GameObject {
     public void tick(GraphicsContext gc) {
         handleVelocityX();
         handleVelocityY();
-        handleSpriteState();
+        //handleSpriteState(); -- Gets handled in game-controller
         render(gc);
     }
 
@@ -140,11 +140,11 @@ public class Player extends GameObject {
 
     @Override
     public Rectangle getBoundsRight() {
-        return new Rectangle(START_POSITION + getCurrentSpriteSheet().getSpriteWidth() - 5, getY() + 5, 5, getCurrentSpriteSheet().getSpriteHeight() - 10);
+        return new Rectangle(START_POSITION + getCurrentSpriteSheet().getSpriteWidth() - 10, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     @Override
     public Rectangle getBoundsLeft() {
-        return new Rectangle(START_POSITION, getY() + 5, 5, getCurrentSpriteSheet().getSpriteHeight() - 10);
+        return new Rectangle(START_POSITION, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 }
