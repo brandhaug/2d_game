@@ -19,9 +19,6 @@ public class Level {
     private List<Coin> coins;
     private List<Enemy> enemies;
 
-    private final int MAP_HEIGHT = 6;
-    private final int MAP_WIDTH = 35;
-
     private char[][] map;
 
     private int coinCounter = 0;
@@ -60,8 +57,8 @@ public class Level {
         final char COIN = 'c';
         final char ENEMY = 'e';
 
-        for (int y = 0; y < MAP_HEIGHT; y++) {
-            for (int x = 0; x < MAP_WIDTH; x++) {
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[y].length; x++) {
                 switch (map[y][x]) {
                     case (TILE):
                         tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_MID));
@@ -90,7 +87,6 @@ public class Level {
             String line = scanner.nextLine();
             if (index == 0) {
                 String[] headerStrings = line.split(" ");
-                System.out.println(Arrays.toString(headerStrings));
                 int mapHeight = Integer.parseInt(headerStrings[0]);
                 int mapWidth = Integer.parseInt(headerStrings[1]);
                 map = new char[mapHeight][mapWidth];
