@@ -173,6 +173,7 @@ public class GameController {
         level.tick(gc, player.getVelocityX(), time);
         player.tick(gc);
         collisionHandler.tick();
+        System.out.println(level.getCoinCounter());
     }
 
     private void initializeGUI() {
