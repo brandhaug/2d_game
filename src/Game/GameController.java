@@ -125,12 +125,8 @@ public class GameController {
     private void handleKeyPressed(KeyEvent event) {
         KeyCode code = event.getCode();
         if (!gamePaused) {
-            if (code == KeyCode.RIGHT || code == KeyCode.D) {
-                player.setVelocityX(player.getVelocityX() + 4);
-            }
-            if (code == KeyCode.LEFT || code == KeyCode.A) {
-                player.setVelocityX(player.getVelocityX() - 4);
-            }
+            if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 4);
+            if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() - 4);
             if ((code == KeyCode.UP || code == KeyCode.W) && player.getVelocityY() == 0) {
                 player.setVelocityY(-35);
             }

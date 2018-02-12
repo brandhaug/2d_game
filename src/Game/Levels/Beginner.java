@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 public class Beginner extends Level {
 
     private Image startingPointImage;
+    protected int coinCounter = 0;
 
     public Beginner() {
         this.startingPointImage = new Image("/Resources/start.png");
@@ -29,6 +30,14 @@ public class Beginner extends Level {
         }
 
         getTiles().add(new Tile(500, 500, TileType.GRASS_MID));
+    }
+
+    public void addCoinCounter(){
+        this.coinCounter++;
+    }
+
+    public int getCoinCounter(){
+        return coinCounter;
     }
 
     private void addCoins() {
