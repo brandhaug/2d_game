@@ -28,7 +28,7 @@ public class Beginner extends Level {
             }
         }
 
-        getTiles().add(new Tile(2000, 500, TileType.GRASS_MID));
+        getTiles().add(new Tile(500, 500, TileType.GRASS_MID));
     }
 
     private void addCoins() {

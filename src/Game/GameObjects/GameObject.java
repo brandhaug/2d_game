@@ -102,11 +102,11 @@ public abstract class GameObject {
     }
 
     public Rectangle getBoundsRight() {
-        return new Rectangle(x + currentSpriteSheet.getSpriteWidth() - 5, y + 5, 5, currentSpriteSheet.getSpriteHeight() - 10);
+        return new Rectangle(x + currentSpriteSheet.getSpriteWidth() - 10, y + 10, 10, currentSpriteSheet.getSpriteHeight() - 20);
     }
 
     public Rectangle getBoundsLeft() {
-        return new Rectangle(x, y + 5, 5, currentSpriteSheet.getSpriteHeight() - 10);
+        return new Rectangle(x, y + 10, 10, currentSpriteSheet.getSpriteHeight() - 20);
     }
 
     public void handleSpriteState(){

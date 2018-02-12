@@ -60,10 +60,10 @@ public class SpriteSheet {
         gc.strokeRect(x + 10, y, spriteWidth - 20, spriteHeight / 2); //Top
 
         gc.setStroke(Color.GREEN);
-        gc.strokeRect(x + spriteWidth - 5, y + 5, 5, spriteHeight - 10); //Right
+        gc.strokeRect(x + spriteWidth - 10, y + 10, 10, spriteHeight - 20); //Right
 
         gc.setStroke(Color.YELLOW);
-        gc.strokeRect(x, y + 5, 5, spriteHeight - 10); //Left
+        gc.strokeRect(x, y + 10, 10, spriteHeight - 20); //Left
     }
 
     //TODO: Make method more effective
