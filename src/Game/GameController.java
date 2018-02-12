@@ -150,14 +150,12 @@ public class GameController {
         initializeGUI();
         initializeBackground();
 
-        gc = canvas.getGraphicsContext2D();
-
         level = new Beginner();
         player = new Player(200, 400);
         collisionHandler = new CollisionHandler(player, level);
 
+        gc = canvas.getGraphicsContext2D();
         final long startNanoTime = System.nanoTime();
-
         initialized = true;
 
         new AnimationTimer() {
@@ -182,8 +180,6 @@ public class GameController {
         pauseInfoPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7);");
         pauseInfoPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         pauseSettingsPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
-
-        initializeBackground();
     }
 
     private void initializeBackground() {
