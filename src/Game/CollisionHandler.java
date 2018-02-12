@@ -1,8 +1,11 @@
 package Game;
 
+import Game.GameObjects.Coin;
 import Game.GameObjects.Player;
 import Game.GameObjects.Tile;
 import Game.Levels.Level;
+
+import java.util.Iterator;
 
 public class CollisionHandler {
     private Player player;
@@ -15,6 +18,7 @@ public class CollisionHandler {
 
     public void tick() {
         handleTileCollision();
+        handleCoinCollision();
     }
 
     public void handleTileCollision() {
@@ -33,6 +37,23 @@ public class CollisionHandler {
                 handleTileSideCollision();
             }
         }
+    }
+
+
+    public void handleCoinCollision(){
+        Iterator<Coin> iterator = level.getCoins().iterator();
+                while (iterator.hasNext()) {
+                    Coin c = iterator.next();
+                    if (c.getBoundsBottom().intersects(player.getBoundsTop()) || c.getBoundsBottom().intersects(player.getBoundsRight())
+                            || c.getBoundsBottom().intersects(player.getBoundsBottom()) || c.getBoundsBottom().intersects(player.getBoundsLeft())) {
+                        iterator.remove();
+                        level.addCoinCounter();
+                    }
+                }
+    }
+
+    public void handleCoinBottomCollision(int coinY){
+        player.setY(coinY -  player.getCurrentSpriteSheet().getSpriteHeight() - 10);
     }
 
     public void handleTileBottomCollision(int tileY) {
