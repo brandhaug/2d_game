@@ -24,6 +24,8 @@ public class Level {
 
     private char[][] map;
 
+    private int coinCounter = 0;
+
 
     public Level(String fileName) throws FileNotFoundException {
         tiles = new ArrayList<>();
@@ -43,6 +45,14 @@ public class Level {
 
     public List<Enemy> getEnemies() {
         return enemies;
+    }
+
+    public void addCoinCounter(){
+        this.coinCounter++;
+    }
+
+    public int getCoinCounter(){
+        return coinCounter;
     }
 
     public void parseMap(char[][] map) {
