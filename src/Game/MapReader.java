@@ -5,8 +5,7 @@ import Game.GameObjects.Tile;
 import Game.GameObjects.TileType;
 import Game.Levels.Level;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.Scanner;
 
 public class MapReader {
@@ -18,18 +17,27 @@ public class MapReader {
     private final char ENEMY = 'e';
     private final char PLAYER = 'p';
 
+    // TODO: Lag egne Exceptions
     public char[][] loadMap(String fileName) throws FileNotFoundException {
         File file = new File(getClass().getResource("/Resources/maps/" + fileName).getPath());
         Scanner scanner = new Scanner(file);
 
-        char[][] map = new char[MAP_HEIGHT][MAP_WIDTH];
         int index = 0;
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             line = line.replaceAll("\\s", "");
             char[] lineArr = line.toCharArray();
-            map[index] = lineArr;
+
+            if (index == 0) {
+                char[][] map = new char[][MAP_WIDTH];
+            } else {
+                char[] lineArr = line.toCharArray();
+                map[index] = lineArr;
+            }
+
+
+
             index++;
         }
 

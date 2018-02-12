@@ -33,25 +33,25 @@ public class Level {
         return enemies;
     }
 
-    public void parseMap(char[][] map) {
-        Level level = new Level();
-
-        for (int y = 0; y < MAP_HEIGHT; y++) {
-            for (int x = 0; x < MAP_WIDTH; x++) {
-                switch (map[y][x]) {
-                    case (TILE):
-                        tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_MID));
-                        break;
-                    case (COIN):
-                        coins.add(new Coin(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE));
-                        break;
-                    case (ENEMY):
-                        enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE));
-                }
-
-
-            }
-        }
-    }
+//    public void parseMap(char[][] map) {
+//        Level level = new Level();
+//
+//        for (int y = 0; y < MAP_HEIGHT; y++) {
+//            for (int x = 0; x < MAP_WIDTH; x++) {
+//                switch (map[y][x]) {
+//                    case (TILE):
+//                        tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_MID));
+//                        break;
+//                    case (COIN):
+//                        coins.add(new Coin(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE));
+//                        break;
+//                    case (ENEMY):
+//                        enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE));
+//                }
+//
+//
+//            }
+//        }
+//    }
 
 }
