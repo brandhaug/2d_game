@@ -54,10 +54,10 @@ public class SpriteSheet {
 
     private void drawBounds(GraphicsContext gc, int x, int y) {
         gc.setStroke(Color.BLUE);
-        gc.strokeRect(x + 10, y + spriteHeight / 2, spriteWidth - 20, spriteHeight / 2); //Bottom
+        gc.strokeRect(x, y + spriteHeight - 10, spriteWidth, 10); //Bottom
 
         gc.setStroke(Color.RED);
-        gc.strokeRect(x + 10, y, spriteWidth - 20, spriteHeight / 2); //Top
+        gc.strokeRect(x, y, spriteWidth, 10); //Top
 
         gc.setStroke(Color.GREEN);
         gc.strokeRect(x + spriteWidth - 10, y + 10, 10, spriteHeight - 20); //Right

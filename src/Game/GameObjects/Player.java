@@ -133,12 +133,12 @@ public class Player extends GameObject {
 
     @Override
     public Rectangle getBoundsBottom() {
-        return new Rectangle(START_POSITION + 10, getY() + getCurrentSpriteSheet().getSpriteHeight() / 2, getCurrentSpriteSheet().getSpriteWidth() - 20, getCurrentSpriteSheet().getSpriteHeight() / 2);
+        return new Rectangle(START_POSITION, getY() + getCurrentSpriteSheet().getSpriteHeight() - 10, getCurrentSpriteSheet().getSpriteWidth(), 10);
     }
 
     @Override
     public Rectangle getBoundsTop() {
-        return new Rectangle(START_POSITION + 10, getY(), getCurrentSpriteSheet().getSpriteWidth() - 20, getCurrentSpriteSheet().getSpriteHeight() / 2);
+        return new Rectangle(START_POSITION, getY(), getCurrentSpriteSheet().getSpriteWidth(), 10);
     }
 
     @Override

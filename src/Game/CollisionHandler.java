@@ -7,8 +7,6 @@ import Game.Levels.Level;
 
 import java.util.Iterator;
 
-import java.util.Iterator;
-
 public class CollisionHandler {
     private Player player;
     private Level level;
@@ -31,11 +29,11 @@ public class CollisionHandler {
 
         for (Tile tile : level.getTiles()) {
             if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && player.getCurrentSpriteState() != Player.PLAYER_JUMPING_RIGHT && player.getCurrentSpriteState() != Player.PLAYER_JUMPING_LEFT) {
-                handleTileBottomCollision(tile.getY());
+                handleTileTopCollision();
             }
 
             if (player.getBoundsTop().intersects(tile.getBoundsBottom()) && player.getCurrentSpriteState() != Player.PLAYER_FALLING_LEFT && player.getCurrentSpriteState() != Player.PLAYER_FALLING_RIGHT) {
-                handleTileTopCollision(tile.getY(), tile.getSize());
+                handleTileBottomCollision();
             }
 
             if (player.getBoundsLeft().intersects(tile.getBoundsRight()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT) {
@@ -66,15 +64,13 @@ public class CollisionHandler {
         player.setVelocityY(0);
     }
 
-    public void handleTileBottomCollision(int tileY) {
-        //        Commented out to avoid hard coding coordinate.
-//        player.setY(tileY - player.getCurrentSpriteSheet().getSpriteHeight() + 10);
+    public void handleTileTopCollision() {
+        //player.setY(tileY - player.getCurrentSpriteSheet().getSpriteHeight() + 10);
         player.setVelocityY(0);
     }
 
-    public void handleTileTopCollision(int tileY, int tileHeight) {
-//        Commented out to avoid hard coding coordinate.
-//        player.setY(tileY + tileHeight);
+    public void handleTileBottomCollision() {
+        //player.setY(tileY + tileHeight);
         player.setVelocityY(1);
     }
 
@@ -83,8 +79,6 @@ public class CollisionHandler {
             player.setLeftCollision(true);
             player.setVelocityX(0);
         }
-
-
     }
 
     public void handleTileLeftCollision() {
