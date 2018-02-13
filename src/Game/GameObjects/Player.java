@@ -1,5 +1,6 @@
 package Game.GameObjects;
 
+import Game.GameController;
 import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
