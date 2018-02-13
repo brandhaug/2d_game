@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Level {
     private List<Tile> tiles;
@@ -84,9 +86,8 @@ public class Level {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             if (index == 0) {
-                String[] headerStrings = line.split(" ");
-                int mapHeight = Integer.parseInt(headerStrings[0]);
-                int mapWidth = Integer.parseInt(headerStrings[1]);
+                int mapHeight = getValueFromMapHeader(line, "height");
+                int mapWidth = getValueFromMapHeader(line, "width");
                 map = new char[mapHeight][mapWidth];
             } else {
                 line = line.replaceAll("\\s", "");
@@ -139,5 +140,15 @@ public class Level {
         }
     }
 
+    public int getValueFromMapHeader(String header, String name) {
+        String reg = "(?<=" + name + ": )[0-9]+";
 
+        Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(header);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group());
+        }
+
+        return -1;
+    }
 }
