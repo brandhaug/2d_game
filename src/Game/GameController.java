@@ -147,10 +147,10 @@ public class GameController {
         KeyCode code = event.getCode();
         if (!gamePaused && !gameOver) {
             if (code == KeyCode.RIGHT || code == KeyCode.D) {
-                player.setVelocityX(player.getVelocityX() + 7);
+                player.setVelocityX(10);
             }
             if (code == KeyCode.LEFT || code == KeyCode.A) {
-                player.setVelocityX(player.getVelocityX() - 7);
+                player.setVelocityX(-10);
             }
             if ((code == KeyCode.UP || code == KeyCode.W) && player.getVelocityY() == 0) {
                 player.setVelocityY(-35);

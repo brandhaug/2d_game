@@ -135,30 +135,30 @@ public class Player extends GameObject {
 
         // Draw bounds
         gc.setFill(Color.BLACK);
-        gc.strokeRect(START_POSITION + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 10, WIDTH - 40, 10);
-        gc.strokeRect(START_POSITION + 20, getY(), WIDTH - 40, 10);
-        gc.strokeRect(START_POSITION + WIDTH - 10, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
-        gc.strokeRect(START_POSITION, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        gc.strokeRect(START_POSITION + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 20, WIDTH - 40, 20);
+        gc.strokeRect(START_POSITION + 20, getY(), WIDTH - 40, 20);
+        gc.strokeRect(START_POSITION + WIDTH - 20, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        gc.strokeRect(START_POSITION, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     @Override
     public Rectangle getBoundsBottom() {
-        return new Rectangle(START_POSITION + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 10, WIDTH - 40, 10);
+        return new Rectangle(START_POSITION + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 20, WIDTH - 40, 20);
     }
 
     @Override
     public Rectangle getBoundsTop() {
-        return new Rectangle(START_POSITION + 20, getY(), WIDTH - 40, 10);
+        return new Rectangle(START_POSITION + 20, getY(), WIDTH - 40, 20);
     }
 
     @Override
     public Rectangle getBoundsRight() {
-        return new Rectangle(START_POSITION + WIDTH - 10, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        return new Rectangle(START_POSITION + WIDTH - 20, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     @Override
     public Rectangle getBoundsLeft() {
-        return new Rectangle(START_POSITION, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        return new Rectangle(START_POSITION, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     public void setRightCollision(boolean rightCollision) {
