@@ -15,7 +15,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -44,6 +43,7 @@ public class GameController {
 
     private boolean gamePaused = false;
     private boolean initialized = false;
+    private boolean gameOver = false;
 
     @FXML
     private Canvas canvas;
@@ -56,9 +56,17 @@ public class GameController {
     @FXML
     private Button mainMenuButton;
     @FXML
+    private Button gameOverMainMenuButton;
+    @FXML
+    private Button gameOverRetryButton;
+    @FXML
+    private Pane gameOverPane;
+    @FXML
     private Pane pauseInfoPane;
     @FXML
     private Pane pauseSettingsPane;
+    @FXML
+    private Text gameOverText;
     @FXML
     private Text pauseText;
 
@@ -67,6 +75,18 @@ public class GameController {
         try {
             Stage stage = (Stage) mainMenuButton.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("../MainMenu/MainMenu.fxml"));
+            root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void restartLevel() {
+        try {
+            Stage stage = (Stage) canvas.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("../Game/Game.fxml"));
             root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
             stage.setScene(new Scene(root));
         } catch (IOException e) {
@@ -125,9 +145,13 @@ public class GameController {
     @FXML
     private void handleKeyPressed(KeyEvent event) {
         KeyCode code = event.getCode();
-        if (!gamePaused) {
-            if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(player.getVelocityX() + 4);
-            if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(player.getVelocityX() - 4);
+        if (!gamePaused && !gameOver) {
+            if (code == KeyCode.RIGHT || code == KeyCode.D) {
+                player.setVelocityX(10);
+            }
+            if (code == KeyCode.LEFT || code == KeyCode.A) {
+                player.setVelocityX(-10);
+            }
             if ((code == KeyCode.UP || code == KeyCode.W) && player.getVelocityY() == 0) {
                 player.setVelocityY(-35);
             }
@@ -138,17 +162,21 @@ public class GameController {
     private void handleKeyReleased(KeyEvent event) {
         KeyCode code = event.getCode();
 
-        if (!gamePaused) {
-            if (code == KeyCode.RIGHT || code == KeyCode.D) player.setVelocityX(0);
-            if (code == KeyCode.LEFT || code == KeyCode.A) player.setVelocityX(0);
-//            if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(0);
+        if (!gamePaused && !gameOver) {
+            if ((code == KeyCode.RIGHT || code == KeyCode.D && player.getVelocityX() > 0)) {
+                player.setVelocityX(0);
+                player.setRightCollision(false);
+            }
+            if (code == KeyCode.LEFT || code == KeyCode.A && player.getVelocityX() < 0) {
+                player.setVelocityX(0);
+                player.setLeftCollision(false);
+            }
         }
     }
 
 
     @FXML
     public void initialize() {
-        initializeGUI();
         initializeBackground();
 
         gc = canvas.getGraphicsContext2D();
@@ -169,7 +197,9 @@ public class GameController {
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                gameLoop(startNanoTime, currentNanoTime);
+                if (!gamePaused && !gameOver) {
+                    gameLoop(startNanoTime, currentNanoTime);
+                }
             }
         }.start();
     }
@@ -179,24 +209,22 @@ public class GameController {
 
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         drawBackground(gc);
-        level.tick(gc, player.getVelocityX(), time);
-        player.tick(gc);
+        player.handleSpriteState();
         collisionHandler.tick();
+        level.tick(gc, player.getVelocityX(), player.getVelocityY(), time);
+        player.tick(gc);
+        checkGameOver();
     }
 
-    private void initializeGUI() {
-        //TODO: Move to FXML
-        musicButton.setVisible(false);
-        soundButton.setVisible(false);
-        mainMenuButton.setVisible(false);
-        pauseText.setVisible(false);
-        pauseInfoPane.setVisible(false);
-        pauseInfoPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7);");
-        pauseInfoPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        pauseSettingsPane.setVisible(false);
-        pauseSettingsPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
-
-        initializeBackground();
+    private void checkGameOver() {
+        if (player.getY() >= CANVAS_HEIGHT) {
+            gameOver = true;
+            gameOverPane.setVisible(true);
+            gameOverText.setVisible(true);
+            gameOverMainMenuButton.setVisible(true);
+            gameOverRetryButton.setVisible(true);
+            canvas.setOpacity(0.7f);
+        }
     }
 
     private void initializeBackground() {
