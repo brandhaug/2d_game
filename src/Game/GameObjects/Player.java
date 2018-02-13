@@ -36,6 +36,9 @@ public class Player extends GameObject {
     private boolean rightCollision = false;
     private boolean leftCollision = false;
 
+    private int hp = 100; //Hit Points
+
+
     public Player(int x, int y) {
         super(x, y);
         initializeSpriteSheets();
@@ -47,6 +50,14 @@ public class Player extends GameObject {
         if (x >= START_POSITION) {
             super.setX(x);
         }
+    }
+
+    public void setHp(int hp){
+        this.hp = hp;
+    }
+
+    public int getHp(){
+        return hp;
     }
 
     public int getStartPosition() {

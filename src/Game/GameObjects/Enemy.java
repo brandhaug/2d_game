@@ -10,6 +10,12 @@ public class Enemy extends GameObject {
         initializeSpriteSheets();
     }
 
+/*
+    public enum enemyType {
+        WEAK, MEDIUM, STRONG //WEAK = -25hp, MEDIUM = -50hp, STRONG = -100hp
+    }
+*/
+
     public void initializeSpriteSheets() {
         spriteSheet = new SpriteSheet("/Resources/enemies/Mace.png", 1, 128, 128);
         setCurrentSpriteSheet(spriteSheet);

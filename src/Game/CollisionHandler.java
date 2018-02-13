@@ -1,11 +1,13 @@
 package Game;
 
 import Game.GameObjects.Coin;
+import Game.GameObjects.Enemy;
 import Game.GameObjects.Player;
 import Game.GameObjects.Tile;
 import Game.Levels.Level;
 import Resources.soundEffects.SoundEffects;
 
+import java.lang.management.PlatformLoggingMXBean;
 import java.util.Iterator;
 
 
@@ -19,15 +21,28 @@ public class CollisionHandler {
         this.player = player;
         this.level = level;
         this.soundEffects = soundEffects;
-        //soundEffects.init();
 
     }
 
     public void tick() {
         handleTileCollision();
         handleCoinCollision();
+        handleEnemyCollision();
     }
 
+    public void handleCoinCollision(){
+        Iterator<Coin> iterator = level.getCoins().iterator();
+
+        while (iterator.hasNext()) {
+            Coin c = iterator.next();
+            if (c.getBoundsBottom().intersects(player.getBoundsTop()) || c.getBoundsBottom().intersects(player.getBoundsRight())
+                    || c.getBoundsBottom().intersects(player.getBoundsBottom()) || c.getBoundsBottom().intersects(player.getBoundsLeft())) {
+                iterator.remove();
+                level.addCoinCounter();
+                soundEffects.COIN.play();
+            }
+        }
+    }
 
     public void handleTileCollision() {
         player.setLeftCollision(false);
@@ -50,20 +65,6 @@ public class CollisionHandler {
 
             if (player.getBoundsRight().intersects(tile.getBoundsLeft()) && player.getCurrentSpriteState() != Player.PLAYER_RUNNING_LEFT) {
                 handleTileLeftCollision();
-            }
-        }
-    }
-
-
-    public void handleCoinCollision(){
-        Iterator<Coin> iterator = level.getCoins().iterator();
-                while (iterator.hasNext()) {
-            Coin c = iterator.next();
-            if (c.getBoundsBottom().intersects(player.getBoundsTop()) || c.getBoundsBottom().intersects(player.getBoundsRight())
-                    || c.getBoundsBottom().intersects(player.getBoundsBottom()) || c.getBoundsBottom().intersects(player.getBoundsLeft())) {
-                iterator.remove();
-                level.addCoinCounter();
-                soundEffects.COIN.play();
             }
         }
     }
@@ -92,12 +93,67 @@ public class CollisionHandler {
         }
     }
 
-/*
-    public void initializeMusic() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
-        musicStream = AudioSystem.getAudioInputStream(new File(getClass().getResource("/Resources/music/coinCollect.wav").getPath()));
-        musicClip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, musicStream.getFormat()));
-        musicClip.open(musicStream);
+    public void handleEnemyCollision() {
+        for(Enemy enemy : level.getEnemies()) {
+            if (enemy.getBoundsTop().intersects(player.getBoundsBottom())){
+                handleEnemyTopCollision();
+                System.out.println(player.getHp());
+            }
+
+            if (enemy.getBoundsRight().intersects(player.getBoundsLeft())){
+                handleEnemyRightCollision();
+                System.out.println(player.getHp());
+            }
+
+            if (enemy.getBoundsBottom().intersects(player.getBoundsTop())){
+                handleEnemyBottomCollision();
+                System.out.println(player.getHp());
+            }
+
+            if (enemy.getBoundsLeft().intersects(player.getBoundsRight())){
+                handleEnemyLeftCollision();
+                System.out.println(player.getHp());
+            }
+        }
     }
-*/
+
+    public void handleEnemyTopCollision() {
+        if(player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT) {
+            player.setVelocityY(-20);
+            player.setVelocityX(10);
+        }else{
+            player.setVelocityY(-20);
+            player.setVelocityX(-10);
+        }
+        player.setHp(player.getHp()-25);
+    }
+
+    public void handleEnemyBottomCollision() {
+        player.setVelocityY(20);
+        player.setHp(player.getHp()-25);
+    }
+
+    public void handleEnemyRightCollision() {
+        player.setVelocityX(10);
+        player.setHp(player.getHp()-25);
+    }
+
+    public void handleEnemyLeftCollision() {
+        player.setVelocityX(-10);
+        player.setHp(player.getHp()-25);
+    }
 
 }
+
+/*
+new java.util.Timer().schedule(
+        new java.util.TimerTask() {
+@Override
+public void run() {
+        player.setVelocityY(0);
+        player.setVelocityX(0);
+        }
+        },
+        1000
+        );
+*/
