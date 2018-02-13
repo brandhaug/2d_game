@@ -46,6 +46,8 @@ public class MainMenuController {
     private Button soundButton;
     @FXML
     private Button musicButton;
+    @FXML
+    private Button createLevelButton;
 
     private Preferences preferences = Preferences.userRoot();
 
@@ -55,8 +57,13 @@ public class MainMenuController {
     private boolean initialized = false;
 
     @FXML
-    protected void openInfo(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../Info/Info.fxml"));
+    protected void openInfo(ActionEvent event) {
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("../Info/Info.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
         Scene scene = new Scene(root);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -85,8 +92,13 @@ public class MainMenuController {
     }
 
     @FXML
-    protected void openHighscores(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../Highscores/Highscores.fxml"));
+    protected void openHighscores(ActionEvent event) {
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("../Highscores/Highscores.fxml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
         Scene scene = new Scene(root);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -130,6 +142,19 @@ public class MainMenuController {
     }
 
     @FXML
+    protected void openCreateLevel() {
+        Stage stage = (Stage) mapsPane.getScene().getWindow();
+        Parent root = null;
+        try {
+            root = FXMLLoader.load(getClass().getResource("../CreateLevel/CreateLevel.fxml"));
+            root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     public void initialize() {
         mapsPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.3);");
         mapsPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
@@ -167,6 +192,7 @@ public class MainMenuController {
         musicStream = AudioSystem.getAudioInputStream(new File(getClass().getResource("/Resources/music/main_song.wav").getPath()));
         musicClip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, musicStream.getFormat()));
         musicClip.open(musicStream);
+        musicClip.loop(10);
         musicClip.start();
     }
 }
