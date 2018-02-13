@@ -163,11 +163,11 @@ public class GameController {
         KeyCode code = event.getCode();
 
         if (!gamePaused && !gameOver) {
-            if (code == KeyCode.RIGHT || code == KeyCode.D) {
+            if ((code == KeyCode.RIGHT || code == KeyCode.D && player.getVelocityX() > 0)) {
                 player.setVelocityX(0);
                 player.setRightCollision(false);
             }
-            if (code == KeyCode.LEFT || code == KeyCode.A) {
+            if (code == KeyCode.LEFT || code == KeyCode.A && player.getVelocityX() < 0) {
                 player.setVelocityX(0);
                 player.setLeftCollision(false);
             }
