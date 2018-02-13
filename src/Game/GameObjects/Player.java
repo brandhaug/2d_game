@@ -64,6 +64,10 @@ public class Player extends GameObject {
         return START_POSITION;
     }
 
+    public boolean getLastSpriteRight(){
+        return lastSpriteRight;
+    }
+
     public void tick(GraphicsContext gc) {
         handleVelocityX();
         handleVelocityY();
