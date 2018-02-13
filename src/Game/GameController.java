@@ -174,7 +174,6 @@ public class GameController {
                 player.setVelocityX(0);
                 player.setLeftCollision(false);
             }
-//            if (code == KeyCode.UP || code == KeyCode.W) player.setVelocityY(0);
         }
     }
 
@@ -218,6 +217,7 @@ public class GameController {
         collisionHandler.tick();
         level.tick(gc, player.getVelocityX(), player.getVelocityY(), time);
         player.tick(gc);
+        //TODO: Make tick for GUI()
         gc.fillText(level.getCoinCounter() + "/" + coinAmoount,60,40);
         checkGameOver();
     }
