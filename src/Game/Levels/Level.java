@@ -23,7 +23,6 @@ public class Level {
 
     private int coinCounter = 0;
 
-
     public Level(String fileName) throws FileNotFoundException {
         tiles = new ArrayList<>();
         coins = new ArrayList<>();
@@ -74,7 +73,6 @@ public class Level {
             }
         }
     }
-
 
     // TODO: Lag egne Exceptions
     public char[][] loadMap(String fileName) throws FileNotFoundException {

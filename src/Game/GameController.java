@@ -2,6 +2,7 @@ package Game;
 
 import Game.GameObjects.Player;
 import Game.Levels.Level;
+import Resources.soundEffects.SoundEffects;
 import javafx.animation.AnimationTimer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -36,7 +37,9 @@ public class GameController {
     private Level level;
     private Player player;
     private CollisionHandler collisionHandler;
+    private SoundEffects soundEffects;
     private Preferences preferences = Preferences.userRoot();
+    private int coinAmoount;
 
     private Image background;
     private GraphicsContext gc;
@@ -189,8 +192,9 @@ public class GameController {
             e.printStackTrace();
         }
 
+        coinAmoount = level.getCoins().size();
         player = new Player(200, 400);
-        collisionHandler = new CollisionHandler(player, level);
+        collisionHandler = new CollisionHandler(player, level,soundEffects);
 
         final long startNanoTime = System.nanoTime();
 
@@ -214,6 +218,7 @@ public class GameController {
         collisionHandler.tick();
         level.tick(gc, player.getVelocityX(), player.getVelocityY(), time);
         player.tick(gc);
+        gc.fillText(level.getCoinCounter() + "/" + coinAmoount,60,40);
         checkGameOver();
     }
 

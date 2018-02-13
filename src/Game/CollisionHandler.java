@@ -4,22 +4,30 @@ import Game.GameObjects.Coin;
 import Game.GameObjects.Player;
 import Game.GameObjects.Tile;
 import Game.Levels.Level;
+import Resources.soundEffects.SoundEffects;
 
 import java.util.Iterator;
+
 
 public class CollisionHandler {
     private Player player;
     private Level level;
+    private SoundEffects soundEffects;
 
-    public CollisionHandler(Player player, Level level) {
+
+    public CollisionHandler(Player player, Level level,SoundEffects soundEffects) {
         this.player = player;
         this.level = level;
+        this.soundEffects = soundEffects;
+        //soundEffects.init();
+
     }
 
     public void tick() {
         handleTileCollision();
         handleCoinCollision();
     }
+
 
     public void handleTileCollision() {
         player.setLeftCollision(false);
@@ -47,21 +55,17 @@ public class CollisionHandler {
     }
 
 
-    public void handleCoinCollision() {
+    public void handleCoinCollision(){
         Iterator<Coin> iterator = level.getCoins().iterator();
-        while (iterator.hasNext()) {
+                while (iterator.hasNext()) {
             Coin c = iterator.next();
             if (c.getBoundsBottom().intersects(player.getBoundsTop()) || c.getBoundsBottom().intersects(player.getBoundsRight())
                     || c.getBoundsBottom().intersects(player.getBoundsBottom()) || c.getBoundsBottom().intersects(player.getBoundsLeft())) {
                 iterator.remove();
                 level.addCoinCounter();
+                soundEffects.COIN.play();
             }
         }
-    }
-
-    public void handleCoinBottomCollision(int coinY) {
-        player.setY(coinY - player.getCurrentSpriteSheet().getSpriteHeight() - 10);
-        player.setVelocityY(0);
     }
 
     public void handleTileTopCollision() {
@@ -87,4 +91,13 @@ public class CollisionHandler {
             player.setVelocityX(0);
         }
     }
+
+/*
+    public void initializeMusic() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+        musicStream = AudioSystem.getAudioInputStream(new File(getClass().getResource("/Resources/music/coinCollect.wav").getPath()));
+        musicClip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, musicStream.getFormat()));
+        musicClip.open(musicStream);
+    }
+*/
+
 }
