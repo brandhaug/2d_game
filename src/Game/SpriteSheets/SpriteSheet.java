@@ -47,12 +47,11 @@ public class SpriteSheet {
         }
     }
 
-    public void draw(GraphicsContext gc, int x, int y, int currentSpriteState, int lastSpriteState) {
+    public void render(GraphicsContext gc, int x, int y, int currentSpriteState, int lastSpriteState) {
         gc.drawImage(sprites[getNextColumnIndex(currentSpriteState, lastSpriteState)], x, y);
-        drawBounds(gc, x, y);
     }
 
-    private void drawBounds(GraphicsContext gc, int x, int y) {
+    public void drawBounds(GraphicsContext gc, int x, int y) {
         gc.setStroke(Color.BLUE);
         gc.strokeRect(x, y + spriteHeight - 10, spriteWidth, 10); //Bottom
 
@@ -68,8 +67,9 @@ public class SpriteSheet {
 
     //TODO: Make method more effective
     private int getNextColumnIndex(int currentSpriteState, int lastSpriteState) {
-        if (currentSpriteState != lastSpriteState || currentColumnIndex == cols - 1 || cols == 1) {
+        if (currentSpriteState != lastSpriteState || currentColumnIndex == cols - 1) {
             currentColumnIndex = 0;
+            return currentColumnIndex;
         }
 
         return currentColumnIndex++;

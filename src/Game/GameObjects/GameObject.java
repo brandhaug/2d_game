@@ -114,6 +114,7 @@ public abstract class GameObject {
     }
 
     public void render(GraphicsContext gc) {
-        currentSpriteSheet.draw(gc, x, y, currentSpriteState, lastSpriteState);
+        currentSpriteSheet.render(gc, x, y, currentSpriteState, lastSpriteState);
+        currentSpriteSheet.drawBounds(gc, x, y);
     }
 }

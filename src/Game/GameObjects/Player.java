@@ -2,12 +2,14 @@ package Game.GameObjects;
 
 import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import java.awt.*;
 
 public class Player extends GameObject {
 
     private final int START_POSITION = 200;
+    private final int WIDTH = 72;
 
     // States
     public final static int PLAYER_IDLING_RIGHT = 0;
@@ -128,22 +130,29 @@ public class Player extends GameObject {
 
     @Override
     public void render(GraphicsContext gc) {
-        getCurrentSpriteSheet().draw(gc, START_POSITION, getY(), getCurrentSpriteState(), getLastSpriteState());
+        getCurrentSpriteSheet().render(gc, START_POSITION, getY(), getCurrentSpriteState(), getLastSpriteState());
+
+        // Draw bounds
+        gc.setFill(Color.BLACK);
+        gc.strokeRect(START_POSITION + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 10, WIDTH - 40, 10);
+        gc.strokeRect(START_POSITION + 20, getY(), WIDTH - 40, 10);
+        gc.strokeRect(START_POSITION + WIDTH - 10, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        gc.strokeRect(START_POSITION, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     @Override
     public Rectangle getBoundsBottom() {
-        return new Rectangle(START_POSITION, getY() + getCurrentSpriteSheet().getSpriteHeight() - 10, getCurrentSpriteSheet().getSpriteWidth(), 10);
+        return new Rectangle(START_POSITION + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 10, WIDTH - 40, 10);
     }
 
     @Override
     public Rectangle getBoundsTop() {
-        return new Rectangle(START_POSITION, getY(), getCurrentSpriteSheet().getSpriteWidth(), 10);
+        return new Rectangle(START_POSITION + 20, getY(), WIDTH - 40, 10);
     }
 
     @Override
     public Rectangle getBoundsRight() {
-        return new Rectangle(START_POSITION + getCurrentSpriteSheet().getSpriteWidth() - 10, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        return new Rectangle(START_POSITION + WIDTH - 10, getY() + 10, 10, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     @Override

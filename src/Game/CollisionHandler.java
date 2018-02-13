@@ -36,11 +36,11 @@ public class CollisionHandler {
                 handleTileBottomCollision();
             }
 
-            if (player.getBoundsLeft().intersects(tile.getBoundsRight()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT) {
+            if (player.getBoundsLeft().intersects(tile.getBoundsRight()) && player.getCurrentSpriteState() != Player.PLAYER_RUNNING_RIGHT) {
                 handleTileRightCollision();
             }
 
-            if (player.getBoundsRight().intersects(tile.getBoundsLeft()) && player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT) {
+            if (player.getBoundsRight().intersects(tile.getBoundsLeft()) && player.getCurrentSpriteState() != Player.PLAYER_RUNNING_LEFT) {
                 handleTileLeftCollision();
             }
         }
