@@ -41,7 +41,7 @@ public class CollisionHandler {
                     || c.getBoundsBottom().intersects(player.getBoundsBottom()) || c.getBoundsBottom().intersects(player.getBoundsLeft())) {
                 iterator.remove();
                 level.addCoinCounter();
-                soundEffects.COIN.play();
+                SoundEffects.COIN.play();
             }
         }
     }

@@ -192,8 +192,8 @@ public class GameController {
         }
 
         coinAmoount = level.getCoins().size();
-        player = new Player(200, 400);
-        collisionHandler = new CollisionHandler(player, level,soundEffects);
+        player = new Player(Player.START_POSITION_X, Player.START_POSITION_Y);
+        collisionHandler = new CollisionHandler(player, level, soundEffects);
 
         final long startNanoTime = System.nanoTime();
 
@@ -215,7 +215,7 @@ public class GameController {
         drawBackground(gc);
         player.handleSpriteState();
         collisionHandler.tick();
-        level.tick(gc, player.getVelocityX(), player.getVelocityY(), time);
+        level.tick(gc, player, time);
         player.tick(gc);
         //TODO: Make tick for GUI()
         gc.fillText(level.getCoinCounter() + "/" + coinAmoount,60,40);
@@ -223,7 +223,7 @@ public class GameController {
     }
 
     private void checkGameOver() {
-        if (player.getY() >= CANVAS_HEIGHT) {
+        if (player.getY() >= CANVAS_HEIGHT || player.getHp() <= 0) {
             gameOver = true;
             gameOverPane.setVisible(true);
             gameOverText.setVisible(true);

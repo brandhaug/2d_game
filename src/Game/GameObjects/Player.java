@@ -1,6 +1,5 @@
 package Game.GameObjects;
 
-import Game.GameController;
 import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -9,7 +8,8 @@ import java.awt.*;
 
 public class Player extends GameObject {
 
-    private final int START_POSITION = 200;
+    public static final int START_POSITION_X = 200;
+    public static final int START_POSITION_Y = 500;
     private final int WIDTH = 72;
 
     // States
@@ -39,29 +39,36 @@ public class Player extends GameObject {
     private int hp = 100; //Hit Points
 
 
+    private int lastY;
+
+    public int getLastY() {
+        return lastY;
+    }
+
     public Player(int x, int y) {
         super(x, y);
         initializeSpriteSheets();
+        lastY = y;
     }
 
     @Override
     public void setX(int x) {
         //TODO: Sette vegg helt til venstre i stedet?
-        if (x >= START_POSITION) {
+        if (x >= START_POSITION_X) {
             super.setX(x);
         }
     }
 
-    public void setHp(int hp){
+    public void setHp(int hp) {
         this.hp = hp;
     }
 
-    public int getHp(){
+    public int getHp() {
         return hp;
     }
 
     public int getStartPosition() {
-        return START_POSITION;
+        return START_POSITION_X;
     }
 
     public boolean getLastSpriteRight(){
@@ -81,6 +88,8 @@ public class Player extends GameObject {
     private void handleVelocityY() {
         int MAX_VELOCITY_FALLING = 13;
         int MAX_VELOCITY_JUMPING = -35;
+
+        lastY = getY();
 
         if (getVelocityY() >= MAX_VELOCITY_FALLING) {
             setY(getY() + MAX_VELOCITY_FALLING);
@@ -146,34 +155,34 @@ public class Player extends GameObject {
 
     @Override
     public void render(GraphicsContext gc) {
-        getCurrentSpriteSheet().render(gc, START_POSITION, getY(), getCurrentSpriteState(), getLastSpriteState());
+        getCurrentSpriteSheet().render(gc, START_POSITION_X, getY(), getCurrentSpriteState(), getLastSpriteState());
 
         // Draw bounds
         gc.setFill(Color.BLACK);
-        gc.strokeRect(START_POSITION + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 20, WIDTH - 40, 20);
-        gc.strokeRect(START_POSITION + 20, getY(), WIDTH - 40, 20);
-        gc.strokeRect(START_POSITION + WIDTH - 20, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
-        gc.strokeRect(START_POSITION, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        gc.strokeRect(START_POSITION_X + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 20, WIDTH - 40, 20);
+        gc.strokeRect(START_POSITION_X + 20, getY(), WIDTH - 40, 20);
+        gc.strokeRect(START_POSITION_X + WIDTH - 20, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        gc.strokeRect(START_POSITION_X, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     @Override
     public Rectangle getBoundsBottom() {
-        return new Rectangle(START_POSITION + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 20, WIDTH - 40, 20);
+        return new Rectangle(START_POSITION_X + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 20, WIDTH - 40, 20);
     }
 
     @Override
     public Rectangle getBoundsTop() {
-        return new Rectangle(START_POSITION + 20, getY(), WIDTH - 40, 20);
+        return new Rectangle(START_POSITION_X + 20, getY(), WIDTH - 40, 20);
     }
 
     @Override
     public Rectangle getBoundsRight() {
-        return new Rectangle(START_POSITION + WIDTH - 20, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        return new Rectangle(START_POSITION_X + WIDTH - 20, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     @Override
     public Rectangle getBoundsLeft() {
-        return new Rectangle(START_POSITION, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        return new Rectangle(START_POSITION_X, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     public void setRightCollision(boolean rightCollision) {
@@ -182,5 +191,21 @@ public class Player extends GameObject {
 
     public void setLeftCollision(boolean leftCollision) {
         this.leftCollision = leftCollision;
+    }
+
+    public boolean isFalling() {
+        return getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT || getCurrentSpriteState() == Player.PLAYER_FALLING_LEFT;
+    }
+
+    public boolean isJumping() {
+        return getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT || getCurrentSpriteState() == Player.PLAYER_JUMPING_LEFT;
+    }
+
+    public boolean isIdling() {
+        return getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || getCurrentSpriteState() == Player.PLAYER_IDLING_LEFT;
+    }
+
+    public boolean isRunning() {
+        return getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT;
     }
 }

@@ -18,11 +18,7 @@ public enum SoundEffects {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
             effectClip = AudioSystem.getClip();
             effectClip.open(audioInputStream);
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (LineUnavailableException e) {
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
     }
