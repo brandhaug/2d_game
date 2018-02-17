@@ -23,6 +23,7 @@ public class Level {
     private int lastTileY;
     private int currentTileY;
 
+
     public Level(String fileName) throws FileNotFoundException {
         tiles = new ArrayList<>();
         coins = new ArrayList<>();
@@ -56,12 +57,26 @@ public class Level {
     public void tick(GraphicsContext gc, Player player, double time) {
         setPlayerIntersectionHeights(player);
         render(gc, player, time);
+
+        if (moveCameraY && firstIntersectionMade) {
+            System.out.println("Move Camera: " + (currentTileY - lastTileY));
+        }
+
+        if (!firstIntersectionMade) {
+            for (Tile tile : getTiles()) {
+                if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isFalling()) {
+                    firstIntersectionMade = true;
+                    break;
+                }
+            }
+        }
+        moveCameraY = false;
     }
 
     private void setPlayerIntersectionHeights(Player player) {
-        //TODO: Denne metoden blir avfyrt for tidlig fordi player sin spritesheet er "idling/running" i starte når player faller ned fra Y-start posisjon.
         if (player.isIdling() || player.isRunning()) {
-            if (Math.abs(player.getY() - currentTileY) > 10) {
+            int minMovementHeight = 30;
+            if (Math.abs(player.getY() - currentTileY) > minMovementHeight) {
                 lastTileY = currentTileY;
                 moveCameraY = true;
             }
@@ -70,31 +85,21 @@ public class Level {
     }
 
     private void moveCameraY(Player player, GameObject gameObject) {
-        if (moveCameraY) {
-            if (firstIntersectionMade) {
-                int cameraDistance = Math.abs(currentTileY - lastTileY);
-                int divider = 10;
-
-                //Move camera
-                if (currentTileY - lastTileY < 0) {
-                    if (gameObject != null) {
-                        gameObject.setY(gameObject.getY() + (cameraDistance / divider));
-                    } else {
-                        player.setY(player.getY() + (cameraDistance / divider));
-                    }
-                } else if (currentTileY - lastTileY > 0) {
-                    if (gameObject != null) {
-                        gameObject.setY(gameObject.getY() - (cameraDistance / divider));
-                    } else {
-                        player.setY(player.getY() - (cameraDistance / divider));
-                    }
+        if (moveCameraY && firstIntersectionMade) {
+            int cameraDistance = Math.abs(currentTileY - lastTileY);
+            //Move camera
+            int divider = 10;
+            if (currentTileY - lastTileY < 0) {
+                if (gameObject != null) {
+                    gameObject.setY(gameObject.getY() + (cameraDistance / divider));
+                } else {
+                    player.setY(player.getY() + (cameraDistance / divider));
                 }
-            } else {
-                for (Tile tile : getTiles()) {
-                    if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isFalling()) {
-                        firstIntersectionMade = true;
-                        break;
-                    }
+            } else if (currentTileY - lastTileY > 0) {
+                if (gameObject != null) {
+                    gameObject.setY(gameObject.getY() - (cameraDistance / divider));
+                } else {
+                    player.setY(player.getY() - (cameraDistance / divider));
                 }
             }
         }
@@ -107,12 +112,6 @@ public class Level {
         renderTiles(gc, player);
         renderCoins(gc, player);
         renderEnemies(gc, player, time);
-
-        if (moveCameraY && firstIntersectionMade) {
-            System.out.println("Move Camera: " + player.getY());
-        }
-
-        moveCameraY = false;
     }
 
     private void renderTiles(GraphicsContext gc, Player player) {
