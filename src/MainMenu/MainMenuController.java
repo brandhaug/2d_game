@@ -147,7 +147,7 @@ public class MainMenuController {
         Parent root = null;
         try {
             root = FXMLLoader.load(getClass().getResource("../CreateLevel/CreateLevel.fxml"));
-            root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
+//            root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
             stage.setScene(new Scene(root));
         } catch (IOException e) {
             e.printStackTrace();
