@@ -9,10 +9,17 @@
       <Canvas fx:id="canvas" height="640.0" width="1152.0" />
       <AnchorPane layoutY="720.0" prefHeight="80" prefWidth="1280" style="-fx-background-color: Black;">
           <children>
-            <Button fx:id="tileButton" layoutX="20" mnemonicParsing="false" onAction="#chooseTile" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/tile.png');" />
-            <Button fx:id="coinButton" layoutX="100" mnemonicParsing="false" onAction="#chooseCoin" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/coin.png');" />
-            <Button fx:id="enemyButton" layoutX="180" mnemonicParsing="false" onAction="#chooseEnemy" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/mace.png');" />
-            <Button fx:id="loadButton" layoutX="1200" mnemonicParsing="false" onAction="#openLoadFile" prefHeight="64.0" prefWidth="64.0" />
+            <Button fx:id="tileButton" layoutX="20.0" layoutY="4.0" mnemonicParsing="false" onAction="#chooseTile" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/tile.png');" />
+            <Button fx:id="coinButton" layoutX="120" layoutY="4.0" mnemonicParsing="false" onAction="#chooseCoin" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/coin.png');" />
+            <Button fx:id="enemyButton" layoutX="220" layoutY="4.0" mnemonicParsing="false" onAction="#chooseEnemy" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/mace.png');" />
+            <Button fx:id="eraseButton" layoutX="320" layoutY="4.0" mnemonicParsing="false" onAction="#chooseEraser" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/erase.png');" />
+              
+            <Button fx:id="stepBackwardButton" layoutX="620" layoutY="4.0" mnemonicParsing="false" onAction="#stepBackward" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/revert.png');" />
+            <Button fx:id="stepForwardButton" layoutX="720" layoutY="4.0" mnemonicParsing="false" onAction="#stepForward" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/redo.png');" />
+
+
+            <Button fx:id="loadButton" layoutX="920" layoutY="4.0" mnemonicParsing="false" onAction="#openLoadFile" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/load.png');"/>
+            <Button fx:id="saveButton" layoutX="1020" layoutY="4.0" mnemonicParsing="false" onAction="#openSaveFile" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/save.png');"/>
           </children>
       </AnchorPane>
    </children>
