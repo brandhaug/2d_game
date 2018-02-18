@@ -135,6 +135,7 @@ public class Level {
     private void renderEnemies(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
         for (Enemy enemy : getEnemies()) {
             enemy.setX(enemy.getX() - playerVelocityX);
+            //enemy.setY(500);
             enemy.setY((int) (((int) 325 + 128 * Math.sin(time))));
             enemy.tick(gc);
         }
