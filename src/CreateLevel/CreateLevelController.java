@@ -107,7 +107,6 @@ public class CreateLevelController {
             System.out.println("Can't redo");
         } else {
             stepDiff--;
-            System.out.println(stepDiff);
             Step step = steps.get(steps.size() - stepDiff - 1);
             editCell(step.getX(), step.getY(), step.getCurrentValue(), false);
         }
@@ -124,7 +123,6 @@ public class CreateLevelController {
     }
 
     public void updateGui() {
-        System.out.println(toolEnabled);
 //        String border = "-fx-border-color: green;"
 //                + "-fx-border-width: 2;\n";
 //        String noBorder = "-fx-border-color: none;\n"
