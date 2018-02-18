@@ -16,10 +16,11 @@ public class Level {
     private List<Enemy> enemies;
 
     private char[][] map;
-    private int coinCounter = 0;
 
-    private boolean firstIntersectionMade;
     private boolean moveCameraY;
+    private boolean firstIntersectionMade;
+
+    private int coinCounter = 0;
     private int lastTileY;
     private int currentTileY;
 
