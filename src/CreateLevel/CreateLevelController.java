@@ -11,6 +11,9 @@ import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CreateLevelController {
 
     @FXML
@@ -54,6 +57,9 @@ public class CreateLevelController {
 
     private boolean dragging = false;
 
+    private List<Step> steps;
+    private int stepDiff;
+
 
     @FXML
     public void chooseTile() {
@@ -86,12 +92,25 @@ public class CreateLevelController {
 
     @FXML
     public void stepBackward() {
-        System.out.println("back");
+        if (steps.size() <= stepDiff){
+            System.out.println("Can't undo");
+        } else {
+            stepDiff++;
+            Step step = steps.get(steps.size() - stepDiff);
+            editCell(step.getX(), step.getY(), step.getLastValue(), true);
+        }
     }
 
     @FXML
     public void stepForward() {
-        System.out.println("forward");
+        if (stepDiff == 0) {
+            System.out.println("Can't redo");
+        } else {
+            stepDiff--;
+            System.out.println(stepDiff);
+            Step step = steps.get(steps.size() - stepDiff - 1);
+            editCell(step.getX(), step.getY(), step.getCurrentValue(), true);
+        }
     }
 
     @FXML
@@ -122,7 +141,7 @@ public class CreateLevelController {
         } else {
             int y = (int) (Math.floor((mouseEvent.getY() + currentOffsetY) / GRID_SIZE));
             int x = (int) (Math.floor((mouseEvent.getX() + currentOffsetX) / GRID_SIZE));
-            editCell(x, y);
+            editCell(x, y, toolEnabled, false);
         }
     }
 
@@ -145,7 +164,8 @@ public class CreateLevelController {
     public void initialize() {
         canvasHeight = (int) canvas.getHeight();
         canvasWidth = (int) canvas.getWidth();
-        
+        steps = new ArrayList<>();
+
         initializeSprites();
 
         gc = canvas.getGraphicsContext2D();
@@ -162,11 +182,25 @@ public class CreateLevelController {
         tile = new Image("/Resources/buttons/tile.png");
     }
 
-    private void editCell(int x, int y) {
+    private void editCell(int x, int y, char tool, boolean movingDiff) {
         gc.clearRect((x * GRID_SIZE) - currentOffsetX + 2, (y * GRID_SIZE) - currentOffsetY + 2, 61, 61);
-        map[y][x] = toolEnabled;
+        System.out.println("Edit " + stepDiff);
 
-        if (toolEnabled == ERASER_ENABLED) {
+        if (!movingDiff) {
+            while (stepDiff > 0) {
+                stepDiff--;
+                System.out.println("Removing " + stepDiff);
+                steps.remove(steps.size() - stepDiff - 1);
+            }
+
+            steps.add(new Step(x, y, toolEnabled, map[y][x]));
+        } else {
+//            System.out.println("Moving " + stepDiff);
+        }
+
+        map[y][x] = tool;
+
+        if (tool == ERASER_ENABLED) {
 
         } else {
             gc.drawImage(imageEnabled, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
