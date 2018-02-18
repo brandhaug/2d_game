@@ -29,8 +29,8 @@ public class CreateLevelController {
 
     private char[][] map;
 
-    private final int CANVAS_HEIGHT = 640;
-    private final int CANVAS_WIDTH = 1280;
+    private int canvasWidth;
+    private int canvasHeight;
 
 
     private final char TILE_ENABLED = '-';
@@ -47,8 +47,10 @@ public class CreateLevelController {
 
     private int pressedX;
     private int pressedY;
-    private int offsetX;
-    private int offsetY;
+    private int currentOffsetX = 0;
+    private int currentOffsetY = 0;
+    private int lastOffsetX = 0;
+    private int lastOffsetY = 0;
 
     private boolean dragging = false;
 
@@ -118,27 +120,32 @@ public class CreateLevelController {
         if (dragging) {
             dragging = false;
         } else {
-            int y = (int) (Math.floor(mouseEvent.getY() / GRID_SIZE));
-            int x = (int) (Math.floor(mouseEvent.getX() / GRID_SIZE));
-            System.out.println("Clicked");
+            int y = (int) (Math.floor((mouseEvent.getY() + currentOffsetY) / GRID_SIZE));
+            int x = (int) (Math.floor((mouseEvent.getX() + currentOffsetX) / GRID_SIZE));
             editCell(x, y);
         }
     }
 
+    public void mouseDragged(MouseEvent mouseEvent) {
+        dragging = true;
+        currentOffsetX = (int) (lastOffsetX + pressedX - mouseEvent.getX());
+        currentOffsetY = (int) (lastOffsetY + pressedY - mouseEvent.getY());
 
-    private void editCell(int x, int y) {
-        gc.clearRect(x * GRID_SIZE + 2  - offsetX, y * GRID_SIZE + 2  - offsetX, 61, 61);
-        map[y][x] = toolEnabled;
+        render(false);
+    }
 
-        if (toolEnabled == ERASER_ENABLED) {
-
-        } else {
-            gc.drawImage(imageEnabled, (x * GRID_SIZE) - offsetX, (y * GRID_SIZE) - offsetY);
-        }
+    public void mousePressed(MouseEvent mouseEvent) {
+        pressedX = (int) mouseEvent.getX();
+        pressedY = (int) mouseEvent.getY();
+        lastOffsetX = currentOffsetX;
+        lastOffsetY = currentOffsetY;
     }
 
     @FXML
     public void initialize() {
+        canvasHeight = (int) canvas.getHeight();
+        canvasWidth = (int) canvas.getWidth();
+        
         initializeSprites();
 
         gc = canvas.getGraphicsContext2D();
@@ -146,13 +153,7 @@ public class CreateLevelController {
         gc.setFill(Color.BLACK);
 
         map = new char[100][1000];
-
-        for (int y = 0; y < map.length; y++) {
-            for (int x = 0; x < map[0].length; x++) {
-                gc.strokeRect((x * GRID_SIZE), (y * GRID_SIZE), GRID_SIZE, GRID_SIZE);
-                map[y][x] = '0';
-            }
-        }
+        render(true);
     }
 
     private void initializeSprites() {
@@ -161,28 +162,34 @@ public class CreateLevelController {
         tile = new Image("/Resources/buttons/tile.png");
     }
 
+    private void editCell(int x, int y) {
+        gc.clearRect((x * GRID_SIZE) - currentOffsetX + 2, (y * GRID_SIZE) - currentOffsetY + 2, 61, 61);
+        map[y][x] = toolEnabled;
 
-    public void mouseDragged(MouseEvent mouseEvent) {
-            dragging = true;
-            offsetX += (int) (pressedX - mouseEvent.getX());
-            offsetY += (int) (pressedY - mouseEvent.getY());
+        if (toolEnabled == ERASER_ENABLED) {
 
-        render(offsetX, offsetY);
+        } else {
+            gc.drawImage(imageEnabled, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
+        }
     }
 
-    public void mousePressed(MouseEvent mouseEvent) {
-        pressedX = (int) mouseEvent.getX();
-        pressedY = (int) mouseEvent.getY();
-    }
+    public void render(boolean initialize) {
+        gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
-    public void mouseReleased(MouseEvent mouseEvent) {
-    }
-
-    public void render(int offsetX, int offsetY) {
-        gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        for (int y = 0; y < map.length; y++) {
-            for (int x = 0; x < map[0].length; x++) {
-                gc.strokeRect((x * GRID_SIZE) - offsetX, (y * GRID_SIZE) - offsetY, GRID_SIZE, GRID_SIZE);
+        for (int y = map.length - 1; y > 0; y--) {
+            for (int x = 0; x < map[y].length; x++) {
+                gc.strokeRect((x * GRID_SIZE) - currentOffsetX, (canvasHeight - ((map.length - y) * GRID_SIZE) - currentOffsetY), GRID_SIZE, GRID_SIZE);
+                if (initialize) {
+                    map[y][x] = '0';
+                } else {
+                    if (map[y][x] == TILE_ENABLED) {
+                        gc.drawImage(tile, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
+                    } else if (map[y][x] == ENEMY_ENABLED) {
+                        gc.drawImage(mace, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
+                    } else if (map[y][x] == COIN_ENABLED) {
+                        gc.drawImage(coin, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
+                    }
+                }
             }
         }
     }
