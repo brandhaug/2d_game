@@ -151,6 +151,7 @@ public class GameController {
         if (!gamePaused && !gameOver) {
             if (code == KeyCode.RIGHT || code == KeyCode.D) {
                 player.setVelocityX(10);
+                //soundEffects.STEP.play();
             }
             if (code == KeyCode.LEFT || code == KeyCode.A) {
                 player.setVelocityX(-10);
@@ -223,13 +224,14 @@ public class GameController {
     }
 
     private void checkGameOver() {
-        if (player.getY() >= CANVAS_HEIGHT) {
+        if (player.getY() >= CANVAS_HEIGHT || player.getHp() <= 0) {
             gameOver = true;
             gameOverPane.setVisible(true);
             gameOverText.setVisible(true);
             gameOverMainMenuButton.setVisible(true);
             gameOverRetryButton.setVisible(true);
             canvas.setOpacity(0.7f);
+            soundEffects.GAMEOVER.play();
         }
     }
 

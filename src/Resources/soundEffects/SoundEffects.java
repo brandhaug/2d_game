@@ -7,7 +7,10 @@ import java.util.prefs.Preferences;
 
 public enum SoundEffects {
 
-    COIN("./Resources/music/coinCollect.wav");
+    COIN("./Resources/music/coinCollect.wav"),
+    HIT("./Resources/music/hit.wav"),
+    GAMEOVER("./Resources/music/gameOver.wav");
+    //STEP("./Resources/music/step.wav");
 
     private Clip effectClip;
     private Preferences preferences = Preferences.userRoot();
