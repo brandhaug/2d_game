@@ -46,7 +46,7 @@ public class CreateLevelController {
     private Image mace;
     private Image tile;
     private Image coin;
-    private Image imageEnabled;
+    private Image currentImage;
 
     private int pressedX;
     private int pressedY;
@@ -64,21 +64,21 @@ public class CreateLevelController {
     @FXML
     public void chooseTile() {
         toolEnabled = TILE_ENABLED;
-        imageEnabled = tile;
+        currentImage = tile;
         updateGui();
     }
 
     @FXML
     public void chooseCoin() {
         toolEnabled = COIN_ENABLED;
-        imageEnabled = coin;
+        currentImage = coin;
         updateGui();
     }
 
     @FXML
     public void chooseEnemy() {
         toolEnabled = ENEMY_ENABLED;
-        imageEnabled = mace;
+        currentImage = mace;
         updateGui();
 
     }
@@ -92,12 +92,12 @@ public class CreateLevelController {
 
     @FXML
     public void stepBackward() {
-        if (steps.size() <= stepDiff){
+        if (steps.size() <= stepDiff) {
             System.out.println("Can't undo");
         } else {
             stepDiff++;
             Step step = steps.get(steps.size() - stepDiff);
-            editCell(step.getX(), step.getY(), step.getLastValue(), true);
+            editCell(step.getX(), step.getY(), step.getLastValue(), false);
         }
     }
 
@@ -109,7 +109,7 @@ public class CreateLevelController {
             stepDiff--;
             System.out.println(stepDiff);
             Step step = steps.get(steps.size() - stepDiff - 1);
-            editCell(step.getX(), step.getY(), step.getCurrentValue(), true);
+            editCell(step.getX(), step.getY(), step.getCurrentValue(), false);
         }
     }
 
@@ -141,7 +141,7 @@ public class CreateLevelController {
         } else {
             int y = (int) (Math.floor((mouseEvent.getY() + currentOffsetY) / GRID_SIZE));
             int x = (int) (Math.floor((mouseEvent.getX() + currentOffsetX) / GRID_SIZE));
-            editCell(x, y, toolEnabled, false);
+            editCell(x, y, toolEnabled, true);
         }
     }
 
@@ -182,20 +182,14 @@ public class CreateLevelController {
         tile = new Image("/Resources/buttons/tile.png");
     }
 
-    private void editCell(int x, int y, char tool, boolean movingDiff) {
+    private void editCell(int x, int y, char tool, boolean addStep) {
+        updateCurrentImage(tool);
+
         gc.clearRect((x * GRID_SIZE) - currentOffsetX + 2, (y * GRID_SIZE) - currentOffsetY + 2, 61, 61);
-        System.out.println("Edit " + stepDiff);
 
-        if (!movingDiff) {
-            while (stepDiff > 0) {
-                stepDiff--;
-                System.out.println("Removing " + stepDiff);
-                steps.remove(steps.size() - stepDiff - 1);
-            }
+        if (addStep) {
+            addStep(x, y, tool);
 
-            steps.add(new Step(x, y, toolEnabled, map[y][x]));
-        } else {
-//            System.out.println("Moving " + stepDiff);
         }
 
         map[y][x] = tool;
@@ -203,7 +197,30 @@ public class CreateLevelController {
         if (tool == ERASER_ENABLED) {
 
         } else {
-            gc.drawImage(imageEnabled, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
+            gc.drawImage(currentImage, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
+        }
+    }
+
+    private void addStep(int x, int y, char tool) {
+        while (stepDiff > 0) {
+            stepDiff--;
+            steps.remove(steps.size() - stepDiff - 1);
+        }
+
+        if (tool == map[y][x]) {
+            System.out.println("Cant replace cell with the same object");
+        } else {
+            steps.add(new Step(x, y, tool, map[y][x]));
+        }
+    }
+
+    private void updateCurrentImage(int tool) {
+        if (tool == TILE_ENABLED) {
+            currentImage = tile;
+        } else if (tool == ENEMY_ENABLED) {
+            currentImage = mace;
+        } else if (tool == COIN_ENABLED) {
+            currentImage = coin;
         }
     }
 
@@ -212,17 +229,12 @@ public class CreateLevelController {
 
         for (int y = map.length - 1; y > 0; y--) {
             for (int x = 0; x < map[y].length; x++) {
+                updateCurrentImage(map[y][x]);
                 gc.strokeRect((x * GRID_SIZE) - currentOffsetX, (canvasHeight - ((map.length - y) * GRID_SIZE) - currentOffsetY), GRID_SIZE, GRID_SIZE);
                 if (initialize) {
                     map[y][x] = '0';
-                } else {
-                    if (map[y][x] == TILE_ENABLED) {
-                        gc.drawImage(tile, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
-                    } else if (map[y][x] == ENEMY_ENABLED) {
-                        gc.drawImage(mace, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
-                    } else if (map[y][x] == COIN_ENABLED) {
-                        gc.drawImage(coin, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
-                    }
+                } else if (map[y][x] != ERASER_ENABLED) {
+                    gc.drawImage(currentImage,(x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
                 }
             }
         }
