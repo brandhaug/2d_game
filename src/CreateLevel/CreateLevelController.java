@@ -191,7 +191,7 @@ public class CreateLevelController {
         if (dragging) {
             dragging = false;
         } else {
-            int y = (int) (Math.floor((mouseEvent.getY() + currentOffsetY) / GRID_SIZE));
+            int y = (int) (Math.floor((mouseEvent.getY() + currentOffsetY) / GRID_SIZE) + (map.length - (canvasHeight/GRID_SIZE)));
             int x = (int) (Math.floor((mouseEvent.getX() + currentOffsetX) / GRID_SIZE));
             editCell(x, y, toolEnabled, true);
         }
@@ -237,7 +237,7 @@ public class CreateLevelController {
     private void editCell(int x, int y, char tool, boolean addStep) {
         updateCurrentImage(tool);
 
-        gc.clearRect((x * GRID_SIZE) - currentOffsetX + 2, (y * GRID_SIZE) - currentOffsetY + 2, 61, 61);
+        gc.clearRect((x * GRID_SIZE) - currentOffsetX + 2, canvasHeight - ((map.length - y) * GRID_SIZE) - currentOffsetY + 2, 61, 61);
 
         if (addStep) {
             addStep(x, y, tool);
@@ -249,7 +249,7 @@ public class CreateLevelController {
         if (tool == ERASER_ENABLED) {
 
         } else {
-            gc.drawImage(currentImage, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
+            renderCell(x, y);
         }
     }
 
@@ -286,9 +286,13 @@ public class CreateLevelController {
                 if (initialize) {
                     map[y][x] = '0';
                 } else if (map[y][x] != ERASER_ENABLED) {
-                    gc.drawImage(currentImage, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
+                    renderCell(x, y);
                 }
             }
         }
+    }
+
+    private void renderCell(int x, int y) {
+        gc.drawImage(currentImage, (x * GRID_SIZE) - currentOffsetX, (canvasHeight - ((map.length - y) * GRID_SIZE) - currentOffsetY));
     }
 }
