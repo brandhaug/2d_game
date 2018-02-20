@@ -2,16 +2,12 @@ package Game.Levels;
 
 import CreateLevel.MapParser;
 import Game.GameController;
-import Game.GameObjects.Coin;
-import Game.GameObjects.Enemy;
-import Game.GameObjects.Tile;
-import Game.GameObjects.TileType;
+import Game.GameObjects.*;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -24,12 +20,19 @@ public class Level {
 
     private char[][] map;
 
+    private boolean moveCameraY;
+    private boolean firstIntersectionMade;
     private int coinCounter = 0;
+    private int lastTileY;
+    private int currentTileY;
+
 
     public Level(String fileName) throws FileNotFoundException {
         tiles = new ArrayList<>();
         coins = new ArrayList<>();
         enemies = new ArrayList<>();
+        firstIntersectionMade = false;
+        moveCameraY = false;
         char[][] map = loadMap(fileName);
         parseMap(map);
     }
@@ -54,7 +57,91 @@ public class Level {
         return coinCounter;
     }
 
-    public void parseMap(char[][] map) {
+    public void tick(GraphicsContext gc, Player player, double time) {
+        setPlayerIntersectionHeights(player);
+        render(gc, player, time);
+
+        if (moveCameraY && firstIntersectionMade) {
+            System.out.println("Move Camera: " + (currentTileY - lastTileY));
+            moveCameraY = false;
+        }
+
+        if (!firstIntersectionMade) {
+            for (Tile tile : getTiles()) {
+                if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isFalling()) {
+                    firstIntersectionMade = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    private void setPlayerIntersectionHeights(Player player) {
+        if (player.isIdling() || player.isRunning()) {
+            int minMovementHeight = 30;
+            if (Math.abs(player.getY() - currentTileY) > minMovementHeight) {
+                lastTileY = currentTileY;
+                moveCameraY = true;
+            }
+            currentTileY = player.getY();
+        }
+    }
+
+    private void moveCameraY(Player player, GameObject gameObject) {
+        if (moveCameraY && firstIntersectionMade) {
+            int cameraDistance = Math.abs(currentTileY - lastTileY);
+            int divider = 10;
+            //Move camera
+            if (currentTileY - lastTileY < 0) {
+                if (gameObject != null) {
+                    gameObject.setY(gameObject.getY() + (cameraDistance / divider));
+                } else {
+                    player.setY(player.getY() + (cameraDistance / divider));
+                }
+            } else if (currentTileY - lastTileY > 0) {
+                if (gameObject != null) {
+                    gameObject.setY(gameObject.getY() - (cameraDistance / divider));
+                } else {
+                    player.setY(player.getY() - (cameraDistance / divider));
+                }
+            }
+        }
+    }
+
+    private void render(GraphicsContext gc, Player player, double time) {
+        //Move _PLAYER_ camera Y
+        moveCameraY(player, null);
+
+        renderTiles(gc, player);
+        renderCoins(gc, player);
+        renderEnemies(gc, player, time);
+    }
+
+    private void renderTiles(GraphicsContext gc, Player player) {
+        for (Tile tile : getTiles()) {
+            tile.setX(tile.getX() - player.getVelocityX());
+            moveCameraY(player, tile);
+            tile.tick(gc);
+        }
+    }
+
+    private void renderCoins(GraphicsContext gc, Player player) {
+        for (Coin coin : getCoins()) {
+            coin.setX(coin.getX() - player.getVelocityX());
+            moveCameraY(player, coin);
+            coin.tick(gc);
+        }
+    }
+
+    private void renderEnemies(GraphicsContext gc, Player player, double time) {
+        for (Enemy enemy : getEnemies()) {
+            enemy.setX(enemy.getX() - player.getVelocityX());
+            enemy.setY((int) (300 + (128 * Math.sin(time))));
+            enemy.tick(gc);
+        }
+    }
+
+    private void parseMap(char[][] map) {
         final char TILE = '-';
         final char COIN = 'c';
         final char ENEMY = 'e';

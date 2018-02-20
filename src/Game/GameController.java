@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.w3c.dom.events.MutationEvent;
@@ -198,8 +199,8 @@ public class GameController {
         }
 
         coinAmoount = level.getCoins().size();
-        player = new Player(200, 400);
-        collisionHandler = new CollisionHandler(player, level,soundEffects);
+        player = new Player(Player.START_POSITION_X, Player.START_POSITION_Y);
+        collisionHandler = new CollisionHandler(player, level, soundEffects);
 
         final long startNanoTime = System.nanoTime();
 
@@ -228,10 +229,11 @@ public class GameController {
         drawBackground(gc);
         player.handleSpriteState();
         collisionHandler.tick();
-        level.tick(gc, player.getVelocityX(), player.getVelocityY(), time);
+        level.tick(gc, player, time);
         player.tick(gc);
         //playerMoving();
         //TODO: Make tick for GUI()
+        gc.setFill(Color.BLACK);
         gc.fillText(level.getCoinCounter() + "/" + coinAmoount,60,40);
         checkGameOver();
     }
