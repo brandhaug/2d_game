@@ -69,11 +69,11 @@ public class Player extends GameObject {
         return hp;
     }
 
-    public void setAlive(boolean isAlive){
+    public void setAlive(boolean isAlive) {
         this.isAlive = isAlive;
     }
 
-    public boolean getAlive(){
+    public boolean getAlive() {
         return isAlive;
     }
 
@@ -81,7 +81,7 @@ public class Player extends GameObject {
         return START_POSITION_X;
     }
 
-    public boolean getLastSpriteRight(){
+    public boolean getLastSpriteRight() {
         return lastSpriteRight;
     }
 
@@ -89,6 +89,40 @@ public class Player extends GameObject {
         handleVelocityX();
         handleVelocityY();
         render(gc);
+        drawHealthBar(gc);
+    }
+
+    private void drawHealthBar(GraphicsContext gc) {
+        short healthX = 100;
+        short healthY = 24;
+        short healthWidth = 80;
+        short healthHeight = 25;
+        short healthArc = 10;
+
+        // Health bar background
+        gc.setGlobalAlpha(0.7);
+        gc.setFill(Color.DARKGRAY);
+        gc.fillRoundRect(healthX, healthY, healthWidth, healthHeight, healthArc, healthArc);
+
+        // Health bar fill
+        gc.setGlobalAlpha(1);
+        if (hp >= 50) {
+            gc.setFill(Color.LIMEGREEN);
+        } else {
+            gc.setFill(Color.RED);
+        }
+        gc.fillRoundRect(healthX, healthY, hp / 1.25, healthHeight, healthArc, healthArc);
+
+        // Health bar stroke
+        gc.setGlobalAlpha(0.5);
+        gc.setStroke(Color.BLACK);
+        gc.strokeRoundRect(healthX, healthY, healthWidth, healthHeight, healthArc, healthArc);
+
+        // Health bar text
+        gc.setGlobalAlpha(1);
+        gc.setFill(Color.BLACK);
+        String formattedHp = String.valueOf((double) hp / 100 * 100);
+        gc.fillText(formattedHp.substring(0, formattedHp.length() - 2) + "%", 187, 40);
     }
 
     private void handleVelocityX() {

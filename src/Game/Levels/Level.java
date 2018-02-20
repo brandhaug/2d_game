@@ -21,11 +21,9 @@ public class Level {
 
     private boolean moveCameraY;
     private boolean firstIntersectionMade;
-
     private int coinCounter = 0;
     private int lastTileY;
     private int currentTileY;
-    private int divider = 10;
 
 
     public Level(String fileName) throws FileNotFoundException {
@@ -63,8 +61,8 @@ public class Level {
         render(gc, player, time);
 
         if (moveCameraY && firstIntersectionMade) {
-            //System.out.println("Move Camera: " + (currentTileY - lastTileY));
-            System.out.println(player.getY());
+            System.out.println("Move Camera: " + (currentTileY - lastTileY));
+            moveCameraY = false;
         }
 
         if (!firstIntersectionMade) {
@@ -73,14 +71,6 @@ public class Level {
                     firstIntersectionMade = true;
                     break;
                 }
-            }
-        }
-
-        if (moveCameraY && firstIntersectionMade) {
-            divider -= 1;
-            if (divider == 0) {
-                moveCameraY = false;
-                divider = 10;
             }
         }
     }
@@ -99,6 +89,7 @@ public class Level {
     private void moveCameraY(Player player, GameObject gameObject) {
         if (moveCameraY && firstIntersectionMade) {
             int cameraDistance = Math.abs(currentTileY - lastTileY);
+            int divider = 10;
             //Move camera
             if (currentTileY - lastTileY < 0) {
                 if (gameObject != null) {

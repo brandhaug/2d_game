@@ -22,7 +22,7 @@ public class CollisionHandler {
     private boolean collisionOn = true;
 
 
-    public CollisionHandler(Player player, Level level,SoundEffects soundEffects) {
+    public CollisionHandler(Player player, Level level, SoundEffects soundEffects) {
         this.player = player;
         this.level = level;
         this.soundEffects = soundEffects;
@@ -35,7 +35,7 @@ public class CollisionHandler {
         handleEnemyCollision();
     }
 
-    public void handleCoinCollision(){
+    public void handleCoinCollision() {
         Iterator<Coin> iterator = level.getCoins().iterator();
 
         while (iterator.hasNext()) {
@@ -107,41 +107,37 @@ public class CollisionHandler {
     }
 
     public void handleEnemyCollision() {
-        if (collisionOn == true){
-        if (bouncing && player.getCurrentSpriteState() > 5) player.setVelocityX(0);
+        if (collisionOn) {
+            if (bouncing && player.getCurrentSpriteState() > 5) player.setVelocityX(0);
 
-        for (Enemy enemy : level.getEnemies()) {
-            if (enemy.getBoundsTop().intersects(player.getBoundsBottom())) {
-                handleEnemyTopCollision();
-                System.out.println(player.getHp());
-            }
+            for (Enemy enemy : level.getEnemies()) {
+                if (enemy.getBoundsTop().intersects(player.getBoundsBottom())) {
+                    handleEnemyTopCollision();
+                }
 
-            if (enemy.getBoundsRight().intersects(player.getBoundsLeft())) {
-                handleEnemyRightCollision();
-                System.out.println(player.getHp());
-            }
+                if (enemy.getBoundsRight().intersects(player.getBoundsLeft())) {
+                    handleEnemyRightCollision();
+                }
 
-            if (enemy.getBoundsBottom().intersects(player.getBoundsTop())) {
-                handleEnemyBottomCollision();
-                System.out.println(player.getHp());
-            }
+                if (enemy.getBoundsBottom().intersects(player.getBoundsTop())) {
+                    handleEnemyBottomCollision();
+                }
 
-            if (enemy.getBoundsLeft().intersects(player.getBoundsRight())) {
-                handleEnemyLeftCollision();
-                System.out.println(player.getHp());
+                if (enemy.getBoundsLeft().intersects(player.getBoundsRight())) {
+                    handleEnemyLeftCollision();
+                }
             }
         }
-    }
     }
 
 
     public void handleEnemyTopCollision() {
         bouncing = true;
-        if(player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT
+        if (player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT
                 || player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT) {
             player.setVelocityY(-25);
             player.setVelocityX(20);
-        }else{
+        } else {
             player.setVelocityY(-25);
             player.setVelocityX(-20);
         }
@@ -152,17 +148,17 @@ public class CollisionHandler {
     public void handleEnemyBottomCollision() {
         bouncing = true;
         playerHit();
-        if(player.getCurrentSpriteState() == Player.PLAYER_JUMPING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
+        if (player.getCurrentSpriteState() == Player.PLAYER_JUMPING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
             player.setVelocityY(20);
         }
 
-        if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT) {
+        if (player.getCurrentSpriteState() == Player.PLAYER_IDLING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT) {
             collisionOn = false;
             player.setVelocityY(-20);
         }
 
 
-        if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT) {
+        if (player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT) {
             collisionOn = false;
             player.setVelocityY(-20);
         }
@@ -189,13 +185,13 @@ public class CollisionHandler {
         playerHit();
     }
 
-    public void playerHit(){
+    public void playerHit() {
         soundEffects.HIT.play();
         player.setHp(player.getHp() - 25);
-        if(player.getHp() == 0) player.setAlive(false);
+        if (player.getHp() == 0) player.setAlive(false);
     }
 }
 
 /*
 
-*/
+ */
