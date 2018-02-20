@@ -7,10 +7,17 @@ import java.util.prefs.Preferences;
 
 public enum SoundEffects {
 
-    COIN("./Resources/music/coinCollect.wav");
+    COIN("./Resources/music/coinCollect.wav"),
+    HIT("./Resources/music/hit.wav"),
+    GAMEOVER("./Resources/music/gameOver.wav"),
+    RUN("./Resources/music/steps.wav"),
+    JUMP("./Resources/music/jump.wav"),
+    LANDING("./Resources/music/landing.wav");
 
+    public static boolean mute;
     private Clip effectClip;
-    private Preferences preferences = Preferences.userRoot();
+    double gain = 0.25;
+    float db = (float) (Math.log(gain)/Math.log(10.0) *20.0);
 
     SoundEffects(String soundFileName) {
         try {
@@ -24,9 +31,26 @@ public enum SoundEffects {
     }
 
     public void play() {
+        if(!mute) {
             effectClip.stop();
             effectClip.setFramePosition(0);
             effectClip.start();
+        }
     }
 
+    public void playLoop() {
+        if (!mute) {
+            if (!effectClip.isRunning()) {
+                FloatControl volume = (FloatControl) effectClip.getControl(FloatControl.Type.MASTER_GAIN);
+                volume.setValue(db);
+                effectClip.stop();
+                effectClip.setFramePosition(0);
+                effectClip.start();
+            }
+        }
+    }
+
+    public void stopLoop(){
+        effectClip.stop();
+    }
 }

@@ -36,6 +36,8 @@ public class Player extends GameObject {
     private boolean rightCollision = false;
     private boolean leftCollision = false;
 
+    private boolean isAlive = true;
+
     private int hp = 100; //Hit Points
 
 
@@ -65,6 +67,14 @@ public class Player extends GameObject {
 
     public int getHp() {
         return hp;
+    }
+
+    public void setAlive(boolean isAlive){
+        this.isAlive = isAlive;
+    }
+
+    public boolean getAlive(){
+        return isAlive;
     }
 
     public int getStartPosition() {

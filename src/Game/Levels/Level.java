@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Level {
     private List<Tile> tiles;
@@ -180,9 +182,8 @@ public class Level {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             if (index == 0) {
-                String[] headerStrings = line.split(" ");
-                int mapHeight = Integer.parseInt(headerStrings[0]);
-                int mapWidth = Integer.parseInt(headerStrings[1]);
+                int mapHeight = getValueFromMapHeader(line, "height");
+                int mapWidth = getValueFromMapHeader(line, "width");
                 map = new char[mapHeight][mapWidth];
             } else {
                 line = line.replaceAll("\\s", "");
@@ -196,4 +197,55 @@ public class Level {
         return map;
     }
 
+    public void tick(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
+        render(gc, playerVelocityX, playerVelocityY, time);
+    }
+
+    private void render(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
+        renderStartingPoint(gc, playerVelocityX, playerVelocityY);
+        renderTiles(gc, playerVelocityX, playerVelocityY);
+        renderCoins(gc, playerVelocityX, playerVelocityY, time);
+        renderEnemies(gc, playerVelocityX, playerVelocityY, time);
+    }
+
+    private void renderStartingPoint(GraphicsContext gc, int playerVelocityX, int playerVelocityY) {
+//        gc.drawImage(startingPointImage, 200 - playerVelocityX, 400);
+    }
+
+    private void renderTiles(GraphicsContext gc, int playerVelocityX, int playerVelocityY) {
+        for (Tile tile : getTiles()) {
+            tile.setX(tile.getX() - playerVelocityX);
+//            tile.setY(tile.getY() - playerVelocityY);
+            tile.tick(gc);
+        }
+    }
+
+    private void renderCoins(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
+        for (Coin coin : getCoins()) {
+            coin.setX(coin.getX() - playerVelocityX);
+//            coin.setY(coin.getY() - playerVelocityY);
+            coin.tick(gc);
+        }
+    }
+
+    private void renderEnemies(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
+        for (Enemy enemy : getEnemies()) {
+            enemy.setX(enemy.getX() - playerVelocityX);
+            //enemy.setY(500);
+            enemy.setY((int) (((int) 325 + 128 * Math.sin(time))));
+            enemy.tick(gc);
+        }
+    }
+
+    public int getValueFromMapHeader(String header, String name) {
+        String reg = "(?<=" + name + ": )[0-9]+";
+
+        Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(header);
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group());
+        }
+
+        return -1;
+    }
 }

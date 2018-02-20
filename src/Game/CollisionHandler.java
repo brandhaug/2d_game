@@ -9,6 +9,8 @@ import Resources.soundEffects.SoundEffects;
 
 import java.lang.management.PlatformLoggingMXBean;
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class CollisionHandler {
@@ -17,6 +19,7 @@ public class CollisionHandler {
     private SoundEffects soundEffects;
 
     private boolean bouncing = false;
+    private boolean collisionOn = true;
 
 
     public CollisionHandler(Player player, Level level,SoundEffects soundEffects) {
@@ -73,6 +76,13 @@ public class CollisionHandler {
 
     public void handleTileTopCollision() {
         //player.setY(tileY - player.getCurrentSpriteSheet().getSpriteHeight() + 10);
+
+        //Find better sound effect before using this method
+        /*
+        if(player.getCurrentSpriteState() == Player.PLAYER_FALLING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT){
+            soundEffects.LANDING.play();
+        }
+        */
         player.setVelocityY(0);
         bouncing = false;
     }
@@ -97,85 +107,95 @@ public class CollisionHandler {
     }
 
     public void handleEnemyCollision() {
+        if (collisionOn == true){
+        if (bouncing && player.getCurrentSpriteState() > 5) player.setVelocityX(0);
 
-        if(bouncing && player.getCurrentSpriteState() > 5) player.setVelocityX(0);
-        for(Enemy enemy : level.getEnemies()) {
-            if (enemy.getBoundsTop().intersects(player.getBoundsBottom())){
+        for (Enemy enemy : level.getEnemies()) {
+            if (enemy.getBoundsTop().intersects(player.getBoundsBottom())) {
                 handleEnemyTopCollision();
                 System.out.println(player.getHp());
             }
 
-            if (enemy.getBoundsRight().intersects(player.getBoundsLeft())){
+            if (enemy.getBoundsRight().intersects(player.getBoundsLeft())) {
                 handleEnemyRightCollision();
                 System.out.println(player.getHp());
             }
 
-            if (enemy.getBoundsBottom().intersects(player.getBoundsTop())){
+            if (enemy.getBoundsBottom().intersects(player.getBoundsTop())) {
                 handleEnemyBottomCollision();
                 System.out.println(player.getHp());
             }
 
-            if (enemy.getBoundsLeft().intersects(player.getBoundsRight())){
+            if (enemy.getBoundsLeft().intersects(player.getBoundsRight())) {
                 handleEnemyLeftCollision();
                 System.out.println(player.getHp());
             }
         }
     }
+    }
+
 
     public void handleEnemyTopCollision() {
         bouncing = true;
-        if(player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT | player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
+        if(player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT
+                || player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT) {
             player.setVelocityY(-25);
-            player.setVelocityX(25);
+            player.setVelocityX(20);
         }else{
-            player.setVelocityY(-20);
+            player.setVelocityY(-25);
             player.setVelocityX(-20);
         }
-        player.setHp(player.getHp()-25);
+        playerHit();
     }
+
 
     public void handleEnemyBottomCollision() {
         bouncing = true;
+        playerHit();
         if(player.getCurrentSpriteState() == Player.PLAYER_JUMPING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
             player.setVelocityY(20);
         }
 
-        if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_LEFT){
-            player.setVelocityX(-20);
+        if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT) {
+            collisionOn = false;
             player.setVelocityY(-20);
         }
 
-        if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT){
-            player.setVelocityX(20);
+
+        if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT) {
+            collisionOn = false;
             player.setVelocityY(-20);
         }
-        player.setHp(player.getHp()-25);
 
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                collisionOn = true;
+                timer.cancel();
+            }
+        }, 1000);
     }
 
     public void handleEnemyRightCollision() {
         bouncing = true;
         player.setVelocityX(10);
-        player.setHp(player.getHp()-25);
+        playerHit();
     }
 
     public void handleEnemyLeftCollision() {
         bouncing = true;
         player.setVelocityX(-10);
-        player.setHp(player.getHp()-25);
+        playerHit();
     }
 
+    public void playerHit(){
+        soundEffects.HIT.play();
+        player.setHp(player.getHp() - 25);
+        if(player.getHp() == 0) player.setAlive(false);
+    }
 }
 
 /*
-new java.util.Timer().schedule(
-        new java.util.TimerTask() {
-@Override
-public void run() {
-        player.setVelocityY(0);
-        player.setVelocityX(0);
-        }
-        },
-        1000
-        );
+
 */

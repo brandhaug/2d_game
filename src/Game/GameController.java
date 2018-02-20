@@ -18,6 +18,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.w3c.dom.events.MutationEvent;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -25,6 +26,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.prefs.Preferences;
+
+import static Resources.soundEffects.SoundEffects.mute;
 
 public class GameController {
 
@@ -124,8 +127,10 @@ public class GameController {
 
         if (soundOn) {
             soundButton.setStyle("-fx-graphic: 'Resources/buttons/sound_on.png'");
+            mute = false;
         } else {
             soundButton.setStyle("-fx-graphic: 'Resources/buttons/sound_off.png'");
+            mute = true;
         }
     }
 
@@ -157,6 +162,7 @@ public class GameController {
             }
             if ((code == KeyCode.UP || code == KeyCode.W) && player.getVelocityY() == 0) {
                 player.setVelocityY(-35);
+                soundEffects.JUMP.play();
             }
         }
     }
@@ -208,6 +214,13 @@ public class GameController {
         }.start();
     }
 
+    //Find better running sound before using this method
+    private void playerMoving(){
+        if(player.getCurrentSpriteState() == 2 || player.getCurrentSpriteState() == 3) soundEffects.RUN.playLoop();
+
+        if(player.getCurrentSpriteState() < 2 || player.getCurrentSpriteState() > 3 || gameOver) soundEffects.RUN.stopLoop();
+    }
+
     private void gameLoop(long startNanoTime, long currentNanoTime) {
         double time = (currentNanoTime - startNanoTime) / 1000000000.0;
 
@@ -217,19 +230,21 @@ public class GameController {
         collisionHandler.tick();
         level.tick(gc, player, time);
         player.tick(gc);
+        //playerMoving();
         //TODO: Make tick for GUI()
         gc.fillText(level.getCoinCounter() + "/" + coinAmoount,60,40);
         checkGameOver();
     }
 
     private void checkGameOver() {
-        if (player.getY() >= CANVAS_HEIGHT || player.getHp() <= 0) {
+        if (player.getY() >= CANVAS_HEIGHT || !player.getAlive()) {
             gameOver = true;
             gameOverPane.setVisible(true);
             gameOverText.setVisible(true);
             gameOverMainMenuButton.setVisible(true);
             gameOverRetryButton.setVisible(true);
             canvas.setOpacity(0.7f);
+            soundEffects.GAMEOVER.play();
         }
     }
 
