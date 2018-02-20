@@ -1,5 +1,6 @@
 package Game.Levels;
 
+import CreateLevel.MapParser;
 import Game.GameController;
 import Game.GameObjects.Coin;
 import Game.GameObjects.Enemy;
@@ -76,29 +77,9 @@ public class Level {
         }
     }
 
-    // TODO: Lag egne Exceptions
-    public char[][] loadMap(String fileName) throws FileNotFoundException {
+    public char[][] loadMap(String fileName) {
         File file = new File(getClass().getResource("/Resources/maps/" + fileName).getPath());
-        Scanner scanner = new Scanner(file);
-
-        int index = 0;
-
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if (index == 0) {
-                int mapHeight = getValueFromMapHeader(line, "height");
-                int mapWidth = getValueFromMapHeader(line, "width");
-                map = new char[mapHeight][mapWidth];
-            } else {
-                line = line.replaceAll("\\s", "");
-                char[] lineArr = line.toCharArray();
-                map[index - 1] = lineArr;
-            }
-
-            index++;
-        }
-
-        return map;
+        return MapParser.getArrayFromFile(file);
     }
 
     public void tick(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
@@ -139,17 +120,5 @@ public class Level {
             enemy.setY((int) (((int) 325 + 128 * Math.sin(time))));
             enemy.tick(gc);
         }
-    }
-
-    public int getValueFromMapHeader(String header, String name) {
-        String reg = "(?<=" + name + ": )[0-9]+";
-
-        Pattern pattern = Pattern.compile(reg);
-        Matcher matcher = pattern.matcher(header);
-        if (matcher.find()) {
-            return Integer.parseInt(matcher.group());
-        }
-
-        return -1;
     }
 }

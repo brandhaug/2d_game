@@ -1,18 +1,20 @@
 package CreateLevel;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class CreateLevelController {
 
@@ -114,12 +116,64 @@ public class CreateLevelController {
 
     @FXML
     public void openLoadFile() {
-        System.out.println("load");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load map");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showOpenDialog(canvas.getScene().getWindow());
+
+        if (file != null) {
+            map = MapParser.getArrayFromFile(file);
+            render(false);
+        }
     }
 
     @FXML
     public void openSaveFile() {
-        System.out.println("save");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save map");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(canvas.getScene().getWindow());
+
+        if (file != null) {
+            System.out.println(file);
+            String content = getMapContent();
+            saveFile(content, file);
+        }
+    }
+
+    private String getMapContent() {
+        StringBuilder content = new StringBuilder();
+
+        int height = 100;
+        int width = 1000;
+
+        content.append("height: ");
+        content.append(height);
+        content.append(" width: ");
+        content.append(width);
+
+        for (int y = 0; y < map.length; y++) {
+            content.append(System.lineSeparator());
+            for (int x = 0; x < map[y].length; x++) {
+                content.append(map[y][x]);
+                content.append(" ");
+            }
+        }
+
+        return content.toString();
+    }
+
+    private void saveFile(String content, File file) {
+        try {
+            FileWriter fileWriter = null;
+            fileWriter = new FileWriter(file);
+            fileWriter.write(content);
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateGui() {
@@ -225,14 +279,14 @@ public class CreateLevelController {
     public void render(boolean initialize) {
         gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        for (int y = map.length - 1; y > 0; y--) {
+        for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
                 updateCurrentImage(map[y][x]);
                 gc.strokeRect((x * GRID_SIZE) - currentOffsetX, (canvasHeight - ((map.length - y) * GRID_SIZE) - currentOffsetY), GRID_SIZE, GRID_SIZE);
                 if (initialize) {
                     map[y][x] = '0';
                 } else if (map[y][x] != ERASER_ENABLED) {
-                    gc.drawImage(currentImage,(x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
+                    gc.drawImage(currentImage, (x * GRID_SIZE) - currentOffsetX, (y * GRID_SIZE) - currentOffsetY);
                 }
             }
         }
