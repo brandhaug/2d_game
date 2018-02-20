@@ -18,8 +18,8 @@
             <Button fx:id="stepForwardButton" layoutX="720" layoutY="4.0" mnemonicParsing="false" onAction="#stepForward" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/redo.png');" />
 
 
-            <Button fx:id="loadButton" layoutX="920" layoutY="4.0" mnemonicParsing="false" onAction="#openLoadFile" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/load.png');" />
-            <Button fx:id="saveButton" layoutX="1020" layoutY="4.0" mnemonicParsing="false" onAction="#openSaveFile" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/save.png');" />
+            <Button fx:id="loadButton" layoutX="920" layoutY="4.0" mnemonicParsing="false" onAction="#openLoadFile" prefHeight="64.0" prefWidth="64.0" text="Load" />
+            <Button fx:id="saveButton" layoutX="1020" layoutY="4.0" mnemonicParsing="false" onAction="#openSaveFile" prefHeight="64.0" prefWidth="64.0" text="Save" />
           </children>
       </AnchorPane>
    </children>
