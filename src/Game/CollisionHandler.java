@@ -76,6 +76,13 @@ public class CollisionHandler {
 
     public void handleTileTopCollision() {
         //player.setY(tileY - player.getCurrentSpriteSheet().getSpriteHeight() + 10);
+
+        //Find better sound effect before using this method
+        /*
+        if(player.getCurrentSpriteState() == Player.PLAYER_FALLING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT){
+            soundEffects.LANDING.play();
+        }
+        */
         player.setVelocityY(0);
         bouncing = false;
     }
@@ -133,10 +140,10 @@ public class CollisionHandler {
         if(player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT
                 || player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT) {
             player.setVelocityY(-25);
-            player.setVelocityX(30);
+            player.setVelocityX(20);
         }else{
             player.setVelocityY(-25);
-            player.setVelocityX(-30);
+            player.setVelocityX(-20);
         }
         playerHit();
     }
@@ -149,13 +156,13 @@ public class CollisionHandler {
             player.setVelocityY(20);
         }
 
-        if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_LEFT) {
+        if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT) {
             collisionOn = false;
             player.setVelocityY(-20);
         }
 
 
-        if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT) {
+        if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT) {
             collisionOn = false;
             player.setVelocityY(-20);
         }
@@ -164,7 +171,6 @@ public class CollisionHandler {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("Hit");
                 collisionOn = true;
                 timer.cancel();
             }
@@ -184,11 +190,10 @@ public class CollisionHandler {
     }
 
     public void playerHit(){
-        player.setHp(player.getHp()-25);
-        if(player.getHp() >= 25)
         soundEffects.HIT.play();
+        player.setHp(player.getHp() - 25);
+        if(player.getHp() == 0) player.setAlive(false);
     }
-
 }
 
 /*
