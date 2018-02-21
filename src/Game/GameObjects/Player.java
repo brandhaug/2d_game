@@ -49,6 +49,7 @@ public class Player extends GameObject {
 
     public Player(int x, int y) {
         super(x, y);
+        super.setVelocityY(1);
         initializeSpriteSheets();
         lastY = y;
     }

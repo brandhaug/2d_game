@@ -20,19 +20,20 @@ public class Level {
 
     private char[][] map;
 
-    private boolean moveCameraY;
     private boolean firstIntersectionMade;
     private int coinCounter = 0;
-    private int lastTileY;
-    private int currentTileY;
+
+    private int currentTileY = Player.START_POSITION_Y - 200;
+    private int lastTileY = currentTileY;
+    private int diff = 0;
+    private int cameraVelocityY = 0;
+    private boolean cameraMovingY = false;
 
 
     public Level(String fileName) throws FileNotFoundException {
         tiles = new ArrayList<>();
         coins = new ArrayList<>();
         enemies = new ArrayList<>();
-        firstIntersectionMade = false;
-        moveCameraY = false;
         char[][] map = loadMap(fileName);
         parseMap(map);
     }
@@ -58,69 +59,62 @@ public class Level {
     }
 
     public void tick(GraphicsContext gc, Player player, double time) {
-        setPlayerIntersectionHeights(player);
-        render(gc, player, time);
-
-        if (moveCameraY && firstIntersectionMade) {
-            System.out.println("Move Camera: " + (currentTileY - lastTileY));
-            moveCameraY = false;
-        }
-
-        if (!firstIntersectionMade) {
-            for (Tile tile : getTiles()) {
-                if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isFalling()) {
-                    firstIntersectionMade = true;
-                    break;
-                }
-            }
-        }
-    }
-
-    private void setPlayerIntersectionHeights(Player player) {
-        if (player.isIdling() || player.isRunning()) {
-            int minMovementHeight = 30;
-            if (Math.abs(player.getY() - currentTileY) > minMovementHeight) {
-                lastTileY = currentTileY;
-                moveCameraY = true;
-            }
+        if ((player.isIdling() || player.isRunning())) {
             currentTileY = player.getY();
-        }
-    }
 
-    private void moveCameraY(Player player, GameObject gameObject) {
-        if (moveCameraY && firstIntersectionMade) {
-            int cameraDistance = Math.abs(currentTileY - lastTileY);
-            int divider = 10;
-            //Move camera
-            if (currentTileY - lastTileY < 0) {
-                if (gameObject != null) {
-                    gameObject.setY(gameObject.getY() + (cameraDistance / divider));
-                } else {
-                    player.setY(player.getY() + (cameraDistance / divider));
-                }
-            } else if (currentTileY - lastTileY > 0) {
-                if (gameObject != null) {
-                    gameObject.setY(gameObject.getY() - (cameraDistance / divider));
-                } else {
-                    player.setY(player.getY() - (cameraDistance / divider));
+            if (Math.abs(currentTileY - lastTileY) > 10) {
+                cameraMovingY = true;
+                diff += currentTileY - lastTileY;
+                System.out.println("Diff: " + diff);
+
+                if (diff > 0) {
+                    cameraVelocityY = 4;
+                } else if (diff < 0) {
+                    cameraVelocityY = -4;
                 }
             }
+
+            render(gc, player, time);
+
+            currentTileY = player.getY();
+            lastTileY = player.getY();
+            diff -= cameraVelocityY;
+
+            if (Math.abs(diff) < 10) {
+                diff = 0;
+                cameraVelocityY = 0;
+            }
+
+        } else if (player.isFalling() && player.getY() > (currentTileY + 10)) {
+            cameraMovingY = true;
+            cameraVelocityY = 4;
+            render(gc, player, time);
+
+        } else {
+            cameraMovingY = false;
+            render(gc, player, time);
         }
     }
 
     private void render(GraphicsContext gc, Player player, double time) {
-        //Move _PLAYER_ camera Y
-        moveCameraY(player, null);
-
         renderTiles(gc, player);
         renderCoins(gc, player);
-        renderEnemies(gc, player, time);
+        renderPlayer(player);
+//        renderEnemies(gc, player, time);
+    }
+
+    private void renderPlayer(Player player) {
+        if (cameraMovingY) {
+            player.setY(player.getY() - cameraVelocityY);
+        }
     }
 
     private void renderTiles(GraphicsContext gc, Player player) {
         for (Tile tile : getTiles()) {
             tile.setX(tile.getX() - player.getVelocityX());
-            moveCameraY(player, tile);
+            if (cameraMovingY) {
+                tile.setY(tile.getY() - cameraVelocityY);
+            }
             tile.tick(gc);
         }
     }
@@ -128,7 +122,9 @@ public class Level {
     private void renderCoins(GraphicsContext gc, Player player) {
         for (Coin coin : getCoins()) {
             coin.setX(coin.getX() - player.getVelocityX());
-            moveCameraY(player, coin);
+            if (cameraMovingY) {
+                coin.setY(coin.getY() - cameraVelocityY);
+            }
             coin.tick(gc);
         }
     }
@@ -136,7 +132,9 @@ public class Level {
     private void renderEnemies(GraphicsContext gc, Player player, double time) {
         for (Enemy enemy : getEnemies()) {
             enemy.setX(enemy.getX() - player.getVelocityX());
-            enemy.setY((int) (300 + (128 * Math.sin(time))));
+            if (cameraMovingY) {
+                enemy.setY((int) (300 + (128 * Math.sin(time))));
+            }
             enemy.tick(gc);
         }
     }
@@ -169,43 +167,7 @@ public class Level {
         return MapParser.getArrayFromFile(file);
     }
 
-    public void tick(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
-        render(gc, playerVelocityX, playerVelocityY, time);
-    }
-
-    private void render(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
-        renderStartingPoint(gc, playerVelocityX, playerVelocityY);
-        renderTiles(gc, playerVelocityX, playerVelocityY);
-        renderCoins(gc, playerVelocityX, playerVelocityY, time);
-        renderEnemies(gc, playerVelocityX, playerVelocityY, time);
-    }
-
     private void renderStartingPoint(GraphicsContext gc, int playerVelocityX, int playerVelocityY) {
 //        gc.drawImage(startingPointImage, 200 - playerVelocityX, 400);
-    }
-
-    private void renderTiles(GraphicsContext gc, int playerVelocityX, int playerVelocityY) {
-        for (Tile tile : getTiles()) {
-            tile.setX(tile.getX() - playerVelocityX);
-//            tile.setY(tile.getY() - playerVelocityY);
-            tile.tick(gc);
-        }
-    }
-
-    private void renderCoins(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
-        for (Coin coin : getCoins()) {
-            coin.setX(coin.getX() - playerVelocityX);
-//            coin.setY(coin.getY() - playerVelocityY);
-            coin.tick(gc);
-        }
-    }
-
-    private void renderEnemies(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
-        for (Enemy enemy : getEnemies()) {
-            enemy.setX(enemy.getX() - playerVelocityX);
-            //enemy.setY(500);
-            enemy.setY((int) (((int) 325 + 128 * Math.sin(time))));
-            enemy.tick(gc);
-        }
     }
 }

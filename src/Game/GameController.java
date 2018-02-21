@@ -239,15 +239,15 @@ public class GameController {
     }
 
     private void checkGameOver() {
-        if (player.getY() >= CANVAS_HEIGHT || !player.getAlive()) {
-            gameOver = true;
-            gameOverPane.setVisible(true);
-            gameOverText.setVisible(true);
-            gameOverMainMenuButton.setVisible(true);
-            gameOverRetryButton.setVisible(true);
-            canvas.setOpacity(0.7f);
-            soundEffects.GAMEOVER.play();
-        }
+//        if (player.getY() >= CANVAS_HEIGHT || !player.getAlive()) {
+//            gameOver = true;
+//            gameOverPane.setVisible(true);
+//            gameOverText.setVisible(true);
+//            gameOverMainMenuButton.setVisible(true);
+//            gameOverRetryButton.setVisible(true);
+//            canvas.setOpacity(0.7f);
+//            soundEffects.GAMEOVER.play();
+//        }
     }
 
     private void initializeBackground() {
