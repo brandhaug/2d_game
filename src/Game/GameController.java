@@ -190,14 +190,7 @@ public class GameController {
         initializeBackground();
 
         gc = canvas.getGraphicsContext2D();
-
-        try {
-            level = new Level("beginner");
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
+        level = new Level("beginner");
         coinAmoount = level.getCoins().size();
         player = new Player(Player.START_POSITION_X, Player.START_POSITION_Y);
         collisionHandler = new CollisionHandler(player, level, soundEffects);
@@ -239,7 +232,7 @@ public class GameController {
     }
 
     private void checkGameOver() {
-        if (player.getY() >= CANVAS_HEIGHT || !player.getAlive()) {
+        if (player.getY() >= level.getLowestTileY() || !player.getAlive()) {
             gameOver = true;
             gameOverPane.setVisible(true);
             gameOverText.setVisible(true);

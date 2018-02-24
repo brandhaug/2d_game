@@ -9,7 +9,7 @@ import java.awt.*;
 public class Player extends GameObject {
 
     public static final int START_POSITION_X = 200;
-    public static final int START_POSITION_Y = 500;
+    public static final int START_POSITION_Y = 400;
     private final int WIDTH = 72;
 
     // States
@@ -35,22 +35,14 @@ public class Player extends GameObject {
     private boolean lastSpriteRight = true;
     private boolean rightCollision = false;
     private boolean leftCollision = false;
-
     private boolean isAlive = true;
 
     private int hp = 100; //Hit Points
 
-
-    private int lastY;
-
-    public int getLastY() {
-        return lastY;
-    }
-
     public Player(int x, int y) {
         super(x, y);
+        setVelocityY(1);
         initializeSpriteSheets();
-        lastY = y;
     }
 
     @Override
@@ -106,8 +98,12 @@ public class Player extends GameObject {
 
         // Health bar fill
         gc.setGlobalAlpha(1);
-        if (hp >= 50) {
+        if (hp >= 90) {
             gc.setFill(Color.LIMEGREEN);
+        } else if (hp >= 75) {
+            gc.setFill(Color.YELLOW);
+        } else if (hp >= 50) {
+            gc.setFill(Color.ORANGE);
         } else {
             gc.setFill(Color.RED);
         }
@@ -132,8 +128,6 @@ public class Player extends GameObject {
     private void handleVelocityY() {
         int MAX_VELOCITY_FALLING = 13;
         int MAX_VELOCITY_JUMPING = -35;
-
-        lastY = getY();
 
         if (getVelocityY() >= MAX_VELOCITY_FALLING) {
             setY(getY() + MAX_VELOCITY_FALLING);

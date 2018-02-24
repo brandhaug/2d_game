@@ -8,6 +8,7 @@ import javafx.scene.canvas.GraphicsContext;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -20,19 +21,18 @@ public class Level {
 
     private char[][] map;
 
-    private boolean moveCameraY;
     private boolean firstIntersectionMade;
-    private int coinCounter = 0;
-    private int lastTileY;
+
+    private int coinCounter;
     private int currentTileY;
+    private int lowestTileY;
+    private int cameraVelocityY;
 
-
-    public Level(String fileName) throws FileNotFoundException {
+    public Level(String fileName) {
         tiles = new ArrayList<>();
         coins = new ArrayList<>();
         enemies = new ArrayList<>();
         firstIntersectionMade = false;
-        moveCameraY = false;
         char[][] map = loadMap(fileName);
         parseMap(map);
     }
@@ -57,70 +57,46 @@ public class Level {
         return coinCounter;
     }
 
-    public void tick(GraphicsContext gc, Player player, double time) {
-        setPlayerIntersectionHeights(player);
-        render(gc, player, time);
-
-        if (moveCameraY && firstIntersectionMade) {
-            System.out.println("Move Camera: " + (currentTileY - lastTileY));
-            moveCameraY = false;
-        }
-
-        if (!firstIntersectionMade) {
-            for (Tile tile : getTiles()) {
-                if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isFalling()) {
-                    firstIntersectionMade = true;
-                    break;
-                }
-            }
-        }
+    public int getLowestTileY() {
+        return lowestTileY;
     }
 
-    private void setPlayerIntersectionHeights(Player player) {
+    public void tick(GraphicsContext gc, Player player, double time) {
+        handleCameraVelocity(player);
+        render(gc, player, time);
+    }
+
+    private void handleCameraVelocity(Player player) {
         if (player.isIdling() || player.isRunning()) {
-            int minMovementHeight = 30;
-            if (Math.abs(player.getY() - currentTileY) > minMovementHeight) {
-                lastTileY = currentTileY;
-                moveCameraY = true;
-            }
             currentTileY = player.getY();
         }
-    }
 
-    private void moveCameraY(Player player, GameObject gameObject) {
-        if (moveCameraY && firstIntersectionMade) {
-            int cameraDistance = Math.abs(currentTileY - lastTileY);
-            int divider = 10;
-            //Move camera
-            if (currentTileY - lastTileY < 0) {
-                if (gameObject != null) {
-                    gameObject.setY(gameObject.getY() + (cameraDistance / divider));
-                } else {
-                    player.setY(player.getY() + (cameraDistance / divider));
-                }
-            } else if (currentTileY - lastTileY > 0) {
-                if (gameObject != null) {
-                    gameObject.setY(gameObject.getY() - (cameraDistance / divider));
-                } else {
-                    player.setY(player.getY() - (cameraDistance / divider));
-                }
+        if (player.isRunning() || player.isIdling() || (player.isFalling() && player.getY() > currentTileY)) {
+            int screenDistance = 250;
+            if (GameController.CANVAS_HEIGHT - player.getY() < screenDistance) {
+                cameraVelocityY = -12;
+            } else if (GameController.CANVAS_HEIGHT - player.getY() > screenDistance + 30) {
+                cameraVelocityY = 10;
+            } else {
+                cameraVelocityY = 0;
             }
         }
     }
 
     private void render(GraphicsContext gc, Player player, double time) {
-        //Move _PLAYER_ camera Y
-        moveCameraY(player, null);
-
+        player.setY(player.getY() + cameraVelocityY);
         renderTiles(gc, player);
         renderCoins(gc, player);
-        renderEnemies(gc, player, time);
+        //renderEnemies(gc, player, time);
     }
 
     private void renderTiles(GraphicsContext gc, Player player) {
         for (Tile tile : getTiles()) {
+            if (tile.getY() > lowestTileY) {
+                lowestTileY = (int) tile.getBoundsTop().getY();
+            }
             tile.setX(tile.getX() - player.getVelocityX());
-            moveCameraY(player, tile);
+            tile.setY(tile.getY() + cameraVelocityY);
             tile.tick(gc);
         }
     }
@@ -128,7 +104,7 @@ public class Level {
     private void renderCoins(GraphicsContext gc, Player player) {
         for (Coin coin : getCoins()) {
             coin.setX(coin.getX() - player.getVelocityX());
-            moveCameraY(player, coin);
+            coin.setY(coin.getY() + cameraVelocityY);
             coin.tick(gc);
         }
     }
@@ -167,45 +143,5 @@ public class Level {
     public char[][] loadMap(String fileName) {
         File file = new File(getClass().getResource("/Resources/maps/" + fileName).getPath());
         return MapParser.getArrayFromFile(file);
-    }
-
-    public void tick(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
-        render(gc, playerVelocityX, playerVelocityY, time);
-    }
-
-    private void render(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
-        renderStartingPoint(gc, playerVelocityX, playerVelocityY);
-        renderTiles(gc, playerVelocityX, playerVelocityY);
-        renderCoins(gc, playerVelocityX, playerVelocityY, time);
-        renderEnemies(gc, playerVelocityX, playerVelocityY, time);
-    }
-
-    private void renderStartingPoint(GraphicsContext gc, int playerVelocityX, int playerVelocityY) {
-//        gc.drawImage(startingPointImage, 200 - playerVelocityX, 400);
-    }
-
-    private void renderTiles(GraphicsContext gc, int playerVelocityX, int playerVelocityY) {
-        for (Tile tile : getTiles()) {
-            tile.setX(tile.getX() - playerVelocityX);
-//            tile.setY(tile.getY() - playerVelocityY);
-            tile.tick(gc);
-        }
-    }
-
-    private void renderCoins(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
-        for (Coin coin : getCoins()) {
-            coin.setX(coin.getX() - playerVelocityX);
-//            coin.setY(coin.getY() - playerVelocityY);
-            coin.tick(gc);
-        }
-    }
-
-    private void renderEnemies(GraphicsContext gc, int playerVelocityX, int playerVelocityY, double time) {
-        for (Enemy enemy : getEnemies()) {
-            enemy.setX(enemy.getX() - playerVelocityX);
-            //enemy.setY(500);
-            enemy.setY((int) (((int) 325 + 128 * Math.sin(time))));
-            enemy.tick(gc);
-        }
     }
 }
