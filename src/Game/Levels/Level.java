@@ -19,10 +19,6 @@ public class Level {
     private List<Coin> coins;
     private List<Enemy> enemies;
 
-    private char[][] map;
-
-    private boolean firstIntersectionMade;
-
     private int coinCounter;
     private int currentTileY;
     private int lowestTileY;
@@ -32,7 +28,6 @@ public class Level {
         tiles = new ArrayList<>();
         coins = new ArrayList<>();
         enemies = new ArrayList<>();
-        firstIntersectionMade = false;
         char[][] map = loadMap(fileName);
         parseMap(map);
     }
@@ -74,7 +69,7 @@ public class Level {
         if (player.isRunning() || player.isIdling() || (player.isFalling() && player.getY() > currentTileY)) {
             int screenDistance = 250;
             if (GameController.CANVAS_HEIGHT - player.getY() < screenDistance) {
-                cameraVelocityY = -12;
+                cameraVelocityY = -13;
             } else if (GameController.CANVAS_HEIGHT - player.getY() > screenDistance + 30) {
                 cameraVelocityY = 10;
             } else {
@@ -87,7 +82,7 @@ public class Level {
         player.setY(player.getY() + cameraVelocityY);
         renderTiles(gc, player);
         renderCoins(gc, player);
-        //renderEnemies(gc, player, time);
+        renderEnemies(gc, player, time);
     }
 
     private void renderTiles(GraphicsContext gc, Player player) {
