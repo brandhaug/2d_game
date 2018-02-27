@@ -47,8 +47,13 @@ public abstract class GameObject {
         return velocityX;
     }
 
-    public void setVelocityX(int inputVelocityX) {
-        int MAX_VELOCITY_X = 12;
+    public void setVelocityX(int inputVelocityX, boolean force) {
+        int MAX_VELOCITY_X;
+        if (force) {
+            MAX_VELOCITY_X = 10000;
+        } else {
+            MAX_VELOCITY_X = 12;
+        }
 
         if (inputVelocityX >= MAX_VELOCITY_X) {
             velocityX = MAX_VELOCITY_X;
@@ -109,7 +114,7 @@ public abstract class GameObject {
         return new Rectangle(x, y + 10, 10, currentSpriteSheet.getSpriteHeight() - 20);
     }
 
-    public void handleSpriteState(){
+    public void handleSpriteState() {
         setLastSpriteState(currentSpriteState);
     }
 

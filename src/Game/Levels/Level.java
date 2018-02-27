@@ -6,13 +6,8 @@ import Game.GameObjects.*;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Level {
     private List<Tile> tiles;
@@ -23,6 +18,9 @@ public class Level {
     private int currentTileY;
     private int lowestTileY;
     private int cameraVelocityY;
+    private int playerStartPositionX;
+    private int playerStartPositionY;
+    private boolean cameraInitialized;
 
     public Level(String fileName) {
         tiles = new ArrayList<>();
@@ -30,6 +28,10 @@ public class Level {
         enemies = new ArrayList<>();
         char[][] map = loadMap(fileName);
         parseMap(map);
+    }
+
+    private void initializeCameraVelocityY() {
+        cameraVelocityY = GameController.PLAYER_Y_MARGIN - playerStartPositionY;
     }
 
     public List<Tile> getTiles() {
@@ -56,24 +58,35 @@ public class Level {
         return lowestTileY;
     }
 
+    public int getPlayerStartPositionX() {
+        return playerStartPositionX;
+    }
+
+    public int getPlayerStartPositionY() {
+        return playerStartPositionY;
+    }
+
     public void tick(GraphicsContext gc, Player player, double time) {
         handleCameraVelocity(player);
         render(gc, player, time);
     }
 
     private void handleCameraVelocity(Player player) {
-        if (player.isIdling() || player.isRunning()) {
-            currentTileY = player.getY();
-        }
+        if (!cameraInitialized) {
+            initializeCameraVelocityY();
+        } else {
+            if (player.isIdling() || player.isRunning()) {
+                currentTileY = player.getY();
+            }
 
-        if (player.isRunning() || player.isIdling() || (player.isFalling() && player.getY() > currentTileY)) {
-            int screenDistance = 250;
-            if (GameController.CANVAS_HEIGHT - player.getY() < screenDistance) {
-                cameraVelocityY = -13;
-            } else if (GameController.CANVAS_HEIGHT - player.getY() > screenDistance + 30) {
-                cameraVelocityY = 10;
-            } else {
-                cameraVelocityY = 0;
+            if (player.isRunning() || player.isIdling() || (player.isFalling() && player.getY() > currentTileY)) {
+                if (GameController.CANVAS_HEIGHT - player.getY() < GameController.PLAYER_Y_MARGIN) {
+                    cameraVelocityY = -13;
+                } else if (GameController.CANVAS_HEIGHT - player.getY() > GameController.PLAYER_Y_MARGIN + 30) {
+                    cameraVelocityY = 10;
+                } else {
+                    cameraVelocityY = 0;
+                }
             }
         }
     }
@@ -83,6 +96,11 @@ public class Level {
         renderTiles(gc, player);
         renderCoins(gc, player);
         renderEnemies(gc, player, time);
+
+        if (!cameraInitialized){
+            player.setVelocityX(0, false);
+            cameraInitialized = true;
+        }
     }
 
     private void renderTiles(GraphicsContext gc, Player player) {
@@ -116,6 +134,7 @@ public class Level {
         final char TILE = '-';
         final char COIN = 'c';
         final char ENEMY = 'e';
+        final char START = 's';
 
         final int COIN_SIZE = 64;
 
@@ -130,6 +149,11 @@ public class Level {
                         break;
                     case (ENEMY):
                         enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE));
+                        break;
+                    case (START):
+                        playerStartPositionX = x * GameController.TILE_SIZE;
+                        playerStartPositionY = y * GameController.TILE_SIZE;
+                        break;
                 }
             }
         }

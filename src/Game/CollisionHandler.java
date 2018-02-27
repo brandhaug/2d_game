@@ -95,20 +95,20 @@ public class CollisionHandler {
     public void handleTileRightCollision() {
         if (player.getVelocityX() != 0) {
             player.setLeftCollision(true);
-            player.setVelocityX(0);
+            player.setVelocityX(0, false);
         }
     }
 
     public void handleTileLeftCollision() {
         if (player.getVelocityX() != 0) {
             player.setRightCollision(true);
-            player.setVelocityX(0);
+            player.setVelocityX(0, false);
         }
     }
 
     public void handleEnemyCollision() {
         if (collisionOn) {
-            if (bouncing && player.getCurrentSpriteState() > 5) player.setVelocityX(0);
+            if (bouncing && player.getCurrentSpriteState() > 5) player.setVelocityX(0, false);
 
             for (Enemy enemy : level.getEnemies()) {
                 if (enemy.getBoundsTop().intersects(player.getBoundsBottom())) {
@@ -136,10 +136,10 @@ public class CollisionHandler {
         if (player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT
                 || player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT) {
             player.setVelocityY(-25);
-            player.setVelocityX(20);
+            player.setVelocityX(20, false);
         } else {
             player.setVelocityY(-25);
-            player.setVelocityX(-20);
+            player.setVelocityX(-20, false);
         }
         playerHit();
     }
@@ -175,13 +175,13 @@ public class CollisionHandler {
 
     public void handleEnemyRightCollision() {
         bouncing = true;
-        player.setVelocityX(10);
+        player.setVelocityX(10, false);
         playerHit();
     }
 
     public void handleEnemyLeftCollision() {
         bouncing = true;
-        player.setVelocityX(-10);
+        player.setVelocityX(-10, false);
         playerHit();
     }
 

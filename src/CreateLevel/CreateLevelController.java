@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,6 +27,8 @@ public class CreateLevelController {
     Button enemyButton;
     @FXML
     Button coinButton;
+    @FXML
+    Button playerButton;
     @FXML
     Button loadButton;
 
@@ -41,6 +44,7 @@ public class CreateLevelController {
     private final char TILE_ENABLED = '-';
     private final char COIN_ENABLED = 'c';
     private final char ENEMY_ENABLED = 'e';
+    private final char STARTING_POINT_ENABLED = 's';
     private final char ERASER_ENABLED = '0';
 
     private char toolEnabled = '0';
@@ -48,6 +52,7 @@ public class CreateLevelController {
     private Image mace;
     private Image tile;
     private Image coin;
+    private Image startingPoint;
     private Image currentImage;
 
     private int pressedX;
@@ -82,7 +87,13 @@ public class CreateLevelController {
         toolEnabled = ENEMY_ENABLED;
         currentImage = mace;
         updateGui();
+    }
 
+    @FXML
+    public void chooseStartingPoint() {
+        toolEnabled = STARTING_POINT_ENABLED;
+        currentImage = startingPoint;
+        updateGui();
     }
 
     @FXML
@@ -143,6 +154,17 @@ public class CreateLevelController {
         }
     }
 
+    private boolean startingPointSelected() {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                if (map[i][j] == STARTING_POINT_ENABLED) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private String getMapContent() {
         StringBuilder content = new StringBuilder();
 
@@ -167,8 +189,7 @@ public class CreateLevelController {
 
     private void saveFile(String content, File file) {
         try {
-            FileWriter fileWriter = null;
-            fileWriter = new FileWriter(file);
+            FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(content);
             fileWriter.close();
         } catch (IOException e) {
@@ -191,9 +212,14 @@ public class CreateLevelController {
         if (dragging) {
             dragging = false;
         } else {
-            int y = (int) (Math.floor((mouseEvent.getY() + currentOffsetY) / GRID_SIZE) + (map.length - (canvasHeight/GRID_SIZE)));
+            int y = (int) (Math.floor((mouseEvent.getY() + currentOffsetY) / GRID_SIZE) + (map.length - (canvasHeight / GRID_SIZE)));
             int x = (int) (Math.floor((mouseEvent.getX() + currentOffsetX) / GRID_SIZE));
-            editCell(x, y, toolEnabled, true);
+
+            if (toolEnabled == STARTING_POINT_ENABLED && startingPointSelected()) {
+                System.out.println("Starting point already placed");
+            } else {
+                editCell(x, y, toolEnabled, true);
+            }
         }
     }
 
@@ -232,6 +258,7 @@ public class CreateLevelController {
         mace = new Image("/Resources/buttons/mace.png");
         coin = new Image("/Resources/buttons/coin.png");
         tile = new Image("/Resources/buttons/tile.png");
+        startingPoint = new Image("/Resources/buttons/player.png");
     }
 
     private void editCell(int x, int y, char tool, boolean addStep) {
@@ -273,6 +300,8 @@ public class CreateLevelController {
             currentImage = mace;
         } else if (tool == COIN_ENABLED) {
             currentImage = coin;
+        } else if (tool == STARTING_POINT_ENABLED) {
+            currentImage = startingPoint;
         }
     }
 

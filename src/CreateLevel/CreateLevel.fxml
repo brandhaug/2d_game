@@ -4,23 +4,24 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url('Resources/background/background.png');" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CreateLevel.CreateLevelController">
-   <children>
-      <Canvas fx:id="canvas" height="704.0" onMouseClicked="#mouseClicked" onMouseDragged="#mouseDragged" onMousePressed="#mousePressed" width="1280.0" />
-      <AnchorPane layoutY="704.0" prefHeight="80" prefWidth="1280" style="-fx-background-color: Gray;">
-          <children>
-            <Button fx:id="tileButton" layoutX="20.0" layoutY="4.0" mnemonicParsing="false" onAction="#chooseTile" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/tile.png');" />
-            <Button fx:id="coinButton" layoutX="120" layoutY="4.0" mnemonicParsing="false" onAction="#chooseCoin" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/coin.png');" />
-            <Button fx:id="enemyButton" layoutX="220" layoutY="4.0" mnemonicParsing="false" onAction="#chooseEnemy" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/mace.png');" />
-            <Button fx:id="eraseButton" layoutX="320" layoutY="4.0" mnemonicParsing="false" onAction="#chooseEraser" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/erase.png');" />
-              
-            <Button fx:id="stepBackwardButton" layoutX="620" layoutY="4.0" mnemonicParsing="false" onAction="#stepBackward" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/undo.png');" />
-            <Button fx:id="stepForwardButton" layoutX="720" layoutY="4.0" mnemonicParsing="false" onAction="#stepForward" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/redo.png');" />
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url('Resources/background/background.png');" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CreateLevel.CreateLevelController">
+    <children>
+        <Canvas fx:id="canvas" height="704.0" onMouseClicked="#mouseClicked" onMouseDragged="#mouseDragged" onMousePressed="#mousePressed" width="1280.0" />
+        <AnchorPane layoutY="704.0" prefHeight="80" prefWidth="1280" style="-fx-background-color: Gray;">
+            <children>
+                <Button fx:id="playerButton" layoutX="20.0" layoutY="4.0" mnemonicParsing="false" onAction="#chooseStartingPoint" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/player.png');" />
+                <Button fx:id="tileButton" layoutX="120.0" layoutY="4.0" mnemonicParsing="false" onAction="#chooseTile" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/tile.png');" />
+                <Button fx:id="coinButton" layoutX="220" layoutY="4.0" mnemonicParsing="false" onAction="#chooseCoin" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/coin.png');" />
+                <Button fx:id="enemyButton" layoutX="320" layoutY="4.0" mnemonicParsing="false" onAction="#chooseEnemy" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/mace.png');" />
+                <Button fx:id="eraseButton" layoutX="420" layoutY="4.0" mnemonicParsing="false" onAction="#chooseEraser" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/erase.png');" />
+
+                <Button fx:id="stepBackwardButton" layoutX="620" layoutY="4.0" mnemonicParsing="false" onAction="#stepBackward" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/undo.png');" />
+                <Button fx:id="stepForwardButton" layoutX="720" layoutY="4.0" mnemonicParsing="false" onAction="#stepForward" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/redo.png');" />
 
 
-            <Button fx:id="loadButton" layoutX="920" layoutY="4.0" mnemonicParsing="false" onAction="#openLoadFile" prefHeight="64.0" prefWidth="64.0" text="Load" />
-            <Button fx:id="saveButton" layoutX="1020" layoutY="4.0" mnemonicParsing="false" onAction="#openSaveFile" prefHeight="64.0" prefWidth="64.0" text="Save" />
-          </children>
-      </AnchorPane>
-   </children>
+                <Button fx:id="loadButton" layoutX="920" layoutY="4.0" mnemonicParsing="false" onAction="#openLoadFile" prefHeight="64.0" prefWidth="64.0" text="Load" />
+                <Button fx:id="saveButton" layoutX="1020" layoutY="4.0" mnemonicParsing="false" onAction="#openSaveFile" prefHeight="64.0" prefWidth="64.0" text="Save" />
+            </children>
+        </AnchorPane>
+    </children>
 </AnchorPane>

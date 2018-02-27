@@ -37,6 +37,8 @@ public class GameController {
     public final static int BUTTON_SIZE = 64;
     public final static int TILE_SIZE = 128;
     public final static int MARGIN = 32;
+    public final static int PLAYER_X_MARGIN = 200;
+    public final static int PLAYER_Y_MARGIN = 250;
 
     private Level level;
     private Player player;
@@ -156,10 +158,10 @@ public class GameController {
         KeyCode code = event.getCode();
         if (!gamePaused && !gameOver) {
             if (code == KeyCode.RIGHT || code == KeyCode.D) {
-                player.setVelocityX(10);
+                player.setVelocityX(10, false);
             }
             if (code == KeyCode.LEFT || code == KeyCode.A) {
-                player.setVelocityX(-10);
+                player.setVelocityX(-10, false);
             }
             if ((code == KeyCode.UP || code == KeyCode.W) && player.getVelocityY() == 0) {
                 player.setVelocityY(-35);
@@ -174,11 +176,11 @@ public class GameController {
 
         if (!gamePaused && !gameOver) {
             if ((code == KeyCode.RIGHT || code == KeyCode.D && player.getVelocityX() > 0)) {
-                player.setVelocityX(0);
+                player.setVelocityX(0, false);
                 player.setRightCollision(false);
             }
             if (code == KeyCode.LEFT || code == KeyCode.A && player.getVelocityX() < 0) {
-                player.setVelocityX(0);
+                player.setVelocityX(0, false);
                 player.setLeftCollision(false);
             }
         }
@@ -192,7 +194,7 @@ public class GameController {
         gc = canvas.getGraphicsContext2D();
         level = new Level("beginner");
         coinAmoount = level.getCoins().size();
-        player = new Player(Player.START_POSITION_X, Player.START_POSITION_Y);
+        player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY());
         collisionHandler = new CollisionHandler(player, level, soundEffects);
 
         final long startNanoTime = System.nanoTime();
@@ -209,10 +211,11 @@ public class GameController {
     }
 
     //Find better running sound before using this method
-    private void playerMoving(){
-        if(player.getCurrentSpriteState() == 2 || player.getCurrentSpriteState() == 3) soundEffects.RUN.playLoop();
+    private void playerMoving() {
+        if (player.getCurrentSpriteState() == 2 || player.getCurrentSpriteState() == 3) soundEffects.RUN.playLoop();
 
-        if(player.getCurrentSpriteState() < 2 || player.getCurrentSpriteState() > 3 || gameOver) soundEffects.RUN.stopLoop();
+        if (player.getCurrentSpriteState() < 2 || player.getCurrentSpriteState() > 3 || gameOver)
+            soundEffects.RUN.stopLoop();
     }
 
     private void gameLoop(long startNanoTime, long currentNanoTime) {
@@ -227,7 +230,7 @@ public class GameController {
         //playerMoving();
         //TODO: Make tick for GUI()
         gc.setFill(Color.BLACK);
-        gc.fillText(level.getCoinCounter() + "/" + coinAmoount,60,40);
+        gc.fillText(level.getCoinCounter() + "/" + coinAmoount, 60, 40);
         checkGameOver();
     }
 
@@ -254,11 +257,11 @@ public class GameController {
 
     private void drawBackground(GraphicsContext gc) {
         int tempX = player.getX();
-        while (tempX > CANVAS_WIDTH + player.getStartPosition()) {
+        while (tempX > CANVAS_WIDTH + PLAYER_X_MARGIN) {
             tempX -= CANVAS_WIDTH;
         }
 
-        gc.drawImage(background, player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        gc.drawImage(background, CANVAS_WIDTH + player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        gc.drawImage(background, PLAYER_X_MARGIN - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        gc.drawImage(background, CANVAS_WIDTH + PLAYER_X_MARGIN - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
 }
