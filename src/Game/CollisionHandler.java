@@ -1,9 +1,6 @@
 package Game;
 
-import Game.GameObjects.Coin;
-import Game.GameObjects.Enemy;
-import Game.GameObjects.Player;
-import Game.GameObjects.Tile;
+import Game.GameObjects.*;
 import Game.Levels.Level;
 import Resources.soundEffects.SoundEffects;
 
@@ -56,25 +53,57 @@ public class CollisionHandler {
         player.setVelocityY(player.getVelocityY() + 2);
 
         for (Tile tile : level.getTiles()) {
+            handleEnemyTileCollision(tile);
             if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && player.getCurrentSpriteState() != Player.PLAYER_JUMPING_RIGHT && player.getCurrentSpriteState() != Player.PLAYER_JUMPING_LEFT) {
-                handleTileTopCollision();
+                handleTileTopCollision(player);
             }
 
             if (player.getBoundsTop().intersects(tile.getBoundsBottom()) && player.getCurrentSpriteState() != Player.PLAYER_FALLING_LEFT && player.getCurrentSpriteState() != Player.PLAYER_FALLING_RIGHT) {
-                handleTileBottomCollision();
+                handleTileBottomCollision(player);
             }
 
             if (player.getBoundsLeft().intersects(tile.getBoundsRight()) && !player.getLastSpriteRight()) {
-                handleTileRightCollision();
+                handleTileRightCollision(player);
             }
 
             if (player.getBoundsRight().intersects(tile.getBoundsLeft()) && player.getLastSpriteRight()) {
-                handleTileLeftCollision();
+                handleTileLeftCollision(player);
             }
         }
     }
 
-    public void handleTileTopCollision() {
+    int hitcounterLEFT = 0;
+    int hitcounterRIGHT = 0;
+
+    public void handleEnemyTileCollision(Tile tile) {
+
+        for (Enemy enemy : level.getEnemies()) {
+
+            if (enemy.getBoundsBottom().intersects(tile.getBoundsTop()) && enemy.getCurrentSpriteState() != Enemy.ENEMY_JUMPING_RIGHT && enemy.getCurrentSpriteState() != Enemy.ENEMY_JUMPING_LEFT) {
+                handleTileTopCollision(enemy);
+            }
+
+            if (enemy.getBoundsTop().intersects(tile.getBoundsBottom()) && enemy.getCurrentSpriteState() != Enemy.ENEMY_FALLING_LEFT && enemy.getCurrentSpriteState() != Enemy.ENEMY_FALLING_RIGHT) {
+                handleTileBottomCollision(enemy);
+            }
+
+            if (enemy.getBoundsLeft().intersects(tile.getBoundsRight()) && !enemy.getLastSpriteRight()) {
+                handleTileRightCollision(enemy);
+                if (enemy.getVelocityX() != 0) {
+                    enemy.setLeftCollision(true);
+                    enemy.setVelocityX(0, false);
+                }
+            }
+
+            if (enemy.getBoundsRight().intersects(tile.getBoundsLeft()) && enemy.getLastSpriteRight()) {
+                handleTileLeftCollision(enemy);
+                System.out.println("HIT-RIGHT: " + hitcounterRIGHT++);
+            }
+
+        }
+    }
+
+    public void handleTileTopCollision(GameObject gameObject) {
         //player.setY(tileY - player.getCurrentSpriteSheet().getSpriteHeight() + 10);
 
         //Find better sound effect before using this method
@@ -83,49 +112,71 @@ public class CollisionHandler {
             soundEffects.LANDING.play();
         }
         */
-        player.setVelocityY(0);
+        gameObject.setVelocityY(0);
         bouncing = false;
     }
 
-    public void handleTileBottomCollision() {
+    public void handleTileBottomCollision(GameObject gameObject) {
         //player.setY(tileY + tileHeight);
-        player.setVelocityY(1);
+        gameObject.setVelocityY(1);
     }
 
-    public void handleTileRightCollision() {
-        if (player.getVelocityX() != 0) {
-            player.setLeftCollision(true);
-            player.setVelocityX(0, false);
+    public void handleTileRightCollision(GameObject gameObject) {
+        if (gameObject.getVelocityX() != 0) {
+            gameObject.setLeftCollision(true);
+            gameObject.setVelocityX(0, false);
         }
     }
 
-    public void handleTileLeftCollision() {
-        if (player.getVelocityX() != 0) {
-            player.setRightCollision(true);
-            player.setVelocityX(0, false);
+    public void handleTileLeftCollision(GameObject gameObject) {
+        if (gameObject.getVelocityX() != 0) {
+            gameObject.setRightCollision(true);
+            gameObject.setVelocityX(0, false);
         }
     }
 
     public void handleEnemyCollision() {
+        Iterator<Enemy> iterator = level.getEnemies().iterator();
+
         if (collisionOn) {
             if (bouncing && player.getCurrentSpriteState() > 5) player.setVelocityX(0, false);
 
-            for (Enemy enemy : level.getEnemies()) {
-                if (enemy.getBoundsTop().intersects(player.getBoundsBottom())) {
+            while (iterator.hasNext()) {
+                Enemy e = iterator.next();
+
+                handleEnemyBulletCollision(e, iterator);
+
+                if (e.getBoundsTop().intersects(player.getBoundsBottom())) {
                     handleEnemyTopCollision();
                 }
 
-                if (enemy.getBoundsRight().intersects(player.getBoundsLeft())) {
+
+                if (e.getBoundsRight().intersects(player.getBoundsLeft())) {
                     handleEnemyRightCollision();
+                    System.out.println("HIT!");
                 }
 
-                if (enemy.getBoundsBottom().intersects(player.getBoundsTop())) {
+                if (e.getBoundsBottom().intersects(player.getBoundsTop())) {
                     handleEnemyBottomCollision();
                 }
 
-                if (enemy.getBoundsLeft().intersects(player.getBoundsRight())) {
+
+                if (e.getBoundsLeft().intersects(player.getBoundsRight())) {
                     handleEnemyLeftCollision();
+                    System.out.println("HIT!");
                 }
+            }
+        }
+    }
+
+    public void handleEnemyBulletCollision(Enemy enemy, Iterator<Enemy> enemyIterator) {
+
+        for (Bullet bullet : level.getBullets()) {
+            //System.out.println(bullet.getX());
+            if (bullet.getBoundsTop().intersects(enemy.getBoundsLeft()) || bullet.getBoundsBottom().intersects(enemy.getBoundsLeft())) {
+                System.out.println("HIT!");
+                level.removeBullet(bullet);
+                enemyIterator.remove();
             }
         }
     }
@@ -176,12 +227,14 @@ public class CollisionHandler {
     public void handleEnemyRightCollision() {
         bouncing = true;
         player.setVelocityX(10, false);
+        player.setVelocityY(-10);
         playerHit();
     }
 
     public void handleEnemyLeftCollision() {
         bouncing = true;
         player.setVelocityX(-10, false);
+        player.setVelocityY(-10);
         playerHit();
     }
 

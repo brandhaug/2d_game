@@ -1,5 +1,6 @@
 package Game;
 
+import Game.GameObjects.Bullet;
 import Game.GameObjects.Player;
 import Game.Levels.Level;
 import Resources.soundEffects.SoundEffects;
@@ -45,7 +46,8 @@ public class GameController {
     private CollisionHandler collisionHandler;
     private SoundEffects soundEffects;
     private Preferences preferences = Preferences.userRoot();
-    private int coinAmoount;
+    private int coinAmount;
+    private int bulletAmount;
 
     private Image background;
     private GraphicsContext gc;
@@ -167,6 +169,18 @@ public class GameController {
                 player.setVelocityY(-35);
                 soundEffects.JUMP.play();
             }
+
+            if ((code == KeyCode.E)) {
+                if(bulletAmount > 0){
+                    if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT||
+                            player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
+                        level.addBullet(new Bullet(PLAYER_X_MARGIN+20,player.getY()+20,1));
+                    }else{
+                        level.addBullet(new Bullet(PLAYER_X_MARGIN+20,player.getY()+20,-1));
+                    }
+                    bulletAmount--;
+                }
+            }
         }
     }
 
@@ -183,22 +197,26 @@ public class GameController {
                 player.setVelocityX(0, false);
                 player.setLeftCollision(false);
             }
+            if (code == KeyCode.LEFT || code == KeyCode.A && player.getVelocityX() < 0) {
+                player.setVelocityX(0,false);
+                player.setLeftCollision(false);
+            }
         }
     }
-
 
     @FXML
     public void initialize() {
         initializeBackground();
-
+        level = new Level("survival");
         gc = canvas.getGraphicsContext2D();
-        level = new Level("beginner");
-        coinAmoount = level.getCoins().size();
         player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY());
+        coinAmount = level.getCoins().size();
+        bulletAmount = level.getBulletCounter();
+        //player = new Player(Player.START_POSITION_X, Player.START_POSITION_Y, EnemyType.ENEMYTEST, EnemyType.ENEMYTEST2);
+        //player = new Player(Player.START_POSITION_X, Player.START_POSITION_Y);
         collisionHandler = new CollisionHandler(player, level, soundEffects);
 
         final long startNanoTime = System.nanoTime();
-
         initialized = true;
 
         new AnimationTimer() {
@@ -230,9 +248,25 @@ public class GameController {
         //playerMoving();
         //TODO: Make tick for GUI()
         gc.setFill(Color.BLACK);
-        gc.fillText(level.getCoinCounter() + "/" + coinAmoount, 60, 40);
+        gc.fillText(level.getCoinCounter() + "/" + coinAmount,60,40);
         checkGameOver();
+        //checkPlayerBoundry();
     }
+
+    int playerX = 256;
+
+    private void bulletPlacementX(){
+
+    }
+
+    /*
+    private void checkPlayerBoundry(){
+        if(player.getX() > 830){
+            player.setVelocityX(0);
+            player.setX(829);
+        }
+    }
+    */
 
     private void checkGameOver() {
         if (player.getY() >= level.getLowestTileY() || !player.getAlive()) {
@@ -257,11 +291,11 @@ public class GameController {
 
     private void drawBackground(GraphicsContext gc) {
         int tempX = player.getX();
-        while (tempX > CANVAS_WIDTH + PLAYER_X_MARGIN) {
+        while (tempX > CANVAS_WIDTH + player.getStartPosition()) {
             tempX -= CANVAS_WIDTH;
         }
 
-        gc.drawImage(background, PLAYER_X_MARGIN - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        gc.drawImage(background, CANVAS_WIDTH + PLAYER_X_MARGIN - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        gc.drawImage(background, player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        gc.drawImage(background, CANVAS_WIDTH + player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     }
 }

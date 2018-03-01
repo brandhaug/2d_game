@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 
 import java.awt.*;
 
-public class Player extends GameObject {
+public class Player extends Character{
 
     private final int WIDTH = 72;
 
@@ -36,29 +36,17 @@ public class Player extends GameObject {
     private boolean leftCollision = false;
     private boolean isAlive = true;
 
-    private int hp = 100; //Hit Points
+    private EnemyType characterType = EnemyType.PLAYER;
 
     public Player(int x, int y) {
         super(x, y);
         setVelocityX(x - GameController.PLAYER_X_MARGIN, true);
         setVelocityY(1);
-        initializeSpriteSheets();
+        initializeSpriteSheets(characterType);
     }
 
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-
-    public int getHp() {
-        return hp;
-    }
-
-    public void setAlive(boolean isAlive) {
-        this.isAlive = isAlive;
-    }
-
-    public boolean getAlive() {
-        return isAlive;
+    public int getStartPosition() {
+        return 0;
     }
 
     public boolean getLastSpriteRight() {
@@ -72,59 +60,6 @@ public class Player extends GameObject {
         drawHealthBar(gc);
     }
 
-    private void drawHealthBar(GraphicsContext gc) {
-        short healthX = 100;
-        short healthY = 24;
-        short healthWidth = 80;
-        short healthHeight = 25;
-        short healthArc = 10;
-
-        // Health bar background
-        gc.setGlobalAlpha(0.7);
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRoundRect(healthX, healthY, healthWidth, healthHeight, healthArc, healthArc);
-
-        // Health bar fill
-        gc.setGlobalAlpha(1);
-        if (hp >= 90) {
-            gc.setFill(Color.LIMEGREEN);
-        } else if (hp >= 75) {
-            gc.setFill(Color.YELLOW);
-        } else if (hp >= 50) {
-            gc.setFill(Color.ORANGE);
-        } else {
-            gc.setFill(Color.RED);
-        }
-        gc.fillRoundRect(healthX, healthY, hp / 1.25, healthHeight, healthArc, healthArc);
-
-        // Health bar stroke
-        gc.setGlobalAlpha(0.5);
-        gc.setStroke(Color.BLACK);
-        gc.strokeRoundRect(healthX, healthY, healthWidth, healthHeight, healthArc, healthArc);
-
-        // Health bar text
-        gc.setGlobalAlpha(1);
-        gc.setFill(Color.BLACK);
-        String formattedHp = String.valueOf((double) hp / 100 * 100);
-        gc.fillText(formattedHp.substring(0, formattedHp.length() - 2) + "%", 187, 40);
-    }
-
-    private void handleVelocityX() {
-        setX(getX() + getVelocityX());
-    }
-
-    private void handleVelocityY() {
-        int MAX_VELOCITY_FALLING = 13;
-        int MAX_VELOCITY_JUMPING = -35;
-
-        if (getVelocityY() >= MAX_VELOCITY_FALLING) {
-            setY(getY() + MAX_VELOCITY_FALLING);
-        } else if (getY() <= MAX_VELOCITY_JUMPING) {
-            setY(getY() + MAX_VELOCITY_JUMPING);
-        } else {
-            setY(getY() + getVelocityY());
-        }
-    }
 
     @Override
     public void handleSpriteState() {
@@ -167,17 +102,19 @@ public class Player extends GameObject {
         }
     }
 
-    @Override
-    public void initializeSpriteSheets() {
-        idleRightSpriteSheet = new SpriteSheet("/Resources/player/idle_right.png", 12, 72, 76);
-        idleLeftSpriteSheet = new SpriteSheet("/Resources/player/idle_left.png", 12, 72, 76);
-        runRightSpriteSheet = new SpriteSheet("/Resources/player/run_right.png", 18, 99, 77);
-        runLeftSpriteSheet = new SpriteSheet("/Resources/player/run_left.png", 18, 99, 77);
-        jumpRightSpriteSheet = new SpriteSheet("/Resources/player/jump_right.png", 1, 76, 77);
-        jumpLeftSpriteSheet = new SpriteSheet("/Resources/player/jump_left.png", 1, 76, 77);
-        fallRightSpriteSheet = new SpriteSheet("/Resources/player/fall_right.png", 1, 67, 77);
-        fallLeftSpriteSheet = new SpriteSheet("/Resources/player/fall_left.png", 1, 67, 77);
+
+
+    public void initializeSpriteSheets(EnemyType enemyType) {
+        idleRightSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName() + "/idle_right.png", 12, 72, 76);
+        idleLeftSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName() + "/idle_left.png", 12, 72, 76);
+        runRightSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName() + "/run_right.png", 18, 99, 77);
+        runLeftSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName() + "/run_left.png", 18, 99, 77);
+        jumpRightSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName() + "/jump_right.png", 1, 76, 77);
+        jumpLeftSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName() + "/jump_left.png", 1, 76, 77);
+        fallRightSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName() + "/fall_right.png", 1, 67, 77);
+        fallLeftSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName() + "/fall_left.png", 1, 67, 77);
     }
+
 
     @Override
     public void render(GraphicsContext gc) {

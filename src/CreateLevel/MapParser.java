@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 public class MapParser {
 
     static char[][] map;
+    static int bulletAmount;
 
     public static char[][] getArrayFromFile(File file) {
         Scanner scanner;
@@ -36,6 +37,20 @@ public class MapParser {
             e.printStackTrace();
         }
         return map;
+    }
+
+    public static int getBulletAmount(File file){
+        Scanner scanner;
+        try {
+            scanner = new Scanner(file);
+
+            String line = scanner.nextLine();
+            int bullets = getValueFromMapHeader(line, "bullets");
+            bulletAmount = bullets;
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+        return bulletAmount;
     }
 
     public static int getValueFromMapHeader(String header, String name) {

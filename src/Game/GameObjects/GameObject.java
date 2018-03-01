@@ -4,6 +4,7 @@ import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.awt.*;
+import java.util.logging.FileHandler;
 
 public abstract class GameObject {
 
@@ -11,6 +12,8 @@ public abstract class GameObject {
     private int y;
     private int velocityX = 0;
     private int velocityY = 0;
+    private boolean rightCollision = false;
+    private boolean leftCollision = false;
 
     private SpriteSheet currentSpriteSheet;
 
@@ -116,6 +119,14 @@ public abstract class GameObject {
 
     public void handleSpriteState() {
         setLastSpriteState(currentSpriteState);
+    }
+
+    public void setRightCollision(boolean rightCollision) {
+        this.rightCollision = rightCollision;
+    }
+
+    public void setLeftCollision(boolean leftCollision) {
+        this.leftCollision = leftCollision;
     }
 
     public void render(GraphicsContext gc) {
