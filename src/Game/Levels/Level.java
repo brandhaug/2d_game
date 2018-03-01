@@ -168,6 +168,14 @@ public class Level {
         }
     }
 
+    private void renderEnemies(GraphicsContext gc, Player player, double time) {
+        for (Enemy enemy : getEnemies()) {
+            enemy.setX(enemy.getX() - player.getVelocityX());
+            enemy.setY((int) (300 + (128 * Math.sin(time))));
+            enemy.tick(gc);
+        }
+    }
+
 
     public void renderBullets(GraphicsContext gc,Player player) {
         for (Bullet bullet : getBullets()) {
