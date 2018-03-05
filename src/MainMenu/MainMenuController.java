@@ -1,16 +1,14 @@
 package MainMenu;
 
+import SceneChanger.SceneChanger;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -42,11 +40,9 @@ public class MainMenuController {
     @FXML
     private Button createLevelButton;
 
+    private SceneChanger sceneChanger;
     private Preferences preferences = Preferences.userRoot();
-
     private Clip musicClip;
-    private AudioInputStream musicStream;
-
     private boolean initialized = false;
 
     @FXML
@@ -90,44 +86,34 @@ public class MainMenuController {
     }
 
     @FXML
-    protected void openGame() {
-        changeScene("../Game/Game.fxml", true);
+    protected void openGame(ActionEvent event) {
+        musicClip.stop();
+        sceneChanger.changeScene(event, "../Game/Game.fxml", true);
     }
 
     @FXML
-    protected void openInfo() {
-        changeScene("../Info/Info.fxml", true);
+    protected void openInfo(ActionEvent event) {
+        musicClip.stop();
+        sceneChanger.changeScene(event, "../Info/Info.fxml", true);
     }
 
     @FXML
-    protected void openCreateLevel() {
-        changeScene("../CreateLevel/CreateLevel.fxml", false);
+    protected void openCreateLevel(ActionEvent event) {
+        musicClip.stop();
+        sceneChanger.changeScene(event, "../CreateLevel/CreateLevel.fxml", false);
     }
 
     @FXML
-    protected void openHighscores() {
-        changeScene("../Highscores/Highscores.fxml", true);
-    }
-
-    private void changeScene(String path, boolean loadStyleSheet) {
-        Stage stage = (Stage) mapsPane.getScene().getWindow();
-
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(path));
-
-            if (loadStyleSheet) {
-                root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
-            }
-
-            musicClip.stop();
-            stage.setScene(new Scene(root));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    protected void openHighscores(ActionEvent event) {
+        musicClip.stop();
+        sceneChanger.changeScene(event, "../Highscores/Highscores.fxml", true);
     }
 
     @FXML
     public void initialize() {
+        sceneChanger = new SceneChanger();
+
+        // TODO: Sett styles i FXML eller i stylesheet
         mapsPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.3);");
         mapsPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
@@ -162,7 +148,7 @@ public class MainMenuController {
      * @throws LineUnavailableException
      */
     public void initializeMusic() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
-        musicStream = AudioSystem.getAudioInputStream(new File(getClass().getResource("/Resources/music/main_song.wav").getPath()));
+        AudioInputStream musicStream = AudioSystem.getAudioInputStream(new File(getClass().getResource("/Resources/music/main_song.wav").getPath()));
         musicClip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, musicStream.getFormat()));
         musicClip.open(musicStream);
         musicClip.loop(10);

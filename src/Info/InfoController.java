@@ -1,17 +1,11 @@
 package Info;
 
+import SceneChanger.SceneChanger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 
 public class InfoController {
 
@@ -20,19 +14,18 @@ public class InfoController {
     @FXML
     private AnchorPane infoPane;
 
-    @FXML
-    protected void openMainMenu(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../MainMenu/MainMenu.fxml"));
-        root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+    private SceneChanger sceneChanger;
 
-        stage.setScene(scene);
-        stage.show();
+    @FXML
+    protected void openMainMenu(ActionEvent event) {
+        sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
     @FXML
     public void initialize() {
+        sceneChanger = new SceneChanger();
+
+        //TODO: Sett styles i FXML eller stylesheet
         infoPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7);");
         infoPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
     }

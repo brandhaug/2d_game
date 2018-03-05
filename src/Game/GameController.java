@@ -4,13 +4,11 @@ import Game.GameObjects.Bullet;
 import Game.GameObjects.Player;
 import Game.Levels.Level;
 import Resources.soundEffects.SoundEffects;
+import SceneChanger.SceneChanger;
 import javafx.animation.AnimationTimer;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -22,13 +20,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
-import org.w3c.dom.events.MutationEvent;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
@@ -61,6 +56,7 @@ public class GameController {
     private Image background;
     private GraphicsContext gc;
 
+    private SceneChanger sceneChanger;
     private boolean gamePaused = false;
     private boolean gameOver = false;
     private boolean gameWon = false;
@@ -92,27 +88,13 @@ public class GameController {
     private Text pauseText;
 
     @FXML
-    protected void openMainMenu() {
-        try {
-            Stage stage = (Stage) mainMenuButton.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("../MainMenu/MainMenu.fxml"));
-            root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
-            stage.setScene(new Scene(root));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    protected void openMainMenu(ActionEvent event) {
+        sceneChanger.changeScene(event, "MainMenu/MainMenu.fxml", true);
     }
 
     @FXML
-    public void restartLevel() {
-        try {
-            Stage stage = (Stage) canvas.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("../Game/Game.fxml"));
-            root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
-            stage.setScene(new Scene(root));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void restartLevel(ActionEvent event) {
+        sceneChanger.changeScene(event, "/Game.fxml", true);
     }
 
     @FXML
@@ -184,9 +166,9 @@ public class GameController {
                 if (bulletAmount > 0) {
                     if (player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT ||
                             player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
-                        level.addBullet(new Bullet(PLAYER_X_MARGIN+20,player.getY()+20,1,1));
-                    }else{
-                        level.addBullet(new Bullet(PLAYER_X_MARGIN+20,player.getY()+20,1,-1));
+                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, 1, 1));
+                    } else {
+                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, 1, -1));
                     }
                     bulletAmount--;
                 }
@@ -216,6 +198,7 @@ public class GameController {
 
     @FXML
     public void initialize() {
+        sceneChanger = new SceneChanger();
         initializeBackground();
         level = new Level("survival");
         gc = canvas.getGraphicsContext2D();
