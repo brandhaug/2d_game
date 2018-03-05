@@ -3,7 +3,9 @@ package CreateLevel;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -138,7 +140,8 @@ public class CreateLevelController {
     public void openLoadFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load map");
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.setInitialDirectory(new File("src/Resources/maps"));
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showOpenDialog(canvas.getScene().getWindow());
 
@@ -150,9 +153,14 @@ public class CreateLevelController {
 
     @FXML
     public void openSaveFile() {
+        if (!validateMap()) {
+            return;
+        }
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save map");
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.setInitialDirectory(new File("src/Resources/maps"));
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showSaveDialog(canvas.getScene().getWindow());
 
@@ -163,10 +171,57 @@ public class CreateLevelController {
         }
     }
 
+    private boolean validateMap() {
+
+        boolean startingPointExists = false;
+        boolean finishPointExists = false;
+
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[y].length; x++) {
+                if (map[y][x] == STARTING_POINT_ENABLED) {
+                    startingPointExists = true;
+                } else if (map[y][x] == END_POINT_ENABLED) {
+                    finishPointExists = true;
+                }
+            }
+        }
+
+        if (!startingPointExists || !finishPointExists) {
+            StringBuilder errors = new StringBuilder();
+            if (!startingPointExists) {
+                System.out.println("Starting point missing");
+                errors.append("Starting point missing\n");
+            }
+
+            if (!finishPointExists) {
+                System.out.println("Finish point missing");
+                errors.append("Finish point missing\n");
+            }
+
+            Alert alert = new Alert(Alert.AlertType.ERROR, errors.toString(), ButtonType.OK);
+            alert.show();
+
+            return false;
+        }
+
+        return true;
+    }
+
     private boolean itemExistsInMap(char item) {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (map[i][j] == item) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean startingPointSelected() {
+        for (int y = 0; y < map.length; y++) {
+            for (int x = 0; x < map[y].length; x++) {
+                if (map[y][x] == STARTING_POINT_ENABLED) {
                     return true;
                 }
             }
@@ -235,11 +290,14 @@ public class CreateLevelController {
     }
 
     public void mouseDragged(MouseEvent mouseEvent) {
-        dragging = true;
-        currentOffsetX = (int) (lastOffsetX + pressedX - mouseEvent.getX());
-        currentOffsetY = (int) (lastOffsetY + pressedY - mouseEvent.getY());
-
-        render(false);
+        if (mouseEvent.isShiftDown()) {
+            dragging = true;
+            currentOffsetX = (int) (lastOffsetX + pressedX - mouseEvent.getX());
+            currentOffsetY = (int) (lastOffsetY + pressedY - mouseEvent.getY());
+            render(false);
+        } else {
+            mouseClicked(mouseEvent);
+        }
     }
 
     public void mousePressed(MouseEvent mouseEvent) {
