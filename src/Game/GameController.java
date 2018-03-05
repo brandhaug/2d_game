@@ -8,6 +8,7 @@ import javafx.animation.AnimationTimer;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -18,7 +19,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import org.w3c.dom.events.MutationEvent;
 
@@ -27,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
 import static Resources.soundEffects.SoundEffects.mute;
@@ -48,6 +52,10 @@ public class GameController {
     private Preferences preferences = Preferences.userRoot();
     private int coinAmount;
     private int bulletAmount;
+    private long timeMillis;
+    private long timeSeconds;
+    private Font smallFont = new Font("Calibri", 14);
+    private Font bigFont = new Font("Calibri", 40);
 
     private Image background;
     private GraphicsContext gc;
@@ -219,6 +227,7 @@ public class GameController {
 
         final long startNanoTime = System.nanoTime();
         initialized = true;
+        timeMillis = System.currentTimeMillis();
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
@@ -246,10 +255,11 @@ public class GameController {
         collisionHandler.tick();
         level.tick(gc, player, time);
         player.tick(gc);
-        //playerMoving();
+        playerMoving();
         //TODO: Make tick for GUI()
         gc.setFill(Color.BLACK);
         gc.fillText(level.getCoinCounter() + "/" + coinAmount, 60, 40);
+        drawTime();
         checkGameOver();
         checkGameWon();
         //checkPlayerBoundry();
@@ -286,6 +296,17 @@ public class GameController {
         if (level.getChest().isAnimated()) {
             gameWon = true;
         }
+    }
+
+    public void drawTime() {
+        timeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - timeMillis);
+        String formattedTime = String.valueOf((int) timeSeconds);
+
+        gc.setFont(bigFont);
+        gc.setTextAlign(TextAlignment.RIGHT);
+        gc.fillText(formattedTime, CANVAS_WIDTH - 120, 60);
+        gc.setTextAlign(TextAlignment.LEFT);
+        gc.setFont(smallFont);
     }
 
     private void initializeBackground() {

@@ -26,7 +26,6 @@ public class Level {
     private int playerStartPositionX;
     private int playerStartPositionY;
     private boolean cameraInitialized;
-    private boolean gameWon;
     private int bulletCounter;
 
     public Level(String fileName) {
@@ -265,9 +264,5 @@ public class Level {
 
     public Chest getChest() {
         return chest;
-    }
-
-    public void setGameWon(boolean gameWon) {
-        this.gameWon = gameWon;
     }
 }

@@ -8,18 +8,17 @@ import Game.SpriteSheets.SpriteSheet;
 public class Chest extends GameObject {
 
     private SpriteSheet spriteSheet;
-    private final int SIZE = 65;
     private boolean isAnimated;
 
     public Chest(int x, int y) {
         super(x, y);
         initializeSpriteSheets();
+        setCurrentSpriteSheet(spriteSheet);
     }
 
     @Override
     public void initializeSpriteSheets() {
-        spriteSheet = new SpriteSheet("/Resources/chest/chest.png", 1, SIZE, SIZE);
-        setCurrentSpriteSheet(spriteSheet);
+        spriteSheet = new SpriteSheet("/Resources/chest/chest.png", 1, 65, 65);
     }
 
     public void animateChest() {
