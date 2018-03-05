@@ -30,6 +30,7 @@ public class CollisionHandler {
         handleTileCollision();
         handleCoinCollision();
         handleEnemyCollision();
+        handleChestCollision();
     }
 
     public void handleCoinCollision() {
@@ -43,6 +44,14 @@ public class CollisionHandler {
                 level.addCoinCounter();
                 SoundEffects.COIN.play();
             }
+        }
+    }
+
+    public void handleChestCollision() {
+        Chest chest = level.getChest();
+        if (chest.getBoundsTop().intersects(player.getBoundsTop()) || chest.getBoundsTop().intersects(player.getBoundsRight())
+                || chest.getBoundsTop().intersects(player.getBoundsBottom()) || chest.getBoundsTop().intersects(player.getBoundsLeft())) {
+            chest.animateChest();
         }
     }
 

@@ -17,6 +17,7 @@ public class Level {
     private List<Coin> coins;
     private List<Enemy> enemies;
     private List<Bullet> bullets;
+    private Chest chest;
 
     private int coinCounter;
     private int currentTileY;
@@ -25,6 +26,7 @@ public class Level {
     private int playerStartPositionX;
     private int playerStartPositionY;
     private boolean cameraInitialized;
+    private boolean gameWon;
     private int bulletCounter;
 
     public Level(String fileName) {
@@ -54,7 +56,7 @@ public class Level {
         return enemies;
     }
 
-    public  List<Bullet>getBullets(){
+    public List<Bullet> getBullets() {
         return bullets;
     }
 
@@ -66,7 +68,7 @@ public class Level {
         return coinCounter;
     }
 
-    public int getBulletCounter(){
+    public int getBulletCounter() {
         return bulletCounter;
     }
 
@@ -112,10 +114,11 @@ public class Level {
         renderTiles(gc, player);
         renderCoins(gc, player);
         renderEnemies(gc, player);
-        renderBullets(gc,player);
+        renderBullets(gc, player);
+        renderChest(gc, player);
 
 
-        if (!cameraInitialized){
+        if (!cameraInitialized) {
             player.setVelocityX(0, false);
             cameraInitialized = true;
         }
@@ -140,20 +143,26 @@ public class Level {
         }
     }
 
+    private void renderChest(GraphicsContext gc, Player player) {
+        chest.setX(chest.getX() - player.getVelocityX());
+        chest.setY(chest.getY() + cameraVelocityY);
+        chest.tick(gc);
+    }
+
 
     private void renderEnemies(GraphicsContext gc, Player player) {
         for (Enemy enemy : getEnemies()) {
-            if(enemy.getY() < player.getY()){
+            if (enemy.getY() < player.getY()) {
                 enemy.setVelocityY(7);
             }
-            if (enemy.getX() > GameController.PLAYER_X_MARGIN){
-                enemy.setVelocityX(-3,true);
+            if (enemy.getX() > GameController.PLAYER_X_MARGIN) {
+                enemy.setVelocityX(-3, true);
                 enemy.setX(enemy.getX() - player.getVelocityX());
 
-            }else if (enemy.getX() < GameController.PLAYER_X_MARGIN){
-                enemy.setVelocityX(2,true);
+            } else if (enemy.getX() < GameController.PLAYER_X_MARGIN) {
+                enemy.setVelocityX(2, true);
                 enemy.setX(enemy.getX() - player.getVelocityX());
-            }else{
+            } else {
                 enemy.setVelocityY(-10);
             }
             enemy.handleSpriteState();
@@ -177,38 +186,38 @@ public class Level {
     }
 
 
-    public void renderBullets(GraphicsContext gc,Player player) {
+    public void renderBullets(GraphicsContext gc, Player player) {
         for (Bullet bullet : getBullets()) {
             bullet.setY(bullet.getY() + cameraVelocityY);
-            if(bullet.getfacing() > 0){
+            if (bullet.getfacing() > 0) {
                 bullet.setVelocityX(300, false);
                 bullet.setX(bullet.getX() - player.getVelocityX());
                 if (player.getVelocityX() >= 0) {
                     bullet.setX(bullet.getX() + player.getVelocityX());
                 }
 
-            }else{
-                    bullet.setVelocityX(-300, false);
-                    bullet.setX(bullet.getX() + player.getVelocityX());
-                    if (player.getVelocityX() < 0) {
-                        bullet.setX(bullet.getX() - player.getVelocityX());
-                    }
+            } else {
+                bullet.setVelocityX(-300, false);
+                bullet.setX(bullet.getX() + player.getVelocityX());
+                if (player.getVelocityX() < 0) {
+                    bullet.setX(bullet.getX() - player.getVelocityX());
                 }
-                if(bullet.getX() > GameController.CANVAS_WIDTH || bullet.getX() < 0)
-                    removeBullet(bullet);
+            }
+            if (bullet.getX() > GameController.CANVAS_WIDTH || bullet.getX() < 0)
+                removeBullet(bullet);
             System.out.println("--------------");
             System.out.println("Buller x: " + bullet.getX());
             System.out.println("CANVAS x: " + GameController.CANVAS_WIDTH);
             bullet.tick(gc);
-            }
+        }
     }
 
 
-    public void addBullet(Bullet b){
+    public void addBullet(Bullet b) {
         bullets.add(b);
     }
 
-    public void removeBullet(Bullet b){
+    public void removeBullet(Bullet b) {
         bullets.remove(b);
     }
 
@@ -217,6 +226,7 @@ public class Level {
         final char COIN = 'c';
         final char ENEMY = 'e';
         final char START = 's';
+        final char END = 'f';
 
         final int COIN_SIZE = 64;
 
@@ -230,12 +240,14 @@ public class Level {
                         coins.add(new Coin((x * GameController.TILE_SIZE) + COIN_SIZE / 2, (y * GameController.TILE_SIZE) + COIN_SIZE / 2));
                         break;
                     case (ENEMY):
-                            enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, EnemyType.PLAYER));
+                        enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, EnemyType.PLAYER));
                         break;
                     case (START):
                         playerStartPositionX = x * GameController.TILE_SIZE;
                         playerStartPositionY = y * GameController.TILE_SIZE;
                         break;
+                    case (END):
+                        chest = new Chest(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE);
                 }
             }
         }
@@ -249,5 +261,13 @@ public class Level {
     public int loadBullets(String fileName) {
         File file = new File(getClass().getResource("/Resources/maps/" + fileName).getPath());
         return MapParser.getBulletAmount(file);
+    }
+
+    public Chest getChest() {
+        return chest;
+    }
+
+    public void setGameWon(boolean gameWon) {
+        this.gameWon = gameWon;
     }
 }

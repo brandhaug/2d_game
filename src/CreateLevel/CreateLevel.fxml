@@ -13,7 +13,8 @@
                 <Button fx:id="tileButton" layoutX="120.0" layoutY="4.0" mnemonicParsing="false" onAction="#chooseTile" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/tile.png');" />
                 <Button fx:id="coinButton" layoutX="220" layoutY="4.0" mnemonicParsing="false" onAction="#chooseCoin" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/coin.png');" />
                 <Button fx:id="enemyButton" layoutX="320" layoutY="4.0" mnemonicParsing="false" onAction="#chooseEnemy" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/mace.png');" />
-                <Button fx:id="eraseButton" layoutX="420" layoutY="4.0" mnemonicParsing="false" onAction="#chooseEraser" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/erase.png');" />
+                <Button fx:id="chestButton" layoutX="420" layoutY="4.0" mnemonicParsing="false" onAction="#chooseEndPoint" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/chest.png');" />
+                <Button fx:id="eraseButton" layoutX="520" layoutY="4.0" mnemonicParsing="false" onAction="#chooseEraser" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/erase.png');" />
 
                 <Button fx:id="stepBackwardButton" layoutX="620" layoutY="4.0" mnemonicParsing="false" onAction="#stepBackward" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/undo.png');" />
                 <Button fx:id="stepForwardButton" layoutX="720" layoutY="4.0" mnemonicParsing="false" onAction="#stepForward" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/redo.png');" />

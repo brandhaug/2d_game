@@ -13,9 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class CreateLevelController {
 
@@ -29,6 +27,8 @@ public class CreateLevelController {
     Button coinButton;
     @FXML
     Button playerButton;
+    @FXML
+    Button chestButton;
     @FXML
     Button loadButton;
 
@@ -45,6 +45,7 @@ public class CreateLevelController {
     private final char COIN_ENABLED = 'c';
     private final char ENEMY_ENABLED = 'e';
     private final char STARTING_POINT_ENABLED = 's';
+    private final char END_POINT_ENABLED = 'f';
     private final char ERASER_ENABLED = '0';
 
     private char toolEnabled = '0';
@@ -53,6 +54,7 @@ public class CreateLevelController {
     private Image tile;
     private Image coin;
     private Image startingPoint;
+    private Image endPoint;
     private Image currentImage;
 
     private int pressedX;
@@ -93,6 +95,13 @@ public class CreateLevelController {
     public void chooseStartingPoint() {
         toolEnabled = STARTING_POINT_ENABLED;
         currentImage = startingPoint;
+        updateGui();
+    }
+
+    @FXML
+    public void chooseEndPoint() {
+        toolEnabled = END_POINT_ENABLED;
+        currentImage = endPoint;
         updateGui();
     }
 
@@ -154,10 +163,10 @@ public class CreateLevelController {
         }
     }
 
-    private boolean startingPointSelected() {
+    private boolean itemExistsInMap(char item) {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
-                if (map[i][j] == STARTING_POINT_ENABLED) {
+                if (map[i][j] == item) {
                     return true;
                 }
             }
@@ -215,8 +224,10 @@ public class CreateLevelController {
             int y = (int) (Math.floor((mouseEvent.getY() + currentOffsetY) / GRID_SIZE) + (map.length - (canvasHeight / GRID_SIZE)));
             int x = (int) (Math.floor((mouseEvent.getX() + currentOffsetX) / GRID_SIZE));
 
-            if (toolEnabled == STARTING_POINT_ENABLED && startingPointSelected()) {
+            if (toolEnabled == STARTING_POINT_ENABLED && itemExistsInMap(STARTING_POINT_ENABLED)) {
                 System.out.println("Starting point already placed");
+            } else if (toolEnabled == END_POINT_ENABLED && itemExistsInMap(END_POINT_ENABLED)) {
+                System.out.println("Finish point already placed");
             } else {
                 editCell(x, y, toolEnabled, true);
             }
@@ -259,6 +270,7 @@ public class CreateLevelController {
         coin = new Image("/Resources/buttons/coin.png");
         tile = new Image("/Resources/buttons/tile.png");
         startingPoint = new Image("/Resources/buttons/player.png");
+        endPoint = new Image("/Resources/buttons/chest.png");
     }
 
     private void editCell(int x, int y, char tool, boolean addStep) {
@@ -302,6 +314,8 @@ public class CreateLevelController {
             currentImage = coin;
         } else if (tool == STARTING_POINT_ENABLED) {
             currentImage = startingPoint;
+        } else if (tool == END_POINT_ENABLED) {
+            currentImage = endPoint;
         }
     }
 

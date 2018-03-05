@@ -53,8 +53,9 @@ public class GameController {
     private GraphicsContext gc;
 
     private boolean gamePaused = false;
-    private boolean initialized = false;
     private boolean gameOver = false;
+    private boolean gameWon = false;
+    private boolean initialized = false;
 
     @FXML
     private Canvas canvas;
@@ -171,12 +172,12 @@ public class GameController {
             }
 
             if ((code == KeyCode.E)) {
-                if(bulletAmount > 0){
-                    if(player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT||
+                if (bulletAmount > 0) {
+                    if (player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT ||
                             player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
-                        level.addBullet(new Bullet(PLAYER_X_MARGIN+20,player.getY()+20,1));
-                    }else{
-                        level.addBullet(new Bullet(PLAYER_X_MARGIN+20,player.getY()+20,-1));
+                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, 1));
+                    } else {
+                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, -1));
                     }
                     bulletAmount--;
                 }
@@ -198,7 +199,7 @@ public class GameController {
                 player.setLeftCollision(false);
             }
             if (code == KeyCode.LEFT || code == KeyCode.A && player.getVelocityX() < 0) {
-                player.setVelocityX(0,false);
+                player.setVelocityX(0, false);
                 player.setLeftCollision(false);
             }
         }
@@ -207,7 +208,7 @@ public class GameController {
     @FXML
     public void initialize() {
         initializeBackground();
-        level = new Level("survival");
+        level = new Level("game.txt");
         gc = canvas.getGraphicsContext2D();
         player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY());
         coinAmount = level.getCoins().size();
@@ -221,7 +222,7 @@ public class GameController {
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                if (!gamePaused && !gameOver) {
+                if (!gamePaused && !gameOver && !gameWon) {
                     gameLoop(startNanoTime, currentNanoTime);
                 }
             }
@@ -248,14 +249,15 @@ public class GameController {
         //playerMoving();
         //TODO: Make tick for GUI()
         gc.setFill(Color.BLACK);
-        gc.fillText(level.getCoinCounter() + "/" + coinAmount,60,40);
+        gc.fillText(level.getCoinCounter() + "/" + coinAmount, 60, 40);
         checkGameOver();
+        checkGameWon();
         //checkPlayerBoundry();
     }
 
     int playerX = 256;
 
-    private void bulletPlacementX(){
+    private void bulletPlacementX() {
 
     }
 
@@ -277,6 +279,12 @@ public class GameController {
             gameOverRetryButton.setVisible(true);
             canvas.setOpacity(0.7f);
             soundEffects.GAMEOVER.play();
+        }
+    }
+
+    public void checkGameWon() {
+        if (level.getChest().isAnimated()) {
+            gameWon = true;
         }
     }
 
