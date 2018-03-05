@@ -153,25 +153,26 @@ public class CreateLevelController {
 
     @FXML
     public void openSaveFile() {
-        if (!validateMap()) {
-            return;
-        }
+        try {
+            validateMap();
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save map");
+            fileChooser.setInitialDirectory(new File("src/Resources/maps"));
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(extFilter);
+            File file = fileChooser.showSaveDialog(canvas.getScene().getWindow());
 
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save map");
-        fileChooser.setInitialDirectory(new File("src/Resources/maps"));
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showSaveDialog(canvas.getScene().getWindow());
-
-        if (file != null) {
-            System.out.println(file);
-            String content = getMapContent();
-            saveFile(content, file);
+            if (file != null) {
+                System.out.println(file);
+                String content = getMapContent();
+                saveFile(content, file);
+            }
+        } catch (InvalidMapException e) {
+            e.printStackTrace();
         }
     }
 
-    private boolean validateMap() {
+    private void validateMap() throws InvalidMapException {
 
         boolean startingPointExists = false;
         boolean finishPointExists = false;
@@ -201,10 +202,8 @@ public class CreateLevelController {
             Alert alert = new Alert(Alert.AlertType.ERROR, errors.toString(), ButtonType.OK);
             alert.show();
 
-            return false;
+            throw new InvalidMapException(errors.toString());
         }
-
-        return true;
     }
 
     private boolean itemExistsInMap(char item) {
