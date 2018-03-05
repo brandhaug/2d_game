@@ -7,12 +7,12 @@ import java.util.prefs.Preferences;
 
 public enum SoundEffects {
 
-    COIN("./Resources/music/coinCollect.wav"),
-    HIT("./Resources/music/hit.wav"),
-    GAMEOVER("./Resources/music/gameOver.wav"),
-    RUN("./Resources/music/steps.wav"),
-    JUMP("./Resources/music/jump.wav"),
-    LANDING("./Resources/music/landing.wav");
+    COIN("./Resources/sounds/coinCollect.wav"),
+    HIT("./Resources/sounds/hit.wav"),
+    GAMEOVER("./Resources/sounds/gameOver.wav"),
+    RUN("./Resources/sounds/steps.wav"),
+    JUMP("./Resources/sounds/jump.wav"),
+    LANDING("./Resources/sounds/landing.wav");
 
     public static boolean mute;
     private Clip effectClip;

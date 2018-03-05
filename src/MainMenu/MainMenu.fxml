@@ -17,22 +17,22 @@
         <Button fx:id="exitButton" layoutX="21.0" layoutY="624.0" mnemonicParsing="false" onAction="#exit" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/exit.png');" styleClass="button" />
         <Pane fx:id="mapsPane" layoutX="220.0" layoutY="102.0" prefHeight="438.0" prefWidth="841.0" style="-fx-background-color: lightgrey;">
             <children>
-                <ImageView fx:id="map1" fitHeight="213.0" fitWidth="400.0" layoutX="14.0" layoutY="14.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="map1" fitHeight="213.0" fitWidth="400.0" layoutX="14.0" layoutY="14.0" onMouseClicked="#openGame" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../Resources/background/map1_still_image.png" />
                     </image>
                 </ImageView>
-                <ImageView fx:id="map2" fitHeight="200.0" fitWidth="400.0" layoutX="427.0" layoutY="14.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="map2" fitHeight="200.0" fitWidth="400.0" layoutX="427.0" layoutY="14.0" onMouseClicked="#openGame" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../Resources/background/map1_still_image.png" />
                     </image>
                 </ImageView>
-                <ImageView fx:id="map3" fitHeight="216.0" fitWidth="400.0" layoutX="14.0" layoutY="226.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="map3" fitHeight="216.0" fitWidth="400.0" layoutX="14.0" layoutY="226.0" onMouseClicked="#openGame" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../Resources/background/map1_still_image.png" />
                     </image>
                 </ImageView>
-                <ImageView fx:id="map4" fitHeight="200.0" fitWidth="400.0" layoutX="427.0" layoutY="226.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="map4" fitHeight="200.0" fitWidth="400.0" layoutX="427.0" layoutY="226.0" onMouseClicked="#openGame" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../Resources/background/map1_still_image.png" />
                     </image>

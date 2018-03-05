@@ -1,23 +1,16 @@
 package MainMenu;
 
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -57,54 +50,9 @@ public class MainMenuController {
     private boolean initialized = false;
 
     @FXML
-    protected void openInfo(ActionEvent event) {
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(getClass().getResource("../Info/Info.fxml"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    @FXML
-    protected void play() {
-        try {
-            Stage stage = (Stage) mapsPane.getScene().getWindow();
-            Parent root = FXMLLoader.load(getClass().getResource("../Game/Game.fxml"));
-            root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
-            stage.setScene(new Scene(root));
-            musicClip.stop();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
     protected void exit() {
         Platform.exit();
         System.exit(0);
-    }
-
-    @FXML
-    protected void openHighscores(ActionEvent event) {
-        Parent root = null;
-        try {
-            root = FXMLLoader.load(getClass().getResource("../Highscores/Highscores.fxml"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-        stage.setScene(scene);
-        stage.show();
     }
 
     @FXML
@@ -124,7 +72,7 @@ public class MainMenuController {
     }
 
     @FXML
-    protected void toggleMusic() throws IOException, LineUnavailableException, UnsupportedAudioFileException {
+    protected void toggleMusic() {
         boolean musicOn = preferences.getBoolean("music", true);
 
         if (initialized) {
@@ -142,12 +90,36 @@ public class MainMenuController {
     }
 
     @FXML
+    protected void openGame() {
+        changeScene("../Game/Game.fxml", true);
+    }
+
+    @FXML
+    protected void openInfo() {
+        changeScene("../Info/Info.fxml", true);
+    }
+
+    @FXML
     protected void openCreateLevel() {
+        changeScene("../CreateLevel/CreateLevel.fxml", false);
+    }
+
+    @FXML
+    protected void openHighscores() {
+        changeScene("../Highscores/Highscores.fxml", true);
+    }
+
+    private void changeScene(String path, boolean loadStyleSheet) {
         Stage stage = (Stage) mapsPane.getScene().getWindow();
-        Parent root = null;
+
         try {
-            root = FXMLLoader.load(getClass().getResource("../CreateLevel/CreateLevel.fxml"));
-//            root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
+            Parent root = FXMLLoader.load(getClass().getResource(path));
+
+            if (loadStyleSheet) {
+                root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
+            }
+
+            musicClip.stop();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
             e.printStackTrace();
@@ -158,6 +130,7 @@ public class MainMenuController {
     public void initialize() {
         mapsPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.3);");
         mapsPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+
         try {
             initializeMusic();
             toggleMusic();
@@ -165,7 +138,7 @@ public class MainMenuController {
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
             e.printStackTrace();
         }
-        
+
         map1.setOnMouseEntered(event -> map1.setImage(new Image("Resources/background/map1.gif")));
         map1.setOnMouseExited(event -> map1.setImage(new Image("Resources/background/map1_still_image.png")));
         map2.setOnMouseEntered(event -> map2.setImage(new Image("Resources/background/map1.gif")));

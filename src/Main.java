@@ -8,7 +8,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setTitle("2D Game");
+        primaryStage.setTitle("Red Runner");
 
         Parent root = FXMLLoader.load(getClass().getResource("MainMenu/MainMenu.fxml"));
         root.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
