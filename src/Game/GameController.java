@@ -13,6 +13,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -38,8 +39,10 @@ public class GameController {
     public final static int TILE_SIZE = 128;
     public final static int MARGIN = 32;
     //Classic Mode: public final static int PLAYER_X_MARGIN = 200;
-    /*Survival:*/public final static int PLAYER_X_MARGIN = 500;
+    /*Survival:*/
+    public final static int PLAYER_X_MARGIN = 500;
     public final static int PLAYER_Y_MARGIN = 250;
+    private String mapName = "game";
 
     private Level level;
     private Player player;
@@ -65,6 +68,10 @@ public class GameController {
     @FXML
     private Canvas canvas;
     @FXML
+    private ImageView gameWonCoinImage;
+    @FXML
+    private ImageView gameWonTimerImage;
+    @FXML
     private Button pauseButton;
     @FXML
     private Button soundButton;
@@ -77,11 +84,25 @@ public class GameController {
     @FXML
     private Button gameOverRetryButton;
     @FXML
+    private Button gameWonMainMenuButton;
+    @FXML
+    private Button gameWonRetryButton;
+    @FXML
+    private Button gameWonHighScoresButton;
+    @FXML
     private Pane gameOverPane;
     @FXML
     private Pane pauseInfoPane;
     @FXML
     private Pane pauseSettingsPane;
+    @FXML
+    private Pane gameWonPane;
+    @FXML
+    private Text gameWonCoins;
+    @FXML
+    private Text gameWonTime;
+    @FXML
+    private Text gameWonHighScore;
     @FXML
     private Text gameOverText;
     @FXML
@@ -108,7 +129,6 @@ public class GameController {
         musicButton.setVisible(!gamePaused);
         mainMenuButton.setVisible(!gamePaused);
         pauseInfoPane.setVisible(!gamePaused);
-        pauseText.setVisible(!gamePaused);
         pauseSettingsPane.setVisible(!gamePaused);
         gamePaused = !gamePaused;
     }
@@ -200,7 +220,7 @@ public class GameController {
     public void initialize() {
         sceneChanger = new SceneChanger();
         initializeBackground();
-        level = new Level("survival");
+        level = new Level(mapName);
         gc = canvas.getGraphicsContext2D();
         player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY());
         coinAmount = level.getCoins().size();
@@ -244,16 +264,13 @@ public class GameController {
         gc.fillText(bulletAmount + "/" + coinAmount, 60, 40);
         drawTime();
         checkGameOver();
-        //checkGameWon();
+        checkGameWon();
     }
 
     private void checkGameOver() {
         if (player.getY() >= level.getLowestTileY() || !player.getAlive()) {
             gameOver = true;
             gameOverPane.setVisible(true);
-            gameOverText.setVisible(true);
-            gameOverMainMenuButton.setVisible(true);
-            gameOverRetryButton.setVisible(true);
             canvas.setOpacity(0.7f);
             soundEffects.GAMEOVER.play();
         }
@@ -262,7 +279,19 @@ public class GameController {
     public void checkGameWon() {
         if (level.getChest().isAnimated()) {
             gameWon = true;
+            gameWonPane.setVisible(true);
+            gameWonCoins.setText(gameWonCoins.getText() + String.valueOf(level.getCoins().size()));
+            gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
+            if (isNewHighScore()) {
+                gameWonHighScore.setText("Congratulations, it's a new high score!");
+            }
+            canvas.setOpacity(0.7f);
         }
+    }
+
+    //TODO: Implement
+    private boolean isNewHighScore() {
+        return true;
     }
 
     public void drawTime() {
@@ -293,5 +322,9 @@ public class GameController {
 
         gc.drawImage(background, player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         gc.drawImage(background, CANVAS_WIDTH + player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    }
+
+    public void openHighScores(ActionEvent event) {
+        System.out.println("Highscores");
     }
 }

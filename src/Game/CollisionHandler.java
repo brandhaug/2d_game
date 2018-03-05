@@ -27,23 +27,21 @@ public class CollisionHandler {
         this.level = level;
         this.soundEffects = soundEffects;
         disposeBullets = level.getDisposeBullets();
-
     }
 
     public void tick() {
         handleTileCollision();
         handleCoinCollision();
         handleEnemyCollision();
-        //handleChestCollision();
+        handleChestCollision();
     }
 
     public void handleCoinCollision() {
         Iterator<Coin> iterator = level.getCoins().iterator();
 
         while (iterator.hasNext()) {
-            Coin c = iterator.next();
-            if (c.getBoundsBottom().intersects(player.getBoundsTop()) || c.getBoundsBottom().intersects(player.getBoundsRight())
-                    || c.getBoundsBottom().intersects(player.getBoundsBottom()) || c.getBoundsBottom().intersects(player.getBoundsLeft())) {
+            Coin coin = iterator.next();
+            if (intersectsWithPlayer(coin)) {
                 iterator.remove();
                 level.addCoinCounter();
                 SoundEffects.COIN.play();
@@ -53,8 +51,7 @@ public class CollisionHandler {
 
     public void handleChestCollision() {
         Chest chest = level.getChest();
-        if (chest.getBoundsTop().intersects(player.getBoundsTop()) || chest.getBoundsTop().intersects(player.getBoundsRight())
-                || chest.getBoundsTop().intersects(player.getBoundsBottom()) || chest.getBoundsTop().intersects(player.getBoundsLeft())) {
+        if (intersectsWithPlayer(chest)) {
             chest.animateChest();
         }
     }
@@ -62,17 +59,16 @@ public class CollisionHandler {
     public void handleTileCollision() {
         player.setLeftCollision(false);
         player.setRightCollision(false);
-
         player.setVelocityY(player.getVelocityY() + 2);
 
         for (Tile tile : level.getTiles()) {
             handleEnemyTileCollision(tile);
 
-            if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && player.getCurrentSpriteState() != Player.PLAYER_JUMPING_RIGHT && player.getCurrentSpriteState() != Player.PLAYER_JUMPING_LEFT) {
+            if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isJumping()) {
                 handleTileTopCollision(player);
             }
 
-            if (player.getBoundsTop().intersects(tile.getBoundsBottom()) && player.getCurrentSpriteState() != Player.PLAYER_FALLING_LEFT && player.getCurrentSpriteState() != Player.PLAYER_FALLING_RIGHT) {
+            if (player.getBoundsTop().intersects(tile.getBoundsBottom()) && !player.isFalling()) {
                 handleTileBottomCollision(player);
             }
 
@@ -93,11 +89,11 @@ public class CollisionHandler {
 
         for (Enemy enemy : level.getEnemies()) {
 
-            if (enemy.getBoundsBottom().intersects(tile.getBoundsTop()) && enemy.getCurrentSpriteState() != Enemy.ENEMY_JUMPING_RIGHT && enemy.getCurrentSpriteState() != Enemy.ENEMY_JUMPING_LEFT) {
+            if (enemy.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isJumping()) {
                 handleTileTopCollision(enemy);
             }
 
-            if (enemy.getBoundsTop().intersects(tile.getBoundsBottom()) && enemy.getCurrentSpriteState() != Enemy.ENEMY_FALLING_LEFT && enemy.getCurrentSpriteState() != Enemy.ENEMY_FALLING_RIGHT) {
+            if (enemy.getBoundsTop().intersects(tile.getBoundsBottom()) && !player.isFalling()) {
                 handleTileBottomCollision(enemy);
             }
 
@@ -226,7 +222,7 @@ public class CollisionHandler {
     public void handleEnemyBottomCollision(int enemyDamage) {
         bouncing = true;
         playerHit(enemyDamage);
-        if (player.getCurrentSpriteState() == Player.PLAYER_JUMPING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
+        if (player.isJumping()) {
             player.setVelocityY(20);
         }
 
@@ -234,7 +230,6 @@ public class CollisionHandler {
             collisionOn = false;
             player.setVelocityY(-20);
         }
-
 
         if (player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT) {
             collisionOn = false;
@@ -260,7 +255,7 @@ public class CollisionHandler {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                player.setVelocityX(0,false);
+                player.setVelocityX(0, false);
                 timer.cancel();
             }
         }, 150);
@@ -275,7 +270,7 @@ public class CollisionHandler {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                player.setVelocityX(0,false);
+                player.setVelocityX(0, false);
                 timer.cancel();
             }
         }, 200);
@@ -286,8 +281,28 @@ public class CollisionHandler {
         player.setHp(player.getHp() - enemyDamage);
         if (player.getHp() == 0) player.setAlive(false);
     }
+
+    private boolean intersectsWithPlayer(GameObject object) {
+        return topIntersectsWithPlayer(object) || bottomIntersectsWithPlayer(object) || rightIntersectsWithPlayer(object) || leftIntersectsWithPlayer(object);
+    }
+
+    private boolean topIntersectsWithPlayer(GameObject object) {
+        return object.getBoundsTop().intersects(player.getBoundsTop()) || object.getBoundsTop().intersects(player.getBoundsRight())
+                || object.getBoundsTop().intersects(player.getBoundsBottom()) || object.getBoundsTop().intersects(player.getBoundsLeft());
+    }
+
+    private boolean bottomIntersectsWithPlayer(GameObject object) {
+        return object.getBoundsBottom().intersects(player.getBoundsTop()) || object.getBoundsBottom().intersects(player.getBoundsRight())
+                || object.getBoundsBottom().intersects(player.getBoundsBottom()) || object.getBoundsBottom().intersects(player.getBoundsLeft());
+    }
+
+    private boolean rightIntersectsWithPlayer(GameObject object) {
+        return object.getBoundsRight().intersects(player.getBoundsTop()) || object.getBoundsRight().intersects(player.getBoundsRight())
+                || object.getBoundsRight().intersects(player.getBoundsBottom()) || object.getBoundsRight().intersects(player.getBoundsLeft());
+    }
+
+    private boolean leftIntersectsWithPlayer(GameObject object) {
+        return object.getBoundsLeft().intersects(player.getBoundsTop()) || object.getBoundsLeft().intersects(player.getBoundsRight())
+                || object.getBoundsLeft().intersects(player.getBoundsBottom()) || object.getBoundsLeft().intersects(player.getBoundsLeft());
+    }
 }
-
-/*
-
- */

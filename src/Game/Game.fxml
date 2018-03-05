@@ -2,6 +2,8 @@
 
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
@@ -11,7 +13,7 @@
     <children>
       <Canvas fx:id="canvas" height="720.0" layoutX="-1.0" width="1280.0" />
         <Button fx:id="pauseButton" layoutX="1188.0" layoutY="12.0" mnemonicParsing="false" onAction="#pause" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/pause.png');" />
-        <Button fx:id="coinCounter" layoutX="5.0" layoutY="5.0" opacity="0.7" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/coin/singleCoinSmall.png');" />
+        <Button fx:id="coinCounter" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" opacity="0.7" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/coin/singleCoinSmall.png');" />
       <Pane fx:id="pauseSettingsPane" layoutY="620.0" prefHeight="100.0" prefWidth="1280.0" visible="false">
          <children>
               <Button fx:id="mainMenuButton" layoutX="1016.0" layoutY="12.0" mnemonicParsing="false" onAction="#openMainMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/home.png');" styleClass="button" visible="false" />
@@ -19,25 +21,56 @@
               <Button fx:id="soundButton" layoutX="1106.0" layoutY="12.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/sound_on.png');" visible="false" />
          </children>
       </Pane>
-      <Pane fx:id="pauseInfoPane" layoutX="425.0" layoutY="269.0" prefHeight="182.0" prefWidth="431.0" visible="false" styleClass="pauseInfoPane">
+      <Pane fx:id="pauseInfoPane" layoutX="425.0" layoutY="269.0" prefHeight="182.0" prefWidth="431.0" styleClass="pauseInfoPane" visible="false">
          <children>
-            <Text fx:id="pauseText" layoutX="53.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Paused" visible="false">
+            <Text fx:id="pauseText" layoutX="53.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Paused">
                <font>
                   <Font size="50.0" />
                </font>
             </Text>
          </children>
       </Pane>
-      <Pane fx:id="gameOverPane" layoutX="405.0" layoutY="219.0" prefHeight="282.0" prefWidth="468.0" visible="false" styleClass="gameOverPane">
+      <Pane fx:id="gameOverPane" layoutX="405.0" layoutY="219.0" prefHeight="282.0" prefWidth="468.0" styleClass="gameOverPane" visible="false">
          <children>
-            <Text fx:id="gameOverText" fill="WHITE" layoutX="102.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Over" visible="false">
+            <Text fx:id="gameOverText" fill="WHITE" layoutX="102.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Over">
                <font>
                   <Font size="50.0" />
                </font>
             </Text>
-            <Button fx:id="gameOverMainMenuButton" layoutX="102.0" layoutY="174.0" mnemonicParsing="false" onAction="#openMainMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/home.png');" styleClass="button" visible="false" />
-            <Button fx:id="gameOverRetryButton" layoutX="307.0" layoutY="174.0" mnemonicParsing="false" onAction="#restartLevel" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/retry.png');" styleClass="button" visible="false" />
+            <Button fx:id="gameOverMainMenuButton" layoutX="102.0" layoutY="174.0" mnemonicParsing="false" onAction="#openMainMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/home.png');" styleClass="button" />
+            <Button fx:id="gameOverRetryButton" layoutX="307.0" layoutY="174.0" mnemonicParsing="false" onAction="#restartLevel" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/retry.png');" styleClass="button" />
          </children>
       </Pane>
+      <Pane fx:id="gameWonPane" layoutX="341.0" layoutY="178.0" prefHeight="365.0" prefWidth="597.0" styleClass="gameWonPane" visible="false">
+         <children>
+            <Text fx:id="gameWonCoins" fill="WHITE" layoutX="111.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Coins collected: ">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Text>
+            <Text fx:id="gameWonTime" fill="WHITE" layoutX="111.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time: ">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Text>
+            <ImageView fx:id="gameWonCoinImage" fitHeight="82.0" fitWidth="79.0" layoutX="32.0" layoutY="97.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Resources/buttons/coin.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="gameWonTimerImage" fitHeight="49.0" fitWidth="47.0" layoutX="48.0" layoutY="176.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../Resources/buttons/timer.png" />
+               </image>
+            </ImageView>
+            <Text fx:id="gameWonHighScore" fill="WHITE" layoutX="37.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="No new high score..">
+               <font>
+                  <Font size="29.0" />
+               </font>
+            </Text>
+             <Button fx:id="gameWonMainMenuButton" layoutX="123.0" layoutY="262.0" mnemonicParsing="false" onAction="#openMainMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/home.png');" styleClass="button" />
+            <Button fx:id="gameWonHighScoresButton" layoutX="267.0" layoutY="262.0" mnemonicParsing="false" onAction="#openHighScores" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/highscores.png');" styleClass="button" />
+             <Button fx:id="gameWonRetryButton" layoutX="406.0" layoutY="262.0" mnemonicParsing="false" onAction="#restartLevel" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/retry.png');" styleClass="button" />
+         </children></Pane>
     </children>
 </AnchorPane>

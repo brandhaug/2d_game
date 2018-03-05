@@ -120,7 +120,7 @@ public class Level {
         renderCoins(gc, player);
         renderEnemies(gc, player);
         renderBullets(gc, player);
-        //renderChest(gc, player);
+        renderChest(gc, player);
 
 
         if (!cameraInitialized) {
