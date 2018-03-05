@@ -17,6 +17,7 @@ public class Level {
     private List<Coin> coins;
     private List<Enemy> enemies;
     private List<Bullet> bullets;
+    private List<Bullet> disposeBullets;
     private Chest chest;
 
     private int coinCounter;
@@ -32,7 +33,8 @@ public class Level {
         tiles = new ArrayList<>();
         coins = new ArrayList<>();
         enemies = new ArrayList<>();
-        bullets = new LinkedList<>();
+        bullets = new ArrayList<>();
+        disposeBullets = new ArrayList<>();
         char[][] map = loadMap(fileName);
         parseMap(map);
         int bullets = loadBullets(fileName);
@@ -57,6 +59,10 @@ public class Level {
 
     public List<Bullet> getBullets() {
         return bullets;
+    }
+
+    public List<Bullet>getDisposeBullets(){
+        return disposeBullets;
     }
 
     public void addCoinCounter() {
@@ -114,7 +120,7 @@ public class Level {
         renderCoins(gc, player);
         renderEnemies(gc, player);
         renderBullets(gc, player);
-        renderChest(gc, player);
+        //renderChest(gc, player);
 
 
         if (!cameraInitialized) {
@@ -151,18 +157,24 @@ public class Level {
 
     private void renderEnemies(GraphicsContext gc, Player player) {
         for (Enemy enemy : getEnemies()) {
-            if (enemy.getY() < player.getY()) {
-                enemy.setVelocityY(7);
-            }
-            if (enemy.getX() > GameController.PLAYER_X_MARGIN) {
-                enemy.setVelocityX(-3, true);
-                enemy.setX(enemy.getX() - player.getVelocityX());
 
-            } else if (enemy.getX() < GameController.PLAYER_X_MARGIN) {
-                enemy.setVelocityX(2, true);
-                enemy.setX(enemy.getX() - player.getVelocityX());
-            } else {
-                enemy.setVelocityY(-10);
+            if(!enemy.getAlive()){
+                enemy.setVelocityX(0,false);
+            }else {
+                if (enemy.getY() < player.getY()) {
+                    enemy.setVelocityY(7);
+                }
+                if (enemy.getX() > GameController.PLAYER_X_MARGIN) {
+                    enemy.setVelocityX(-3, true);
+                    enemy.setX(enemy.getX() - player.getVelocityX());
+
+                } else if (enemy.getX() < GameController.PLAYER_X_MARGIN) {
+                    enemy.setVelocityX(2, true);
+                    enemy.setX(enemy.getX() - player.getVelocityX());
+                } else {
+                    enemy.setVelocityY(-10);
+                    enemy.setVelocityX(-1,false);
+                }
             }
             enemy.handleSpriteState();
             enemy.setY(enemy.getY() + cameraVelocityY);
@@ -172,6 +184,7 @@ public class Level {
             System.out.println("Player X: " + player.getX());
             System.out.println("-------------------");
             */
+            System.out.println(enemy.getVelocityY());
             enemy.tick(gc);
         }
     }
@@ -185,45 +198,46 @@ public class Level {
     }
 
 
-    public void renderBullets(GraphicsContext gc, Player player) {
-        for (Bullet bullet : getBullets()) {
+    public void renderBullets(GraphicsContext gc,Player player) {
+        Iterator<Bullet> iterator = getBullets().iterator();
+
+        while(iterator.hasNext()) {
+            Bullet bullet = iterator.next();
             bullet.setY(bullet.getY() + cameraVelocityY);
-            if (bullet.getfacing() > 0) {
-                bullet.setVelocityX(300, false);
+            if(bullet.getfacing() > 0){
+                bullet.setVelocityX(50, true);
                 bullet.setX(bullet.getX() - player.getVelocityX());
                 if (player.getVelocityX() >= 0) {
                     bullet.setX(bullet.getX() + player.getVelocityX());
                 }
 
-            } else {
-                bullet.setVelocityX(-300, false);
-                bullet.setX(bullet.getX() + player.getVelocityX());
-                if (player.getVelocityX() < 0) {
+            }else{
+                    bullet.setVelocityX(-50, true);
+                    bullet.setX(bullet.getX() + player.getVelocityX());
                     bullet.setX(bullet.getX() - player.getVelocityX());
                 }
+            if(bullet.getX() > GameController.CANVAS_WIDTH || bullet.getX() < 0){
+                disposeBullets.add(bullet);
             }
-            if (bullet.getX() > GameController.CANVAS_WIDTH || bullet.getX() < 0)
-                removeBullet(bullet);
-            System.out.println("--------------");
-            System.out.println("Buller x: " + bullet.getX());
-            System.out.println("CANVAS x: " + GameController.CANVAS_WIDTH);
             bullet.tick(gc);
-        }
+            }
+        bullets.removeAll(disposeBullets);
     }
 
 
-    public void addBullet(Bullet b) {
+    public void addBullet(Bullet b){
         bullets.add(b);
     }
 
-    public void removeBullet(Bullet b) {
+    public void removeBullet(Bullet b){
         bullets.remove(b);
     }
 
     private void parseMap(char[][] map) {
         final char TILE = '-';
-        final char COIN = 'c';
-        final char ENEMY = 'e';
+        final char COIN = 'C';
+        final char ENEMYA = 'a';
+        final char ENEMYC = 'c';
         final char START = 's';
         final char END = 'f';
 
@@ -238,8 +252,11 @@ public class Level {
                     case (COIN):
                         coins.add(new Coin((x * GameController.TILE_SIZE) + COIN_SIZE / 2, (y * GameController.TILE_SIZE) + COIN_SIZE / 2));
                         break;
-                    case (ENEMY):
-                        enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, EnemyType.PLAYER));
+                    case (ENEMYA):
+                            enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, EnemyType.ENEMY_A));
+                        break;
+                    case (ENEMYC):
+                            enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, EnemyType.ENEMY_C));
                         break;
                     case (START):
                         playerStartPositionX = x * GameController.TILE_SIZE;

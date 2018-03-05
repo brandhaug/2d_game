@@ -42,7 +42,8 @@ public class GameController {
     public final static int BUTTON_SIZE = 64;
     public final static int TILE_SIZE = 128;
     public final static int MARGIN = 32;
-    public final static int PLAYER_X_MARGIN = 200;
+    //Classic Mode: public final static int PLAYER_X_MARGIN = 200;
+    /*Survival:*/public final static int PLAYER_X_MARGIN = 500;
     public final static int PLAYER_Y_MARGIN = 250;
 
     private Level level;
@@ -183,9 +184,9 @@ public class GameController {
                 if (bulletAmount > 0) {
                     if (player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT ||
                             player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
-                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, 1));
-                    } else {
-                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, -1));
+                        level.addBullet(new Bullet(PLAYER_X_MARGIN+20,player.getY()+20,1,1));
+                    }else{
+                        level.addBullet(new Bullet(PLAYER_X_MARGIN+20,player.getY()+20,1,-1));
                     }
                     bulletAmount--;
                 }
@@ -216,13 +217,11 @@ public class GameController {
     @FXML
     public void initialize() {
         initializeBackground();
-        level = new Level("game.txt");
+        level = new Level("survival");
         gc = canvas.getGraphicsContext2D();
         player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY());
         coinAmount = level.getCoins().size();
         bulletAmount = level.getBulletCounter();
-        //player = new Player(Player.START_POSITION_X, Player.START_POSITION_Y, EnemyType.ENEMYTEST, EnemyType.ENEMYTEST2);
-        //player = new Player(Player.START_POSITION_X, Player.START_POSITION_Y);
         collisionHandler = new CollisionHandler(player, level, soundEffects);
 
         final long startNanoTime = System.nanoTime();
@@ -258,27 +257,12 @@ public class GameController {
         playerMoving();
         //TODO: Make tick for GUI()
         gc.setFill(Color.BLACK);
-        gc.fillText(level.getCoinCounter() + "/" + coinAmount, 60, 40);
+        gc.fillText("Bullets: " + bulletAmount, 250, 40);
+        gc.fillText(bulletAmount + "/" + coinAmount, 60, 40);
         drawTime();
         checkGameOver();
-        checkGameWon();
-        //checkPlayerBoundry();
+        //checkGameWon();
     }
-
-    int playerX = 256;
-
-    private void bulletPlacementX() {
-
-    }
-
-    /*
-    private void checkPlayerBoundry(){
-        if(player.getX() > 830){
-            player.setVelocityX(0);
-            player.setX(829);
-        }
-    }
-    */
 
     private void checkGameOver() {
         if (player.getY() >= level.getLowestTileY() || !player.getAlive()) {

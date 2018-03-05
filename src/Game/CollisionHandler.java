@@ -6,6 +6,7 @@ import Resources.soundEffects.SoundEffects;
 
 import java.lang.management.PlatformLoggingMXBean;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -14,15 +15,18 @@ public class CollisionHandler {
     private Player player;
     private Level level;
     private SoundEffects soundEffects;
+    private List<Bullet> disposeBullets;
 
     private boolean bouncing = false;
     private boolean collisionOn = true;
+    private boolean enemyHit = false;
 
 
     public CollisionHandler(Player player, Level level, SoundEffects soundEffects) {
         this.player = player;
         this.level = level;
         this.soundEffects = soundEffects;
+        disposeBullets = level.getDisposeBullets();
 
     }
 
@@ -30,7 +34,7 @@ public class CollisionHandler {
         handleTileCollision();
         handleCoinCollision();
         handleEnemyCollision();
-        handleChestCollision();
+        //handleChestCollision();
     }
 
     public void handleCoinCollision() {
@@ -63,6 +67,7 @@ public class CollisionHandler {
 
         for (Tile tile : level.getTiles()) {
             handleEnemyTileCollision(tile);
+
             if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && player.getCurrentSpriteState() != Player.PLAYER_JUMPING_RIGHT && player.getCurrentSpriteState() != Player.PLAYER_JUMPING_LEFT) {
                 handleTileTopCollision(player);
             }
@@ -98,15 +103,10 @@ public class CollisionHandler {
 
             if (enemy.getBoundsLeft().intersects(tile.getBoundsRight()) && !enemy.getLastSpriteRight()) {
                 handleTileRightCollision(enemy);
-                if (enemy.getVelocityX() != 0) {
-                    enemy.setLeftCollision(true);
-                    enemy.setVelocityX(0, false);
-                }
             }
 
             if (enemy.getBoundsRight().intersects(tile.getBoundsLeft()) && enemy.getLastSpriteRight()) {
                 handleTileLeftCollision(enemy);
-                System.out.println("HIT-RIGHT: " + hitcounterRIGHT++);
             }
 
         }
@@ -146,9 +146,8 @@ public class CollisionHandler {
 
     public void handleEnemyCollision() {
         Iterator<Enemy> iterator = level.getEnemies().iterator();
-
         if (collisionOn) {
-            if (bouncing && player.getCurrentSpriteState() > 5) player.setVelocityX(0, false);
+            if (bouncing && player.getCurrentSpriteState() > 3) player.setVelocityX(0, false);
 
             while (iterator.hasNext()) {
                 Enemy e = iterator.next();
@@ -156,23 +155,21 @@ public class CollisionHandler {
                 handleEnemyBulletCollision(e, iterator);
 
                 if (e.getBoundsTop().intersects(player.getBoundsBottom())) {
-                    handleEnemyTopCollision();
+                    handleEnemyTopCollision(e.getDamage());
                 }
 
 
                 if (e.getBoundsRight().intersects(player.getBoundsLeft())) {
-                    handleEnemyRightCollision();
-                    System.out.println("HIT!");
+                    handleEnemyRightCollision(e.getDamage());
                 }
 
                 if (e.getBoundsBottom().intersects(player.getBoundsTop())) {
-                    handleEnemyBottomCollision();
+                    handleEnemyBottomCollision(e.getDamage());
                 }
 
 
                 if (e.getBoundsLeft().intersects(player.getBoundsRight())) {
-                    handleEnemyLeftCollision();
-                    System.out.println("HIT!");
+                    handleEnemyLeftCollision(e.getDamage());
                 }
             }
         }
@@ -183,15 +180,36 @@ public class CollisionHandler {
         for (Bullet bullet : level.getBullets()) {
             //System.out.println(bullet.getX());
             if (bullet.getBoundsTop().intersects(enemy.getBoundsLeft()) || bullet.getBoundsBottom().intersects(enemy.getBoundsLeft())) {
-                System.out.println("HIT!");
-                level.removeBullet(bullet);
-                enemyIterator.remove();
+                disposeBullets.add(bullet);
+                if (enemy.getHp() <= bullet.getDamage()) {
+                    enemy.setAlive(false);
+                    Timer timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            enemyIterator.remove();
+                            timer.cancel();
+                        }
+                    }, 150);
+                } else {
+                    enemy.setHp(bullet.getDamage());
+                    enemy.setEnemyhit(true);
+                    Timer timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            enemy.setEnemyhit(false);
+                            //enemy.setY(enemy.getY() - 40);
+                            timer.cancel();
+                        }
+                    }, 500);
+                }
             }
         }
     }
 
 
-    public void handleEnemyTopCollision() {
+    public void handleEnemyTopCollision(int enemyDamage) {
         bouncing = true;
         if (player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT
                 || player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT) {
@@ -201,13 +219,13 @@ public class CollisionHandler {
             player.setVelocityY(-25);
             player.setVelocityX(-20, false);
         }
-        playerHit();
+        playerHit(enemyDamage);
     }
 
 
-    public void handleEnemyBottomCollision() {
+    public void handleEnemyBottomCollision(int enemyDamage) {
         bouncing = true;
-        playerHit();
+        playerHit(enemyDamage);
         if (player.getCurrentSpriteState() == Player.PLAYER_JUMPING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
             player.setVelocityY(20);
         }
@@ -233,23 +251,39 @@ public class CollisionHandler {
         }, 1000);
     }
 
-    public void handleEnemyRightCollision() {
+    public void handleEnemyRightCollision(int enemyDamage) {
         bouncing = true;
         player.setVelocityX(10, false);
         player.setVelocityY(-10);
-        playerHit();
+        playerHit(enemyDamage);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                player.setVelocityX(0,false);
+                timer.cancel();
+            }
+        }, 150);
     }
 
-    public void handleEnemyLeftCollision() {
+    public void handleEnemyLeftCollision(int enemyDamage) {
         bouncing = true;
         player.setVelocityX(-10, false);
         player.setVelocityY(-10);
-        playerHit();
+        playerHit(enemyDamage);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                player.setVelocityX(0,false);
+                timer.cancel();
+            }
+        }, 200);
     }
 
-    public void playerHit() {
+    public void playerHit(int enemyDamage) {
         soundEffects.HIT.play();
-        player.setHp(player.getHp() - 25);
+        player.setHp(player.getHp() - enemyDamage);
         if (player.getHp() == 0) player.setAlive(false);
     }
 }

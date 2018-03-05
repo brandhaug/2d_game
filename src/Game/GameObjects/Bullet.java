@@ -7,13 +7,15 @@ public class Bullet extends GameObject {
 
     private int x;
     private  int y;
+    int damage;
     int facing;
 
     private SpriteSheet spriteSheet;
 
-    public Bullet(int x, int y, int facing) {
+    public Bullet(int x, int y, int damage, int facing) {
         super(x,y);
         this.facing = facing;
+        this.damage = damage;
         initializeSpriteSheets();
     }
 
@@ -30,6 +32,10 @@ public class Bullet extends GameObject {
 
     public void setFacing(int facing) {
         this.facing = facing;
+    }
+
+    public int getDamage(){
+        return damage;
     }
 
     public void initializeSpriteSheets() {

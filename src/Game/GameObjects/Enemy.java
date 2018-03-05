@@ -1,22 +1,24 @@
 package Game.GameObjects;
 
-import Game.GameController;
 import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
 import java.awt.*;
-import java.util.Scanner;
 
-public class Enemy extends Character{
+public class Enemy extends GameObject{
 
-    int hp;
-    int speed = 1;
-    int damage;
-    int points;
+    private int hp;
+    private int speed;
+    private int damage;
+    private int points;
+    private boolean enemyhit = false;
 
-    public static final int START_POSITION_X = 200;
-    public static final int START_POSITION_Y = 400;
+    private boolean rightCollision = false;
+    private boolean leftCollision = false;
+    public boolean lastSpriteRight = true;
+    private boolean isAlive = true;
+    EnemyType enemyType;
+
     private final int WIDTH = 72;
 
     // States
@@ -28,26 +30,19 @@ public class Enemy extends Character{
     public final static int ENEMY_JUMPING_LEFT = 5;
     public final static int ENEMY_FALLING_RIGHT = 6;
     public final static int ENEMY_FALLING_LEFT = 7;
-
-
+    public final static int ENEMY_HIT_RIGHT = 8;
+    public final static int ENEMY_HIT_LEFT = 9;
+    public final static int ENEMY_DEAD = 10;
 
     // Spritesheets
     private SpriteSheet idleRightSpriteSheet;
     private SpriteSheet idleLeftSpriteSheet;
     private SpriteSheet runRightSpriteSheet;
     private SpriteSheet runLeftSpriteSheet;
-    private SpriteSheet jumpLeftSpriteSheet;
-    private SpriteSheet fallLeftSpriteSheet;
-    private SpriteSheet jumpRightSpriteSheet;
-    private SpriteSheet fallRightSpriteSheet;
-
-    private boolean rightCollision = false;
-    private boolean leftCollision = false;
-    private boolean lastSpriteRight = true;
-    private boolean isAlive = true;
-
-
-    EnemyType enemyType;
+    private SpriteSheet hitLeftSpriteSheet;
+    private SpriteSheet hitRightSpriteSheet;
+    private SpriteSheet cloudGroundSpriteSheet;
+    private SpriteSheet cloudOffGroundSpriteSheet;
 
     /*
     public Enemy(int x, int y) {
@@ -60,38 +55,32 @@ public class Enemy extends Character{
         super(x, y);
         this.enemyType = enemyType;
         setVelocityY(10);
-        setVelocityX(0,true);
         initializeSpriteSheets();
+        this.hp = enemyType.getHp();
+        this.speed = enemyType.getSpeed();
+        this.damage = enemyType.getDamage();
+        this.points = enemyType.getPoints();
+        System.out.println(hp);
     }
-
-
-    public Enemy(int x, int y) {
-        super(x, y);
-        this.enemyType = enemyType;
-        initializeSpriteSheets();
-    }
-
-    /*
-    public enum enemyType {
-        IMMORTAL, EASY1, EASY2, EASY3,
-        MEDIUM1, MEDIUM2, MEDIUM3,
-        HARD1, HARD2, HARD3
-    }
-    */
 
     public void setHp(int hp) {
+        this.hp -= hp;
     }
 
     public int getHp() {
-        return 0;
+        return hp;
+    }
+
+    public int getDamage() {
+        return damage;
     }
 
     public void setAlive(boolean isAlive) {
-
+        this.isAlive = isAlive;
     }
 
     public boolean getAlive() {
-        return false;
+        return isAlive;
     }
 
     public int getStartPosition() {
@@ -102,6 +91,14 @@ public class Enemy extends Character{
         return false;
     }
 
+    public void setEnemyhit(boolean enemyhit){
+        this.enemyhit = enemyhit;
+    }
+
+    public boolean getEnemyHit(){
+        return enemyhit;
+    }
+
     public void tick(GraphicsContext gc) {
         //setVelocityY(1);
         handleVelocityX();
@@ -109,11 +106,34 @@ public class Enemy extends Character{
         render(gc);
     }
 
+    protected void handleVelocityX() {
+        setX(getX() + getVelocityX());
+    }
+
+    protected void handleVelocityY() {
+        int MAX_VELOCITY_FALLING = 13;
+        int MAX_VELOCITY_JUMPING = -35;
+
+        if (getVelocityY() >= MAX_VELOCITY_FALLING) {
+            setY(getY() + MAX_VELOCITY_FALLING);
+        } else if (getY() <= MAX_VELOCITY_JUMPING) {
+            setY(getY() + MAX_VELOCITY_JUMPING);
+        } else {
+            setY(getY() + getVelocityY());
+        }
+    }
+
     @Override
     public void handleSpriteState() {
         setLastSpriteState(getCurrentSpriteState());
 
-        if (getVelocityX() == 0 && getVelocityY() == 0 && (!leftCollision && !rightCollision)) {
+        if(!isAlive && getVelocityY() == 0){
+            setCurrentSpriteSheet(cloudGroundSpriteSheet);
+            setCurrentSpriteState(ENEMY_DEAD);
+        }else if(!isAlive && getVelocityY() < 0){
+            setCurrentSpriteSheet(cloudOffGroundSpriteSheet);
+            setCurrentSpriteState(ENEMY_DEAD);
+        }else if (getVelocityX() == 0 && getVelocityY() == 0 && (!leftCollision && !rightCollision)) {
             if (lastSpriteRight) {
                 lastSpriteRight = true;
                 setCurrentSpriteState(ENEMY_IDLING_RIGHT);
@@ -123,22 +143,30 @@ public class Enemy extends Character{
                 setCurrentSpriteState(ENEMY_IDLING_LEFT);
                 setCurrentSpriteSheet(idleLeftSpriteSheet);
             }
-        } else if (getVelocityY() < 0 && (getVelocityX() > 0 || getVelocityX() == 0 && lastSpriteRight)) {
+        } else if(enemyhit){
+            if(getVelocityX() > 0 || getVelocityX() == 0 && lastSpriteRight) {
+                setCurrentSpriteState(ENEMY_HIT_RIGHT);
+                setCurrentSpriteSheet(hitRightSpriteSheet);
+            }else {
+                setCurrentSpriteState(ENEMY_HIT_LEFT);
+                setCurrentSpriteSheet(hitLeftSpriteSheet);
+            }
+        }else if (getVelocityY() < 0 && (getVelocityX() > 0 || getVelocityX() == 0 && lastSpriteRight)) {
             lastSpriteRight = true;
             setCurrentSpriteState(ENEMY_JUMPING_RIGHT);
-            setCurrentSpriteSheet(jumpRightSpriteSheet);
+            setCurrentSpriteSheet(runRightSpriteSheet);
         } else if (getVelocityY() < 0 && getVelocityX() <= 0) {
             lastSpriteRight = false;
             setCurrentSpriteState(ENEMY_JUMPING_LEFT);
-            setCurrentSpriteSheet(jumpLeftSpriteSheet);
+            setCurrentSpriteSheet(runLeftSpriteSheet);
         } else if (getVelocityY() > 0 && (getVelocityX() > 0 || getVelocityX() == 0 && lastSpriteRight)) {
             lastSpriteRight = true;
             setCurrentSpriteState(ENEMY_FALLING_RIGHT);
-            setCurrentSpriteSheet(fallRightSpriteSheet);
+            setCurrentSpriteSheet(runRightSpriteSheet);
         } else if (getVelocityY() > 0 && getVelocityX() <= 0) {
             lastSpriteRight = false;
             setCurrentSpriteState(ENEMY_FALLING_LEFT);
-            setCurrentSpriteSheet(fallLeftSpriteSheet);
+            setCurrentSpriteSheet(runLeftSpriteSheet);
         } else if (getVelocityX() > 0 || rightCollision) {
             lastSpriteRight = true;
             setCurrentSpriteState(ENEMY_RUNNING_RIGHT);
@@ -151,15 +179,17 @@ public class Enemy extends Character{
     }
 
     public void initializeSpriteSheets() {
-        idleRightSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName()+ "/idle_right.png", 12, 72, 76);
-        idleLeftSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName()+ "/idle_left.png" , 12, 72, 76);
-        runRightSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName()+ "/run_right.png", 18, 99, 77);
-        runLeftSpriteSheet = new SpriteSheet("/Resources/"  + enemyType.getFileName()+ "/run_left.png", 18, 99, 77);
-        jumpRightSpriteSheet = new SpriteSheet("/Resources/"  + enemyType.getFileName()+ "/jump_right.png", 1, 76, 77);
-        jumpLeftSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName()+ "/jump_left.png", 1, 76, 77);
-        fallRightSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName()+ "/fall_left.png", 1, 67, 77);
-        fallLeftSpriteSheet = new SpriteSheet("/Resources/" + enemyType.getFileName()+ "/fall_right.png", 1, 67, 77);
+        idleRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_idleRight.png", 4, enemyType.getIdleW(), enemyType.getIdleH());
+        idleLeftSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_idleLeft.png" , 4, enemyType.getIdleW(), enemyType.getIdleH());
+        runRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_runRight.png", 4, enemyType.getRundW(), enemyType.getRunH());
+        runLeftSpriteSheet = new SpriteSheet("/Resources/enemies/"  + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_runLeft.png", 4, enemyType.getRundW(), enemyType.getRunH());
+        hitRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_hitRight.png", 2, enemyType.getHitW(), enemyType.getHitH());
+        hitLeftSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_hitLeft.png", 2, enemyType.getHitW(), enemyType.getHitH());
+        cloudGroundSpriteSheet = new SpriteSheet("/Resources/cloud/groundCloud.png",5, 132, 88);
+        cloudOffGroundSpriteSheet = new SpriteSheet("/Resources/cloud/offGroundCloud.png",5,99,88 );
     }
+
+
 
     public void setRightCollision(boolean rightCollision) {
         this.rightCollision = rightCollision;
@@ -193,7 +223,7 @@ public class Enemy extends Character{
 
     @Override
     public Rectangle getBoundsRight() {
-        return new Rectangle(getX() + WIDTH - 20, getY() + 10, 20, 20);
+        return new Rectangle(getX() + WIDTH, getY() + 10, 20, 40);
     }
 
     @Override
