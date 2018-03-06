@@ -1,5 +1,6 @@
 package CreateLevel;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -8,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
@@ -33,16 +35,14 @@ public class CreateLevelController {
     Button chestButton;
     @FXML
     Button loadButton;
-
-    private GraphicsContext gc;
-    private final int GRID_SIZE = 64;
+    @FXML
+    private Button eraseButton;
 
     private char[][] map;
 
-    private int canvasWidth;
-    private int canvasHeight;
-
-
+    /**
+     * Tools
+     */
     private final char TILE_ENABLED = '-';
     private final char COIN_ENABLED = 'c';
     private final char ENEMY_ENABLED = 'e';
@@ -52,13 +52,34 @@ public class CreateLevelController {
 
     private char toolEnabled = '0';
 
-    private Image mace;
-    private Image tile;
-    private Image coin;
-    private Image startingPoint;
-    private Image endPoint;
+    /**
+     * Tool monitoring
+     */
+    private boolean startingPointExists = false;
+    private boolean endPointExists = false;
+
+    /**
+     * Tool images
+     */
+    private Image maceImage;
+    private Image tileImage;
+    private Image coinImage;
+    private Image startingPointImage;
+    private Image endPointImage;
+
     private Image currentImage;
 
+    /**
+     * Canvas attributes
+     */
+    private GraphicsContext gc;
+    private final int GRID_SIZE = 64;
+    private int canvasWidth;
+    private int canvasHeight;
+
+    /**
+     * Canvas coordinates
+     */
     private int pressedX;
     private int pressedY;
     private int currentOffsetX = 0;
@@ -68,56 +89,54 @@ public class CreateLevelController {
 
     private boolean dragging = false;
 
+    /**
+     * Steps for undo and redo
+     */
     private List<Step> steps;
-    private int stepDiff;
+    private int stepDiff = 0;
 
 
     @FXML
-    public void chooseTile() {
-        toolEnabled = TILE_ENABLED;
-        currentImage = tile;
-        updateGui();
+    protected void chooseTile() {
+        enableTool(TILE_ENABLED);
     }
 
     @FXML
-    public void chooseCoin() {
-        toolEnabled = COIN_ENABLED;
-        currentImage = coin;
-        updateGui();
+    protected void chooseCoin() {
+        enableTool(COIN_ENABLED);
     }
 
     @FXML
-    public void chooseEnemy() {
-        toolEnabled = ENEMY_ENABLED;
-        currentImage = mace;
-        updateGui();
+    protected void chooseEnemy() {
+        enableTool(ENEMY_ENABLED);
     }
 
     @FXML
-    public void chooseStartingPoint() {
-        toolEnabled = STARTING_POINT_ENABLED;
-        currentImage = startingPoint;
-        updateGui();
+    protected void chooseStartingPoint() {
+        enableTool(STARTING_POINT_ENABLED);
     }
 
     @FXML
-    public void chooseEndPoint() {
-        toolEnabled = END_POINT_ENABLED;
-        currentImage = endPoint;
-        updateGui();
+    protected void chooseEndPoint() {
+        enableTool(END_POINT_ENABLED);
     }
 
     @FXML
-    public void chooseEraser() {
-        toolEnabled = ERASER_ENABLED;
-        updateGui();
+    protected void chooseEraser() {
+        enableTool(ERASER_ENABLED);
     }
 
+    private void enableTool(char tool) {
+        toolEnabled = tool;
+        updateGui(tool);
+    }
 
     @FXML
-    public void stepBackward() {
+    protected void stepBackward() {
         if (steps.size() <= stepDiff) {
             System.out.println("Can't undo");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Can't undo", ButtonType.OK);
+            alert.show();
         } else {
             stepDiff++;
             Step step = steps.get(steps.size() - stepDiff);
@@ -126,9 +145,11 @@ public class CreateLevelController {
     }
 
     @FXML
-    public void stepForward() {
+    protected void stepForward() {
         if (stepDiff == 0) {
             System.out.println("Can't redo");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Can't redo", ButtonType.OK);
+            alert.show();
         } else {
             stepDiff--;
             Step step = steps.get(steps.size() - stepDiff - 1);
@@ -137,12 +158,8 @@ public class CreateLevelController {
     }
 
     @FXML
-    public void openLoadFile() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Load map");
-        fileChooser.setInitialDirectory(new File("src/Resources/maps"));
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
+    protected void openLoadFile() {
+        FileChooser fileChooser = createMapFileChooser("Load map");
         File file = fileChooser.showOpenDialog(canvas.getScene().getWindow());
 
         if (file != null) {
@@ -152,14 +169,10 @@ public class CreateLevelController {
     }
 
     @FXML
-    public void openSaveFile() {
+    protected void openSaveFile() {
         try {
             validateMap();
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save map");
-            fileChooser.setInitialDirectory(new File("src/Resources/maps"));
-            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
-            fileChooser.getExtensionFilters().add(extFilter);
+            FileChooser fileChooser = createMapFileChooser("Save map");
             File file = fileChooser.showSaveDialog(canvas.getScene().getWindow());
 
             if (file != null) {
@@ -172,60 +185,34 @@ public class CreateLevelController {
         }
     }
 
+    private FileChooser createMapFileChooser(String title) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(title);
+        fileChooser.setInitialDirectory(new File("src/Resources/maps"));
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        return fileChooser;
+    }
+
     private void validateMap() throws InvalidMapException {
-
-        boolean startingPointExists = false;
-        boolean finishPointExists = false;
-
-        for (int y = 0; y < map.length; y++) {
-            for (int x = 0; x < map[y].length; x++) {
-                if (map[y][x] == STARTING_POINT_ENABLED) {
-                    startingPointExists = true;
-                } else if (map[y][x] == END_POINT_ENABLED) {
-                    finishPointExists = true;
-                }
-            }
-        }
-
-        if (!startingPointExists || !finishPointExists) {
+        if (!startingPointExists || !endPointExists) {
             StringBuilder errors = new StringBuilder();
             if (!startingPointExists) {
                 System.out.println("Starting point missing");
                 errors.append("Starting point missing\n");
             }
 
-            if (!finishPointExists) {
+            if (!endPointExists) {
                 System.out.println("Finish point missing");
-                errors.append("Finish point missing\n");
+                errors.append("Finish point missing");
             }
 
             Alert alert = new Alert(Alert.AlertType.ERROR, errors.toString(), ButtonType.OK);
+            alert.setHeaderText(null);
             alert.show();
 
             throw new InvalidMapException(errors.toString());
         }
-    }
-
-    private boolean itemExistsInMap(char item) {
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[i].length; j++) {
-                if (map[i][j] == item) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean startingPointSelected() {
-        for (int y = 0; y < map.length; y++) {
-            for (int x = 0; x < map[y].length; x++) {
-                if (map[y][x] == STARTING_POINT_ENABLED) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private String getMapContent() {
@@ -260,15 +247,31 @@ public class CreateLevelController {
         }
     }
 
-    public void updateGui() {
-//        String border = "-fx-border-color: green;"
-//                + "-fx-border-width: 2;\n";
-//        String noBorder = "-fx-border-color: none;\n"
-//                + "-fx-border-width: 0;\n";
-//
-//        if (toolEnabled == TILE_ENABLED) {
-//            tileButton.setStyle(tileButton.getStyle() + border);
-//        }
+    public void updateGui(char tool) {
+        playerButton.setBorder(null);
+        tileButton.setBorder(null);
+        coinButton.setBorder(null);
+        enemyButton.setBorder(null);
+        chestButton.setBorder(null);
+        eraseButton.setBorder(null);
+
+        if (tool == TILE_ENABLED) {
+            currentImage = tileImage;
+            tileButton.setBorder(new Border(new BorderStroke(Color.GREEN,
+                    BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        } else if (tool == ENEMY_ENABLED) {
+            currentImage = maceImage;
+            enemyButton.setBorder(new Border(new BorderStroke(Color.GREEN,
+                    BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        } else if (tool == COIN_ENABLED) {
+            currentImage = coinImage;
+        } else if (tool == STARTING_POINT_ENABLED) {
+            currentImage = startingPointImage;
+        } else if (tool == END_POINT_ENABLED) {
+            currentImage = endPointImage;
+        } else {
+            currentImage = null;
+        }
     }
 
     public void mouseClicked(MouseEvent mouseEvent) {
@@ -278,13 +281,7 @@ public class CreateLevelController {
             int y = (int) (Math.floor((mouseEvent.getY() + currentOffsetY) / GRID_SIZE) + (map.length - (canvasHeight / GRID_SIZE)));
             int x = (int) (Math.floor((mouseEvent.getX() + currentOffsetX) / GRID_SIZE));
 
-            if (toolEnabled == STARTING_POINT_ENABLED && itemExistsInMap(STARTING_POINT_ENABLED)) {
-                System.out.println("Starting point already placed");
-            } else if (toolEnabled == END_POINT_ENABLED && itemExistsInMap(END_POINT_ENABLED)) {
-                System.out.println("Finish point already placed");
-            } else {
-                editCell(x, y, toolEnabled, true);
-            }
+            editCell(x, y, toolEnabled, true);
         }
     }
 
@@ -316,6 +313,7 @@ public class CreateLevelController {
 
         gc = canvas.getGraphicsContext2D();
 
+        gc.setLineWidth(0.2);
         gc.setFill(Color.BLACK);
 
         map = new char[100][1000];
@@ -323,29 +321,63 @@ public class CreateLevelController {
     }
 
     private void initializeSprites() {
-        mace = new Image("/Resources/buttons/mace.png");
-        coin = new Image("/Resources/buttons/coin.png");
-        tile = new Image("/Resources/buttons/tile.png");
-        startingPoint = new Image("/Resources/buttons/player.png");
-        endPoint = new Image("/Resources/buttons/chest.png");
+        maceImage = new Image("/Resources/buttons/mace.png");
+        coinImage = new Image("/Resources/buttons/coin.png");
+        tileImage = new Image("/Resources/buttons/tile.png");
+        startingPointImage = new Image("/Resources/buttons/player.png");
+        endPointImage = new Image("/Resources/buttons/chest.png");
     }
 
     private void editCell(int x, int y, char tool, boolean addStep) {
-        updateCurrentImage(tool);
+        try {
+            handleEditCellErrors(tool);
+            updateGui(tool);
 
-        gc.clearRect((x * GRID_SIZE) - currentOffsetX + 2, canvasHeight - ((map.length - y) * GRID_SIZE) - currentOffsetY + 2, 61, 61);
+            gc.clearRect((x * GRID_SIZE) - currentOffsetX + 2, canvasHeight - ((map.length - y) * GRID_SIZE) - currentOffsetY + 2, 61, 61);
 
-        if (addStep) {
-            addStep(x, y, tool);
+            if (addStep) {
+                addStep(x, y, tool);
+            }
 
+            updateToolMonitoring(map[y][x], tool);
+            map[y][x] = tool;
+
+            if (tool != ERASER_ENABLED) {
+                renderCell(x, y);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleEditCellErrors(char tool) throws Exception {
+        if (tool == STARTING_POINT_ENABLED && startingPointExists) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Starting point already placed", ButtonType.OK);
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.show();
+            throw new Exception("Starting point already placed");
+        } else if (tool == END_POINT_ENABLED && endPointExists) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Finish point already placed", ButtonType.OK);
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
+            alert.show();
+            throw new Exception("Finish point already placed");
+        }
+    }
+
+    private void updateToolMonitoring(char currentCellValue, char tool) {
+        if (currentCellValue == STARTING_POINT_ENABLED) {
+            startingPointExists = false;
+        } else if (currentCellValue == END_POINT_ENABLED) {
+            endPointExists = false;
         }
 
-        map[y][x] = tool;
-
-        if (tool == ERASER_ENABLED) {
-
-        } else {
-            renderCell(x, y);
+        if (tool == STARTING_POINT_ENABLED) {
+            startingPointExists = true;
+        } else if (tool == END_POINT_ENABLED) {
+            endPointExists = true;
         }
     }
 
@@ -362,26 +394,12 @@ public class CreateLevelController {
         }
     }
 
-    private void updateCurrentImage(int tool) {
-        if (tool == TILE_ENABLED) {
-            currentImage = tile;
-        } else if (tool == ENEMY_ENABLED) {
-            currentImage = mace;
-        } else if (tool == COIN_ENABLED) {
-            currentImage = coin;
-        } else if (tool == STARTING_POINT_ENABLED) {
-            currentImage = startingPoint;
-        } else if (tool == END_POINT_ENABLED) {
-            currentImage = endPoint;
-        }
-    }
-
-    public void render(boolean initialize) {
+    private void render(boolean initialize) {
         gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
-                updateCurrentImage(map[y][x]);
+                updateGui(map[y][x]);
                 gc.strokeRect((x * GRID_SIZE) - currentOffsetX, (canvasHeight - ((map.length - y) * GRID_SIZE) - currentOffsetY), GRID_SIZE, GRID_SIZE);
                 if (initialize) {
                     map[y][x] = '0';
@@ -394,5 +412,12 @@ public class CreateLevelController {
 
     private void renderCell(int x, int y) {
         gc.drawImage(currentImage, (x * GRID_SIZE) - currentOffsetX, (canvasHeight - ((map.length - y) * GRID_SIZE) - currentOffsetY));
+    }
+
+    @FXML
+    public void openHelp() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "- Choose a tool\n- Click in cell to draw enabled tool by clicking a button\n- Move mouse while holding shift to drag through map\n- All maps need one starting point (Player) and one finish point (Chest)", ButtonType.OK);
+        alert.setHeaderText(null);
+        alert.show();
     }
 }

@@ -15,7 +15,7 @@ public class HighscoresController {
     private SceneChanger sceneChanger;
 
     @FXML
-    protected void openMainMenu(ActionEvent event) throws IOException {
+    protected void openMainMenu(ActionEvent event) {
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
