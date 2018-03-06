@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import org.apache.commons.lang3.time.StopWatch;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -51,10 +52,10 @@ public class GameController {
     private Preferences preferences = Preferences.userRoot();
     private int coinAmount;
     private int bulletAmount;
-    private long timeMillis;
-    private long timeSeconds;
     private Font smallFont = new Font("Calibri", 14);
     private Font bigFont = new Font("Calibri", 40);
+    private int timeSeconds;
+    private StopWatch stopWatch;
 
     private Image background;
     private GraphicsContext gc;
@@ -116,21 +117,6 @@ public class GameController {
     @FXML
     public void restartLevel(ActionEvent event) {
         sceneChanger.changeScene(event, "../Game/Game.fxml", true);
-    }
-
-    @FXML
-    public void pause() {
-        if (gamePaused) {
-            pauseButton.setStyle("-fx-graphic: 'Resources/buttons/pause.png'");
-        } else {
-            pauseButton.setStyle("-fx-graphic: 'Resources/buttons/play.png'");
-        }
-        soundButton.setVisible(!gamePaused);
-        musicButton.setVisible(!gamePaused);
-        mainMenuButton.setVisible(!gamePaused);
-        pauseInfoPane.setVisible(!gamePaused);
-        pauseSettingsPane.setVisible(!gamePaused);
-        gamePaused = !gamePaused;
     }
 
     @FXML
@@ -229,7 +215,8 @@ public class GameController {
 
         final long startNanoTime = System.nanoTime();
         initialized = true;
-        timeMillis = System.currentTimeMillis();
+        stopWatch = new StopWatch();
+        stopWatch.start();
 
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
@@ -294,9 +281,26 @@ public class GameController {
         return true;
     }
 
-    public void drawTime() {
-        timeSeconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - timeMillis);
-        String formattedTime = String.valueOf((int) timeSeconds);
+    @FXML
+    public void pause() {
+        if (gamePaused) {
+            pauseButton.setStyle("-fx-graphic: 'Resources/buttons/pause.png'");
+            stopWatch.resume();
+        } else {
+            pauseButton.setStyle("-fx-graphic: 'Resources/buttons/play.png'");
+            stopWatch.suspend();
+        }
+        soundButton.setVisible(!gamePaused);
+        musicButton.setVisible(!gamePaused);
+        mainMenuButton.setVisible(!gamePaused);
+        pauseInfoPane.setVisible(!gamePaused);
+        pauseSettingsPane.setVisible(!gamePaused);
+        gamePaused = !gamePaused;
+    }
+
+    private void drawTime() {
+        timeSeconds = (int) stopWatch.getTime() / 1000;
+        String formattedTime = String.valueOf(timeSeconds);
 
         gc.setFont(bigFont);
         gc.setTextAlign(TextAlignment.RIGHT);
