@@ -110,12 +110,12 @@ public class GameController {
 
     @FXML
     protected void openMainMenu(ActionEvent event) {
-        sceneChanger.changeScene(event, "MainMenu/MainMenu.fxml", true);
+        sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
     @FXML
     public void restartLevel(ActionEvent event) {
-        sceneChanger.changeScene(event, "/Game.fxml", true);
+        sceneChanger.changeScene(event, "../Game/Game.fxml", true);
     }
 
     @FXML
