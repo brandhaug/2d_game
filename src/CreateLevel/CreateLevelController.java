@@ -200,12 +200,15 @@ public class CreateLevelController {
             if (!startingPointExists) {
                 System.out.println("Starting point missing");
                 errors.append("Starting point missing\n");
-            } else if (!endPointExists) {
+            }
+
+            if (!endPointExists) {
                 System.out.println("Finish point missing");
                 errors.append("Finish point missing");
             }
 
             Alert alert = new Alert(Alert.AlertType.ERROR, errors.toString(), ButtonType.OK);
+            alert.setHeaderText(null);
             alert.show();
 
             throw new InvalidMapException(errors.toString());
@@ -351,10 +354,14 @@ public class CreateLevelController {
     private void handleEditCellErrors(char tool) throws Exception {
         if (tool == STARTING_POINT_ENABLED && startingPointExists) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Starting point already placed", ButtonType.OK);
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
             alert.show();
             throw new Exception("Starting point already placed");
         } else if (tool == END_POINT_ENABLED && endPointExists) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Finish point already placed", ButtonType.OK);
+            alert.setHeaderText(null);
+            alert.setGraphic(null);
             alert.show();
             throw new Exception("Finish point already placed");
         }
@@ -410,6 +417,7 @@ public class CreateLevelController {
     @FXML
     public void openHelp() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "- Choose a tool\n- Click in cell to draw enabled tool by clicking a button\n- Move mouse while holding shift to drag through map\n- All maps need one starting point (Player) and one finish point (Chest)", ButtonType.OK);
+        alert.setHeaderText(null);
         alert.show();
     }
 }
