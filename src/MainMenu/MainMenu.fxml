@@ -41,6 +41,6 @@
             <!--<Font size="40.0" />-->
          <!--</font>-->
       <!--</Text>-->
-      <Button fx:id="createLevelButton" layoutX="596.0" layoutY="624.0" mnemonicParsing="false" onAction="#openCreateLevel" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/info.png');" styleClass="button" />
+      <Button fx:id="createLevelButton" layoutX="596.0" layoutY="624.0" mnemonicParsing="false" onAction="#openCreateLevel" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/draw.png');" styleClass="button" />
     </children>
 </AnchorPane>

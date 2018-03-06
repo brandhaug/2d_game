@@ -316,6 +316,7 @@ public class GameController {
 
     private void drawBackground(GraphicsContext gc) {
         int tempX = player.getX();
+
         while (tempX > CANVAS_WIDTH + player.getStartPosition()) {
             tempX -= CANVAS_WIDTH;
         }
