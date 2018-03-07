@@ -61,7 +61,7 @@ public class Level {
         return bullets;
     }
 
-    public List<Bullet>getDisposeBullets(){
+    public List<Bullet> getDisposeBullets() {
         return disposeBullets;
     }
 
@@ -158,9 +158,9 @@ public class Level {
     private void renderEnemies(GraphicsContext gc, Player player) {
         for (Enemy enemy : getEnemies()) {
 
-            if(!enemy.getAlive()){
-                enemy.setVelocityX(0,false);
-            }else {
+            if (!enemy.getAlive()) {
+                enemy.setVelocityX(0, false);
+            } else {
                 if (enemy.getY() < player.getY()) {
                     enemy.setVelocityY(7);
                 }
@@ -173,7 +173,7 @@ public class Level {
                     enemy.setX(enemy.getX() - player.getVelocityX());
                 } else {
                     enemy.setVelocityY(-10);
-                    enemy.setVelocityX(-1,false);
+                    enemy.setVelocityX(-1, false);
                 }
             }
             enemy.handleSpriteState();
@@ -198,38 +198,38 @@ public class Level {
     }
 
 
-    public void renderBullets(GraphicsContext gc,Player player) {
+    public void renderBullets(GraphicsContext gc, Player player) {
         Iterator<Bullet> iterator = getBullets().iterator();
 
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Bullet bullet = iterator.next();
             bullet.setY(bullet.getY() + cameraVelocityY);
-            if(bullet.getfacing() > 0){
+            if (bullet.getfacing() > 0) {
                 bullet.setVelocityX(50, true);
                 bullet.setX(bullet.getX() - player.getVelocityX());
                 if (player.getVelocityX() >= 0) {
                     bullet.setX(bullet.getX() + player.getVelocityX());
                 }
 
-            }else{
-                    bullet.setVelocityX(-50, true);
-                    bullet.setX(bullet.getX() + player.getVelocityX());
-                    bullet.setX(bullet.getX() - player.getVelocityX());
-                }
-            if(bullet.getX() > GameController.CANVAS_WIDTH || bullet.getX() < 0){
+            } else {
+                bullet.setVelocityX(-50, true);
+                bullet.setX(bullet.getX() + player.getVelocityX());
+                bullet.setX(bullet.getX() - player.getVelocityX());
+            }
+            if (bullet.getX() > GameController.CANVAS_WIDTH || bullet.getX() < 0) {
                 disposeBullets.add(bullet);
             }
             bullet.tick(gc);
-            }
+        }
         bullets.removeAll(disposeBullets);
     }
 
 
-    public void addBullet(Bullet b){
+    public void addBullet(Bullet b) {
         bullets.add(b);
     }
 
-    public void removeBullet(Bullet b){
+    public void removeBullet(Bullet b) {
         bullets.remove(b);
     }
 
@@ -247,20 +247,50 @@ public class Level {
             for (int x = 0; x < map[y].length; x++) {
                 switch (map[y][x]) {
                     case (TILE):
-                        if (y > 0 && map[y-1][x] == TILE) {
-                            tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT));
+                        if (y > 0 && map[y - 1][x] == TILE) {
+                            //Dirt
+                            if ((y < map.length - 1 && map[y + 1][x] != TILE) || y == map.length - 1) {
+                                // Bottom dirt
+                                if (((x > 0 && map[y][x - 1] == TILE)) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
+                                    // Bottom dirt with tiles on both sides
+                                    tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_BOTTOM));
+                                } else if ((x > 0 && map[y][x - 1] == TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
+                                    // Bottom dirt with tile on left
+                                    tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_RIGHT_CORNER));
+                                } else if ((x > 0 && map[y][x - 1] != TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
+                                    // Bottom dirt with tile on right
+                                    tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_LEFT_CORNER));
+                                }
+                            } else if ((x > 0 && map[y][x - 1] != TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
+                                // Not bottom dirt with tile on right
+                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_LEFT));
+                            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
+                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_RIGHT));
+                            } else {
+                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT));
+                            }
                         } else {
-                            tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_MID));
+                            //Grass
+                            if ((x > 0 && map[y][x - 1] != TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
+                                // Grass tile on right
+                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_LEFT));
+                            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
+                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_RIGHT));
+                            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] == TILE)){
+                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_MID));
+                            } else {
+                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_TOP));
+                            }
                         }
                         break;
                     case (COIN):
                         coins.add(new Coin((x * GameController.TILE_SIZE) + COIN_SIZE / 2, (y * GameController.TILE_SIZE) + COIN_SIZE / 2));
                         break;
                     case (ENEMYA):
-                            enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, EnemyType.ENEMY_A));
+                        enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, EnemyType.ENEMY_A));
                         break;
                     case (ENEMYC):
-                            enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, EnemyType.ENEMY_C));
+                        enemies.add(new Enemy(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, EnemyType.ENEMY_C));
                         break;
                     case (START):
                         playerStartPositionX = x * GameController.TILE_SIZE;

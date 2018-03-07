@@ -86,7 +86,7 @@ public class GameController {
     public final static int CANVAS_WIDTH = 1280;
     public final static int CANVAS_HEIGHT = 720;
     public final static int BUTTON_SIZE = 64;
-    public final static int TILE_SIZE = 128;
+    public final static int TILE_SIZE = 72;
     public final static int MARGIN = 32;
 
     /**

@@ -6,7 +6,7 @@ public class Tile extends GameObject {
 
     private TileType tileType;
     private SpriteSheet spriteSheet;
-    private final int SIZE = 128;
+    private final int SIZE = 72;
 
     public Tile(int x, int y, TileType tileType) {
         super(x, y);
