@@ -266,6 +266,8 @@ public class Level {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_LEFT));
                             } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_RIGHT));
+                            }  else if ((x > 0 && map[y][x - 1] != TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
+                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_COLUMN));
                             } else {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT));
                             }

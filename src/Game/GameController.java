@@ -94,7 +94,7 @@ public class GameController {
      */
     public final static int PLAYER_X_MARGIN = 500;
     public final static int PLAYER_Y_MARGIN = 250;
-    private String mapName = "game";
+    private String mapName = "test2.txt";
 
     /**
      * Classes
