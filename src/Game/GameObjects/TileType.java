@@ -3,7 +3,8 @@ package Game.GameObjects;
 public enum TileType {
     GRASS_LEFT("GrassLeft", 1),
     GRASS_MID("GrassMid", 1),
-    GRASS_RIGHT("GrassRight", 1);
+    GRASS_RIGHT("GrassRight", 1),
+    DIRT("Dirt", 1);
 
     private String fileName;
     private int cols;

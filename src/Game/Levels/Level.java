@@ -247,7 +247,11 @@ public class Level {
             for (int x = 0; x < map[y].length; x++) {
                 switch (map[y][x]) {
                     case (TILE):
-                        tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_MID));
+                        if (y > 0 && map[y-1][x] == TILE) {
+                            tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT));
+                        } else {
+                            tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_MID));
+                        }
                         break;
                     case (COIN):
                         coins.add(new Coin((x * GameController.TILE_SIZE) + COIN_SIZE / 2, (y * GameController.TILE_SIZE) + COIN_SIZE / 2));
