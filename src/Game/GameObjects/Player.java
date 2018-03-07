@@ -7,11 +7,13 @@ import javafx.scene.paint.Color;
 
 import java.awt.*;
 
-public class Player extends GameObject{
+public class Player extends GameObject {
 
     private final int WIDTH = 72;
 
-    // States
+    /**
+     * States
+     */
     public final static int PLAYER_IDLING_RIGHT = 0;
     public final static int PLAYER_IDLING_LEFT = 1;
     public final static int PLAYER_RUNNING_RIGHT = 2;
@@ -21,7 +23,17 @@ public class Player extends GameObject{
     public final static int PLAYER_FALLING_RIGHT = 6;
     public final static int PLAYER_FALLING_LEFT = 7;
 
-    // Spritesheets
+    /**
+     * State monitors
+     */
+    private boolean lastSpriteRight = true;
+    private boolean rightCollision = false;
+    private boolean leftCollision = false;
+    private boolean isAlive = true;
+
+    /**
+     * Spritesheets
+     */
     private SpriteSheet idleRightSpriteSheet;
     private SpriteSheet idleLeftSpriteSheet;
     private SpriteSheet runRightSpriteSheet;
@@ -30,12 +42,6 @@ public class Player extends GameObject{
     private SpriteSheet fallLeftSpriteSheet;
     private SpriteSheet jumpRightSpriteSheet;
     private SpriteSheet fallRightSpriteSheet;
-
-    private boolean lastSpriteRight = true;
-    private boolean rightCollision = false;
-    private boolean leftCollision = false;
-    private boolean isAlive = true;
-
 
     public Player(int x, int y) {
         super(x, y);
@@ -115,6 +121,7 @@ public class Player extends GameObject{
         gc.fillText(formattedHp.substring(0, formattedHp.length() - 2) + "%", 187, 40);
     }
 
+
     protected void handleVelocityX() {
         setX(getX() + getVelocityX());
     }
@@ -172,8 +179,6 @@ public class Player extends GameObject{
             setCurrentSpriteSheet(runLeftSpriteSheet);
         }
     }
-
-
 
     public void initializeSpriteSheets() {
         idleRightSpriteSheet = new SpriteSheet("/Resources/player/idle_right.png", 12, 72, 76);

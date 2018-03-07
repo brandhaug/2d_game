@@ -34,38 +34,9 @@ import static Resources.soundEffects.SoundEffects.mute;
 
 public class GameController {
 
-    public final static int CANVAS_WIDTH = 1280;
-    public final static int CANVAS_HEIGHT = 720;
-    public final static int BUTTON_SIZE = 64;
-    public final static int TILE_SIZE = 128;
-    public final static int MARGIN = 32;
-    //Classic Mode: public final static int PLAYER_X_MARGIN = 200;
-    /*Survival:*/
-    public final static int PLAYER_X_MARGIN = 500;
-    public final static int PLAYER_Y_MARGIN = 250;
-    private String mapName = "game";
-
-    private Level level;
-    private Player player;
-    private CollisionHandler collisionHandler;
-    private SoundEffects soundEffects;
-    private Preferences preferences = Preferences.userRoot();
-    private int coinAmount;
-    private int bulletAmount;
-    private Font smallFont = new Font("Calibri", 14);
-    private Font bigFont = new Font("Calibri", 40);
-    private int timeSeconds;
-    private StopWatch stopWatch;
-
-    private Image background;
-    private GraphicsContext gc;
-
-    private SceneChanger sceneChanger;
-    private boolean gamePaused = false;
-    private boolean gameOver = false;
-    private boolean gameWon = false;
-    private boolean initialized = false;
-
+    /**
+     * FXML Elements
+     */
     @FXML
     private Canvas canvas;
     @FXML
@@ -109,14 +80,74 @@ public class GameController {
     @FXML
     private Text pauseText;
 
+    /**
+     * FXML elements size
+     */
+    public final static int CANVAS_WIDTH = 1280;
+    public final static int CANVAS_HEIGHT = 720;
+    public final static int BUTTON_SIZE = 64;
+    public final static int TILE_SIZE = 128;
+    public final static int MARGIN = 32;
+
+    /**
+     * Player and map settings
+     */
+    public final static int PLAYER_X_MARGIN = 500;
+    public final static int PLAYER_Y_MARGIN = 250;
+    private String mapName = "game";
+
+    /**
+     * Classes
+     */
+    private Level level;
+    private Player player;
+    private CollisionHandler collisionHandler;
+    private SoundEffects soundEffects;
+    private SceneChanger sceneChanger;
+
+    private Preferences preferences = Preferences.userRoot();
+
+    /**
+     * Score
+     */
+    private int coinAmount;
+    private int bulletAmount;
+    private int timeSeconds;
+    private StopWatch stopWatch;
+
+    /**
+     * GUI
+     */
+    private Font smallFont = new Font("Calibri", 14);
+    private Font bigFont = new Font("Calibri", 40);
+
+    /**
+     * Canvas
+     */
+    private Image background;
+    private GraphicsContext gc;
+
+    /**
+     * Game states
+     */
+    private boolean gamePaused = false;
+    private boolean gameOver = false;
+    private boolean gameWon = false;
+    private boolean initialized = false;
+
     @FXML
     protected void openMainMenu(ActionEvent event) {
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
     @FXML
-    public void restartLevel(ActionEvent event) {
+    protected void restartLevel(ActionEvent event) {
         sceneChanger.changeScene(event, "../Game/Game.fxml", true);
+    }
+
+    @FXML
+    protected void openHighScores(ActionEvent event) {
+        sceneChanger.changeScene(event, "../Highscores/Highscores.fxml", true);
     }
 
     @FXML
@@ -227,31 +258,34 @@ public class GameController {
         }.start();
     }
 
-    //Find better running sound before using this method
     private void playerMoving() {
-        if (player.getCurrentSpriteState() == 2 || player.getCurrentSpriteState() == 3) soundEffects.RUN.playLoop();
-
-        if (player.getCurrentSpriteState() < 2 || player.getCurrentSpriteState() > 3 || gameOver)
+        if (player.isRunning()) {
+            soundEffects.RUN.playLoop();
+        } else if (!player.isRunning() || gameOver) {
             soundEffects.RUN.stopLoop();
+        }
     }
 
     private void gameLoop(long startNanoTime, long currentNanoTime) {
         double time = (currentNanoTime - startNanoTime) / 1000000000.0;
 
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        drawBackground(gc);
+        renderBackground(gc);
         player.handleSpriteState();
         collisionHandler.tick();
         level.tick(gc, player, time);
         player.tick(gc);
         playerMoving();
-        //TODO: Make tick for GUI()
+        renderGUI();
+        checkGameOver();
+        checkGameWon();
+    }
+
+    private void renderGUI() {
         gc.setFill(Color.BLACK);
         gc.fillText("Bullets: " + bulletAmount, 250, 40);
         gc.fillText(bulletAmount + "/" + coinAmount, 60, 40);
-        drawTime();
-        checkGameOver();
-        checkGameWon();
+        renderTime();
     }
 
     private void checkGameOver() {
@@ -298,7 +332,7 @@ public class GameController {
         gamePaused = !gamePaused;
     }
 
-    private void drawTime() {
+    private void renderTime() {
         timeSeconds = (int) stopWatch.getTime() / 1000;
         String formattedTime = String.valueOf(timeSeconds);
 
@@ -318,7 +352,7 @@ public class GameController {
         }
     }
 
-    private void drawBackground(GraphicsContext gc) {
+    private void renderBackground(GraphicsContext gc) {
         int tempX = player.getX();
 
         while (tempX > CANVAS_WIDTH + player.getStartPosition()) {
@@ -327,9 +361,5 @@ public class GameController {
 
         gc.drawImage(background, player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         gc.drawImage(background, CANVAS_WIDTH + player.getStartPosition() - tempX, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    }
-
-    public void openHighScores(ActionEvent event) {
-        System.out.println("Highscores");
     }
 }
