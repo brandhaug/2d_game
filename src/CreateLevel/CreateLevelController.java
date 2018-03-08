@@ -76,6 +76,8 @@ public class CreateLevelController {
     private final int GRID_SIZE = 64;
     private int canvasWidth;
     private int canvasHeight;
+    private int mapHeight = 100;
+    private int mapWidth = 1000;
 
     /**
      * Canvas coordinates
@@ -164,6 +166,8 @@ public class CreateLevelController {
 
         if (file != null) {
             map = MapParser.getArrayFromFile(file);
+            startingPointExists = true;
+            endPointExists = true;
             render(false);
         }
     }
@@ -218,13 +222,10 @@ public class CreateLevelController {
     private String getMapContent() {
         StringBuilder content = new StringBuilder();
 
-        int height = 100;
-        int width = 1000;
-
         content.append("height: ");
-        content.append(height);
+        content.append(mapHeight);
         content.append(" width: ");
-        content.append(width);
+        content.append(mapWidth);
 
         for (int y = 0; y < map.length; y++) {
             content.append(System.lineSeparator());
@@ -281,7 +282,13 @@ public class CreateLevelController {
             int y = (int) (Math.floor((mouseEvent.getY() + currentOffsetY) / GRID_SIZE) + (map.length - (canvasHeight / GRID_SIZE)));
             int x = (int) (Math.floor((mouseEvent.getX() + currentOffsetX) / GRID_SIZE));
 
-            editCell(x, y, toolEnabled, true);
+            if ((x < 0 || x > mapWidth - 1)) {
+                System.out.println("Clicked outside grid in x-direction");
+            } else if ((y < 0 || y > mapHeight - 1)) {
+                System.out.println("Clicked outside grid in y-direction");
+            } else {
+                editCell(x, y, toolEnabled, true);
+            }
         }
     }
 
