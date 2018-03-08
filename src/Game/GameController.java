@@ -3,6 +3,7 @@ package Game;
 import Game.GameObjects.Bullet;
 import Game.GameObjects.Player;
 import Game.Levels.Level;
+import Highscores.HighscoreHandler;
 import Resources.soundEffects.SoundEffects;
 import SceneChanger.SceneChanger;
 import javafx.animation.AnimationTimer;
@@ -104,7 +105,7 @@ public class GameController {
     private CollisionHandler collisionHandler;
     private SoundEffects soundEffects;
     private SceneChanger sceneChanger;
-
+    private HighscoreHandler highscoreHandler;
     private Preferences preferences = Preferences.userRoot();
 
     /**
@@ -243,6 +244,7 @@ public class GameController {
         coinAmount = level.getCoins().size();
         bulletAmount = level.getBulletCounter();
         collisionHandler = new CollisionHandler(player, level, soundEffects);
+        highscoreHandler = new HighscoreHandler();
 
         final long startNanoTime = System.nanoTime();
         initialized = true;
@@ -303,16 +305,12 @@ public class GameController {
             gameWonPane.setVisible(true);
             gameWonCoins.setText(gameWonCoins.getText() + String.valueOf(level.getCoins().size()));
             gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
-            if (isNewHighScore()) {
+            if (highscoreHandler.isNewHighscore(mapName, timeSeconds, coinAmount)) {
                 gameWonHighScore.setText("Congratulations, it's a new high score!");
+                highscoreHandler.addToHighscore(mapName, timeSeconds, coinAmount);
             }
             canvas.setOpacity(0.7f);
         }
-    }
-
-    //TODO: Implement
-    private boolean isNewHighScore() {
-        return true;
     }
 
     @FXML
