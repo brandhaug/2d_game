@@ -277,6 +277,7 @@ public class GameController {
         collisionHandler.tick();
         level.tick(gc, player, time);
         player.tick(gc);
+        drawHealthBar(gc);
         playerMoving();
         renderGUI();
         checkGameOver();
@@ -291,6 +292,7 @@ public class GameController {
     }
 
     private void checkGameOver() {
+        System.out.println("Y: " + player.getY() + " - LOWEST TILE: " + level.getLowestTileY());
         if (player.getY() >= level.getLowestTileY() || !player.getAlive()) {
             gameOver = true;
             gameOverPane.setVisible(true);
@@ -311,6 +313,43 @@ public class GameController {
             }
             canvas.setOpacity(0.7f);
         }
+    }
+
+    public void drawHealthBar(GraphicsContext gc) {
+        short healthX = 100;
+        short healthY = 24;
+        short healthWidth = 80;
+        short healthHeight = 25;
+        short healthArc = 10;
+
+        // Health bar background
+        gc.setGlobalAlpha(0.7);
+        gc.setFill(Color.DARKGRAY);
+        gc.fillRoundRect(healthX, healthY, healthWidth, healthHeight, healthArc, healthArc);
+
+        // Health bar fill
+        gc.setGlobalAlpha(1);
+        if (player.getHp() >= 90) {
+            gc.setFill(Color.LIMEGREEN);
+        } else if (player.getHp() >= 75) {
+            gc.setFill(Color.YELLOW);
+        } else if (player.getHp() >= 50) {
+            gc.setFill(Color.ORANGE);
+        } else {
+            gc.setFill(Color.RED);
+        }
+        gc.fillRoundRect(healthX, healthY, player.getHp() / 1.25, healthHeight, healthArc, healthArc);
+
+        // Health bar stroke
+        gc.setGlobalAlpha(0.5);
+        gc.setStroke(Color.BLACK);
+        gc.strokeRoundRect(healthX, healthY, healthWidth, healthHeight, healthArc, healthArc);
+
+        // Health bar text
+        gc.setGlobalAlpha(1);
+        gc.setFill(Color.BLACK);
+        String formattedHp = String.valueOf((double) player.getHp() / 100 * 100);
+        gc.fillText(formattedHp.substring(0, formattedHp.length() - 2) + "%", 187, 40);
     }
 
     @FXML

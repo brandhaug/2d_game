@@ -62,7 +62,6 @@ public class Player extends GameObject {
         handleVelocityX();
         handleVelocityY();
         render(gc);
-        drawHealthBar(gc);
     }
 
     private int hp = 100; //Hit Points
@@ -83,45 +82,6 @@ public class Player extends GameObject {
         return isAlive;
     }
 
-
-    private void drawHealthBar(GraphicsContext gc) {
-        short healthX = 100;
-        short healthY = 24;
-        short healthWidth = 80;
-        short healthHeight = 25;
-        short healthArc = 10;
-
-        // Health bar background
-        gc.setGlobalAlpha(0.7);
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRoundRect(healthX, healthY, healthWidth, healthHeight, healthArc, healthArc);
-
-        // Health bar fill
-        gc.setGlobalAlpha(1);
-        if (hp >= 90) {
-            gc.setFill(Color.LIMEGREEN);
-        } else if (hp >= 75) {
-            gc.setFill(Color.YELLOW);
-        } else if (hp >= 50) {
-            gc.setFill(Color.ORANGE);
-        } else {
-            gc.setFill(Color.RED);
-        }
-        gc.fillRoundRect(healthX, healthY, hp / 1.25, healthHeight, healthArc, healthArc);
-
-        // Health bar stroke
-        gc.setGlobalAlpha(0.5);
-        gc.setStroke(Color.BLACK);
-        gc.strokeRoundRect(healthX, healthY, healthWidth, healthHeight, healthArc, healthArc);
-
-        // Health bar text
-        gc.setGlobalAlpha(1);
-        gc.setFill(Color.BLACK);
-        String formattedHp = String.valueOf((double) hp / 100 * 100);
-        gc.fillText(formattedHp.substring(0, formattedHp.length() - 2) + "%", 187, 40);
-    }
-
-
     private void handleVelocityX() {
         setX(getX() + getVelocityX());
     }
@@ -136,6 +96,13 @@ public class Player extends GameObject {
             setY(getY() + MAX_VELOCITY_JUMPING);
         } else {
             setY(getY() + getVelocityY());
+        }
+    }
+
+    @Override
+    public void setX(int x) {
+        if (x > 200) {
+            super.setX(x);
         }
     }
 
