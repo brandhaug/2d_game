@@ -84,7 +84,7 @@ public class Player extends GameObject {
     }
 
 
-    public void drawHealthBar(GraphicsContext gc) {
+    private void drawHealthBar(GraphicsContext gc) {
         short healthX = 100;
         short healthY = 24;
         short healthWidth = 80;
@@ -122,11 +122,11 @@ public class Player extends GameObject {
     }
 
 
-    protected void handleVelocityX() {
+    private void handleVelocityX() {
         setX(getX() + getVelocityX());
     }
 
-    protected void handleVelocityY() {
+    private void handleVelocityY() {
         int MAX_VELOCITY_FALLING = 13;
         int MAX_VELOCITY_JUMPING = -35;
 

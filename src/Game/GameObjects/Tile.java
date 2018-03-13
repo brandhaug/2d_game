@@ -5,7 +5,6 @@ import Game.SpriteSheets.SpriteSheet;
 public class Tile extends GameObject {
 
     private TileType tileType;
-    private SpriteSheet spriteSheet;
     private final int SIZE = 72;
 
     public Tile(int x, int y, TileType tileType) {
@@ -16,7 +15,7 @@ public class Tile extends GameObject {
 
     @Override
     public void initializeSpriteSheets() {
-        spriteSheet = new SpriteSheet("/Resources/tiles/" + tileType.getFileName() + ".png", tileType.getCols(), SIZE, SIZE);
+        SpriteSheet spriteSheet = new SpriteSheet("/Resources/tiles/" + tileType.getFileName() + ".png", tileType.getCols(), SIZE, SIZE);
         setCurrentSpriteSheet(spriteSheet);
     }
 

@@ -3,8 +3,8 @@ package CreateLevel;
 public class Step {
     private int x;
     private int y;
-    char currentValue;
-    char lastValue;
+    private char currentValue;
+    private char lastValue;
 
     public Step(int x, int y, char currentValue, char lastValue) {
         this.x = x;

@@ -5,10 +5,8 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Bullet extends GameObject {
 
-    private int x;
-    private  int y;
-    int damage;
-    int facing;
+    private int damage;
+    private int facing;
 
     private SpriteSheet spriteSheet;
 
@@ -23,10 +21,9 @@ public class Bullet extends GameObject {
         handleVelocityX();
         handleVelocityY();
         render(gc);
-        //System.out.println(getX());
     }
 
-    public int getfacing (){
+    public int getFacing (){
         return facing;
     }
 

@@ -37,8 +37,7 @@ public class Level {
         disposeBullets = new ArrayList<>();
         char[][] map = loadMap(fileName);
         parseMap(map);
-        int bullets = loadBullets(fileName);
-        bulletCounter = bullets;
+        bulletCounter = loadBullets(fileName);
     }
 
     private void initializeCameraVelocityY() {
@@ -199,12 +198,9 @@ public class Level {
 
 
     public void renderBullets(GraphicsContext gc, Player player) {
-        Iterator<Bullet> iterator = getBullets().iterator();
-
-        while (iterator.hasNext()) {
-            Bullet bullet = iterator.next();
+        for (Bullet bullet : bullets) {
             bullet.setY(bullet.getY() + cameraVelocityY);
-            if (bullet.getfacing() > 0) {
+            if (bullet.getFacing() > 0) {
                 bullet.setVelocityX(50, true);
                 bullet.setX(bullet.getX() - player.getVelocityX());
                 if (player.getVelocityX() >= 0) {
@@ -266,7 +262,7 @@ public class Level {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_LEFT));
                             } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_RIGHT));
-                            }  else if ((x > 0 && map[y][x - 1] != TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
+                            } else if ((x > 0 && map[y][x - 1] != TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_COLUMN));
                             } else {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT));
@@ -278,7 +274,7 @@ public class Level {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_LEFT));
                             } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_RIGHT));
-                            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] == TILE)){
+                            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_MID));
                             } else {
                                 tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_TOP));

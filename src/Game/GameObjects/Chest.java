@@ -2,9 +2,6 @@ package Game.GameObjects;
 
 import Game.SpriteSheets.SpriteSheet;
 
-/**
- * Created by stgr99 on 05.03.2018.
- */
 public class Chest extends GameObject {
 
     private SpriteSheet spriteSheet;

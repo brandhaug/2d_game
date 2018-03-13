@@ -44,13 +44,6 @@ public class Enemy extends GameObject{
     private SpriteSheet cloudGroundSpriteSheet;
     private SpriteSheet cloudOffGroundSpriteSheet;
 
-    /*
-    public Enemy(int x, int y) {
-        super(x, y);
-        initializeSpriteSheets();
-    }
-    */
-
     public Enemy(int x, int y, EnemyType enemyType) {
         super(x, y);
         this.enemyType = enemyType;
