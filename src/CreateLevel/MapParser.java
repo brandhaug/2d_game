@@ -7,12 +7,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 //TODO: Lag egne exceptions
+//TODO: Make not static
 public class MapParser {
 
     static char[][] map;
     static int bulletAmount;
 
     public static char[][] getArrayFromFile(File file) {
+
         Scanner scanner;
         try {
             scanner = new Scanner(file);

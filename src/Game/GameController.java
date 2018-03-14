@@ -94,7 +94,7 @@ public class GameController {
      */
     public final static int PLAYER_X_MARGIN = 500;
     public final static int PLAYER_Y_MARGIN = 250;
-    private String mapName = "survival";
+    private String mapName = "game";
 
     /**
      * Classes
@@ -361,11 +361,11 @@ public class GameController {
         if (level.getChest() != null && level.getChest().isAnimated()) {
             gameWon = true;
             gameWonPane.setVisible(true);
-            gameWonCoins.setText(gameWonCoins.getText() + String.valueOf(level.getCoins().size()));
+            gameWonCoins.setText(gameWonCoins.getText() + String.valueOf(level.getCoinCounter()));
             gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
-            if (highscoreHandler.isNewHighscore(mapName, timeSeconds, coinAmount)) {
+            if (highscoreHandler.isNewHighscore(mapName, timeSeconds, level.getCoinCounter())) {
                 gameWonHighScore.setText("Congratulations, it's a new high score!");
-                highscoreHandler.addToHighscore(mapName, timeSeconds, coinAmount);
+                highscoreHandler.addToHighscore(mapName, timeSeconds, level.getCoinCounter());
             }
             canvas.setOpacity(0.7f);
         }
