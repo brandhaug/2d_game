@@ -28,7 +28,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
 import static Resources.soundEffects.SoundEffects.mute;
@@ -136,21 +135,36 @@ public class GameController {
     private boolean gameWon = false;
     private boolean initialized = false;
 
+    /**
+     * Opens the main menu scene.
+     * @param event the action event given from the button click.
+     */
     @FXML
     protected void openMainMenu(ActionEvent event) {
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
+    /**
+     * Opens the game scene.
+     * @param event the action event given from the button click.
+     */
     @FXML
     protected void restartLevel(ActionEvent event) {
         sceneChanger.changeScene(event, "../Game/Game.fxml", true);
     }
 
+    /**
+     * Opens the high score scene.
+     * @param event the action event given from the button click.
+     */
     @FXML
     protected void openHighScores(ActionEvent event) {
         sceneChanger.changeScene(event, "../Highscores/Highscores.fxml", true);
     }
 
+    /**
+     * Sets sound on/off when toggled and changes the icon. Also initiates sound according to the users previous preferences.
+     */
     @FXML
     protected void toggleSound() {
         boolean soundOn = preferences.getBoolean("sound", true);
@@ -169,6 +183,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Sets music on/off when toggled and changes the icon. Also initiates music according to the users previous preferences.
+     */
     @FXML
     protected void toggleMusic() {
         boolean musicOn = preferences.getBoolean("music", true);
@@ -185,6 +202,14 @@ public class GameController {
         }
     }
 
+    /**
+     * Handles different keys on press, if game is running.
+     * Moves player right on RIGHT or D.
+     * Moves player left on LEFT or A.
+     * Makes player jump on UP or W.
+     * Shoots bullet on E, if player has more bullets.
+     * @param event the event given from a key press.
+     */
     @FXML
     private void handleKeyPressed(KeyEvent event) {
         KeyCode code = event.getCode();
@@ -214,6 +239,12 @@ public class GameController {
         }
     }
 
+    /**
+     * Handles different keys on release if game is running.
+     * Sets player's velocityX to 0 on RIGHT or D.
+     * Sets player's velocityX to 0 on LEFT or A.
+     * @param event the key event given by a key release.
+     */
     @FXML
     private void handleKeyReleased(KeyEvent event) {
         KeyCode code = event.getCode();
@@ -227,13 +258,14 @@ public class GameController {
                 player.setVelocityX(0, false);
                 player.setLeftCollision(false);
             }
-            if (code == KeyCode.LEFT || code == KeyCode.A && player.getVelocityX() < 0) {
-                player.setVelocityX(0, false);
-                player.setLeftCollision(false);
-            }
         }
     }
 
+    /**
+     * Initializes necessary variables and object of the game.
+     * Starts an AnimationTimer which keeps the game running by calling on gameLoop method.
+     * @see AnimationTimer
+     */
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();
@@ -243,7 +275,7 @@ public class GameController {
         player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY());
         coinAmount = level.getCoins().size();
         bulletAmount = level.getBulletCounter();
-        collisionHandler = new CollisionHandler(player, level, soundEffects);
+        collisionHandler = new CollisionHandler(player, level);
         highscoreHandler = new HighscoreHandler();
 
         final long startNanoTime = System.nanoTime();
@@ -260,48 +292,64 @@ public class GameController {
         }.start();
     }
 
-    private void playerMoving() {
+    /**
+     * Start the players run sound, if the player is running.
+     */
+    private void setPlayerRunningSound() {
         if (player.isRunning()) {
-            soundEffects.RUN.playLoop();
+            SoundEffects.RUN.playLoop();
         } else if (!player.isRunning() || gameOver) {
-            soundEffects.RUN.stopLoop();
+            SoundEffects.RUN.stopLoop();
         }
     }
 
+    /**
+     * Keeps the game running by drawing canvas according to state of the game.
+     * @param startNanoTime the nano time of when the game was initialized.
+     * @param currentNanoTime the nano time of the current game loop.
+     */
     private void gameLoop(long startNanoTime, long currentNanoTime) {
         double time = (currentNanoTime - startNanoTime) / 1000000000.0;
 
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-        renderBackground(gc);
+        renderBackground();
         player.handleSpriteState();
         collisionHandler.tick();
         level.tick(gc, player, time);
         player.tick(gc);
-        drawHealthBar(gc);
-        playerMoving();
+        setPlayerRunningSound();
         renderGUI();
         checkGameOver();
         checkGameWon();
     }
 
+    /**
+     * Renders the GUI.
+     */
     private void renderGUI() {
         gc.setFill(Color.BLACK);
         gc.fillText("Bullets: " + bulletAmount, 250, 40);
         gc.fillText(bulletAmount + "/" + coinAmount, 60, 40);
         renderTime();
+        drawHealthBar();
     }
 
+    /**
+     * Sets game over to true if players y-coordinate is below the lowest tile or if player is dead.
+     */
     private void checkGameOver() {
-        System.out.println("Y: " + player.getY() + " - LOWEST TILE: " + level.getLowestTileY());
         if (player.getY() >= level.getLowestTileY() || !player.getAlive()) {
             gameOver = true;
             gameOverPane.setVisible(true);
             canvas.setOpacity(0.7f);
-            soundEffects.GAMEOVER.play();
+            SoundEffects.GAMEOVER.play();
         }
     }
 
-    public void checkGameWon() {
+    /**
+     * Sets game won to true if the player has reached the chest.
+     */
+    private void checkGameWon() {
         if (level.getChest().isAnimated()) {
             gameWon = true;
             gameWonPane.setVisible(true);
@@ -315,7 +363,10 @@ public class GameController {
         }
     }
 
-    public void drawHealthBar(GraphicsContext gc) {
+    /**
+     * Draws the health bar.
+     */
+    private void drawHealthBar() {
         short healthX = 100;
         short healthY = 24;
         short healthWidth = 80;
@@ -352,8 +403,11 @@ public class GameController {
         gc.fillText(formattedHp.substring(0, formattedHp.length() - 2) + "%", 187, 40);
     }
 
+    /**
+     * Sets pause to on/off when toggled and changes the icon accordingly.
+     */
     @FXML
-    public void pause() {
+    public void togglePause() {
         if (gamePaused) {
             pauseButton.setStyle("-fx-graphic: 'Resources/buttons/pause.png'");
             stopWatch.resume();
@@ -369,6 +423,9 @@ public class GameController {
         gamePaused = !gamePaused;
     }
 
+    /**
+     * Draws the game time.
+     */
     private void renderTime() {
         timeSeconds = (int) stopWatch.getTime() / 1000;
         String formattedTime = String.valueOf(timeSeconds);
@@ -380,6 +437,9 @@ public class GameController {
         gc.setFont(smallFont);
     }
 
+    /**
+     * Initializes the background image.
+     */
     private void initializeBackground() {
         try {
             BufferedImage bufferedBackground = ImageIO.read(new File(getClass().getResource("/Resources/background/background.png").getPath()));
@@ -389,7 +449,10 @@ public class GameController {
         }
     }
 
-    private void renderBackground(GraphicsContext gc) {
+    /**
+     * Draws the background by rendering two images and moving them according to players x position.
+     */
+    private void renderBackground() {
         int tempX = player.getX();
 
         while (tempX > CANVAS_WIDTH + player.getStartPosition()) {

@@ -5,30 +5,31 @@ import Game.Levels.Level;
 import Resources.soundEffects.SoundEffects;
 
 import java.lang.management.PlatformLoggingMXBean;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 
 public class CollisionHandler {
     private Player player;
     private Level level;
-    private SoundEffects soundEffects;
     private List<Bullet> disposeBullets;
 
     private boolean bouncing = false;
     private boolean collisionOn = true;
-    private boolean enemyHit = false;
 
-
-    public CollisionHandler(Player player, Level level, SoundEffects soundEffects) {
+    /**
+     * Sets the variables in class from parameters.
+     * @param player the Player object
+     * @param level the Level object
+     */
+    CollisionHandler(Player player, Level level) {
         this.player = player;
         this.level = level;
-        this.soundEffects = soundEffects;
         disposeBullets = level.getDisposeBullets();
     }
 
+    /**
+     * Is called on in every tick from game loop. Handles all collisions.
+     */
     public void tick() {
         handleTileCollision();
         handleCoinCollision();
@@ -36,27 +37,35 @@ public class CollisionHandler {
         handleChestCollision();
     }
 
-    public void handleCoinCollision() {
-        Iterator<Coin> iterator = level.getCoins().iterator();
-
-        while (iterator.hasNext()) {
-            Coin coin = iterator.next();
+    /**
+     * Remove coins from list and increments coin counter on collision.
+     */
+    private void handleCoinCollision() {
+        List<Coin> coins = level.getCoins();
+        for (Coin coin : coins) {
             if (intersectsWithPlayer(coin)) {
-                iterator.remove();
+                coins.remove(coin);
                 level.addCoinCounter();
                 SoundEffects.COIN.play();
             }
         }
     }
 
-    public void handleChestCollision() {
+    /**
+     * Animates chest on collision.
+     */
+    private void handleChestCollision() {
         Chest chest = level.getChest();
         if (intersectsWithPlayer(chest)) {
             chest.animateChest();
         }
     }
 
-    public void handleTileCollision() {
+    /**
+     * Handles tile collision by calling on sub methods top, bottom, right and left collision.
+     * Increments velocityY by 2 if no bottom collision.
+     */
+    private void handleTileCollision() {
         player.setLeftCollision(false);
         player.setRightCollision(false);
         player.setVelocityY(player.getVelocityY() + 2);
@@ -67,48 +76,46 @@ public class CollisionHandler {
             if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isJumping()) {
                 handleTileTopCollision(player);
             }
-
             if (player.getBoundsTop().intersects(tile.getBoundsBottom()) && !player.isFalling()) {
                 handleTileBottomCollision(player);
             }
-
             if (player.getBoundsLeft().intersects(tile.getBoundsRight()) && !player.getLastSpriteRight()) {
                 handleTileRightCollision(player);
             }
-
             if (player.getBoundsRight().intersects(tile.getBoundsLeft()) && player.getLastSpriteRight()) {
                 handleTileLeftCollision(player);
             }
         }
     }
 
-    int hitcounterLEFT = 0;
-    int hitcounterRIGHT = 0;
-
-    public void handleEnemyTileCollision(Tile tile) {
-
+    /**
+     * Handles enemy collision with tile by calling on sub methods top, bottom, right and left collision.
+     * @param tile the Tile object
+     * @see Tile
+     */
+    private void handleEnemyTileCollision(Tile tile) {
         for (Enemy enemy : level.getEnemies()) {
-
             if (enemy.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isJumping()) {
                 handleTileTopCollision(enemy);
             }
-
             if (enemy.getBoundsTop().intersects(tile.getBoundsBottom()) && !player.isFalling()) {
                 handleTileBottomCollision(enemy);
             }
-
             if (enemy.getBoundsLeft().intersects(tile.getBoundsRight()) && !enemy.getLastSpriteRight()) {
                 handleTileRightCollision(enemy);
             }
-
             if (enemy.getBoundsRight().intersects(tile.getBoundsLeft()) && enemy.getLastSpriteRight()) {
                 handleTileLeftCollision(enemy);
             }
-
         }
     }
 
-    public void handleTileTopCollision(GameObject gameObject) {
+    /**
+     * Handles the collision when a GameObject collides with the top of a tile.
+     * @param gameObject the GameObject object.
+     * @see GameObject
+     */
+    private void handleTileTopCollision(GameObject gameObject) {
         //player.setY(tileY - player.getCurrentSpriteSheet().getSpriteHeight() + 10);
 
         //Find better sound effect before using this method
@@ -121,57 +128,66 @@ public class CollisionHandler {
         bouncing = false;
     }
 
-    public void handleTileBottomCollision(GameObject gameObject) {
+    /**
+     * Handles the collision when a GameObject collides with the bottom of a tile.
+     * @param gameObject the GameObject object.
+     * @see GameObject
+     */
+    private void handleTileBottomCollision(GameObject gameObject) {
         //player.setY(tileY + tileHeight);
         gameObject.setVelocityY(1);
     }
 
-    public void handleTileRightCollision(GameObject gameObject) {
+    /**
+     * Handles the collision when a GameObject collides with the right side of a tile.
+     * @param gameObject the GameObject object.
+     * @see GameObject
+     */
+    private void handleTileRightCollision(GameObject gameObject) {
         if (gameObject.getVelocityX() != 0) {
             gameObject.setLeftCollision(true);
             gameObject.setVelocityX(0, false);
         }
     }
 
-    public void handleTileLeftCollision(GameObject gameObject) {
+    /**
+     * Handles the collision when a GameObject collides with the left side of a tile.
+     * @param gameObject the GameObject object.
+     * @see GameObject
+     */
+    private void handleTileLeftCollision(GameObject gameObject) {
         if (gameObject.getVelocityX() != 0) {
             gameObject.setRightCollision(true);
             gameObject.setVelocityX(0, false);
         }
     }
 
-    public void handleEnemyCollision() {
+    private void handleEnemyCollision() {
         Iterator<Enemy> iterator = level.getEnemies().iterator();
         if (collisionOn) {
             if (bouncing && player.getCurrentSpriteState() > 3) player.setVelocityX(0, false);
 
             while (iterator.hasNext()) {
-                Enemy e = iterator.next();
+                Enemy enemy = iterator.next();
+                handleEnemyBulletCollision(enemy, iterator);
 
-                handleEnemyBulletCollision(e, iterator);
-
-                if (e.getBoundsTop().intersects(player.getBoundsBottom())) {
-                    handleEnemyTopCollision(e.getDamage());
+                if (enemy.getBoundsTop().intersects(player.getBoundsBottom())) {
+                    handleEnemyTopCollision(enemy.getDamage());
                 }
-
-
-                if (e.getBoundsRight().intersects(player.getBoundsLeft())) {
-                    handleEnemyRightCollision(e.getDamage());
+                if (enemy.getBoundsRight().intersects(player.getBoundsLeft())) {
+                    handleEnemyRightCollision(enemy.getDamage());
                 }
-
-                if (e.getBoundsBottom().intersects(player.getBoundsTop())) {
-                    handleEnemyBottomCollision(e.getDamage());
+                if (enemy.getBoundsBottom().intersects(player.getBoundsTop())) {
+                    handleEnemyBottomCollision(enemy.getDamage());
                 }
-
-
-                if (e.getBoundsLeft().intersects(player.getBoundsRight())) {
-                    handleEnemyLeftCollision(e.getDamage());
+                if (enemy.getBoundsLeft().intersects(player.getBoundsRight())) {
+                    handleEnemyLeftCollision(enemy.getDamage());
                 }
             }
         }
     }
 
-    public void handleEnemyBulletCollision(Enemy enemy, Iterator<Enemy> enemyIterator) {
+    private void handleEnemyBulletCollision(Enemy enemy, Iterator<Enemy> enemyIterator) {
 
         for (Bullet bullet : level.getBullets()) {
             //System.out.println(bullet.getX());
@@ -219,7 +235,7 @@ public class CollisionHandler {
     }
 
 
-    public void handleEnemyBottomCollision(int enemyDamage) {
+    private void handleEnemyBottomCollision(int enemyDamage) {
         bouncing = true;
         playerHit(enemyDamage);
         if (player.isJumping()) {
@@ -246,7 +262,7 @@ public class CollisionHandler {
         }, 1000);
     }
 
-    public void handleEnemyRightCollision(int enemyDamage) {
+    private void handleEnemyRightCollision(int enemyDamage) {
         bouncing = true;
         player.setVelocityX(10, false);
         player.setVelocityY(-10);
@@ -261,7 +277,7 @@ public class CollisionHandler {
         }, 150);
     }
 
-    public void handleEnemyLeftCollision(int enemyDamage) {
+    private void handleEnemyLeftCollision(int enemyDamage) {
         bouncing = true;
         player.setVelocityX(-10, false);
         player.setVelocityY(-10);
@@ -276,8 +292,8 @@ public class CollisionHandler {
         }, 200);
     }
 
-    public void playerHit(int enemyDamage) {
-        soundEffects.HIT.play();
+    private void playerHit(int enemyDamage) {
+        SoundEffects.HIT.play();
         player.setHp(player.getHp() - enemyDamage);
         if (player.getHp() == 0) player.setAlive(false);
     }
