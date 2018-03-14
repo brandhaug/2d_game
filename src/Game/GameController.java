@@ -94,7 +94,7 @@ public class GameController {
      */
     public final static int PLAYER_X_MARGIN = 500;
     public final static int PLAYER_Y_MARGIN = 250;
-    private String mapName = "game";
+    private String mapName = "survival";
 
     /**
      * Classes
@@ -102,7 +102,6 @@ public class GameController {
     private Level level;
     private Player player;
     private CollisionHandler collisionHandler;
-    private SoundEffects soundEffects;
     private SceneChanger sceneChanger;
     private HighscoreHandler highscoreHandler;
     private Preferences preferences = Preferences.userRoot();
@@ -137,6 +136,7 @@ public class GameController {
 
     /**
      * Opens the main menu scene.
+     *
      * @param event the action event given from the button click.
      */
     @FXML
@@ -146,6 +146,7 @@ public class GameController {
 
     /**
      * Opens the game scene.
+     *
      * @param event the action event given from the button click.
      */
     @FXML
@@ -155,6 +156,7 @@ public class GameController {
 
     /**
      * Opens the high score scene.
+     *
      * @param event the action event given from the button click.
      */
     @FXML
@@ -208,6 +210,7 @@ public class GameController {
      * Moves player left on LEFT or A.
      * Makes player jump on UP or W.
      * Shoots bullet on E, if player has more bullets.
+     *
      * @param event the event given from a key press.
      */
     @FXML
@@ -222,7 +225,7 @@ public class GameController {
             }
             if ((code == KeyCode.UP || code == KeyCode.W) && player.getVelocityY() == 0) {
                 player.setVelocityY(-35);
-                soundEffects.JUMP.play();
+                SoundEffects.JUMP.play();
             }
 
             if ((code == KeyCode.E)) {
@@ -243,6 +246,7 @@ public class GameController {
      * Handles different keys on release if game is running.
      * Sets player's velocityX to 0 on RIGHT or D.
      * Sets player's velocityX to 0 on LEFT or A.
+     *
      * @param event the key event given by a key release.
      */
     @FXML
@@ -264,6 +268,7 @@ public class GameController {
     /**
      * Initializes necessary variables and object of the game.
      * Starts an AnimationTimer which keeps the game running by calling on gameLoop method.
+     *
      * @see AnimationTimer
      */
     @FXML
@@ -305,7 +310,8 @@ public class GameController {
 
     /**
      * Keeps the game running by drawing canvas according to state of the game.
-     * @param startNanoTime the nano time of when the game was initialized.
+     *
+     * @param startNanoTime   the nano time of when the game was initialized.
      * @param currentNanoTime the nano time of the current game loop.
      */
     private void gameLoop(long startNanoTime, long currentNanoTime) {
@@ -328,8 +334,10 @@ public class GameController {
      */
     private void renderGUI() {
         gc.setFill(Color.BLACK);
-        gc.fillText("Bullets: " + bulletAmount, 250, 40);
-        gc.fillText(bulletAmount + "/" + coinAmount, 60, 40);
+        if (bulletAmount >= 0) {
+            gc.fillText("Bullets: " + bulletAmount, 250, 40);
+        }
+        gc.fillText(level.getCoinCounter() + "/" + coinAmount, 60, 40);
         renderTime();
         drawHealthBar();
     }
@@ -350,7 +358,7 @@ public class GameController {
      * Sets game won to true if the player has reached the chest.
      */
     private void checkGameWon() {
-        if (level.getChest().isAnimated()) {
+        if (level.getChest() != null && level.getChest().isAnimated()) {
             gameWon = true;
             gameWonPane.setVisible(true);
             gameWonCoins.setText(gameWonCoins.getText() + String.valueOf(level.getCoins().size()));

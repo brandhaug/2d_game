@@ -41,10 +41,11 @@ public class CollisionHandler {
      * Remove coins from list and increments coin counter on collision.
      */
     private void handleCoinCollision() {
-        List<Coin> coins = level.getCoins();
-        for (Coin coin : coins) {
+        Iterator<Coin> coinIterator = level.getCoins().iterator();
+        while (coinIterator.hasNext()) {
+            Coin coin = coinIterator.next();
             if (intersectsWithPlayer(coin)) {
-                coins.remove(coin);
+                coinIterator.remove();
                 level.addCoinCounter();
                 SoundEffects.COIN.play();
             }
@@ -56,7 +57,7 @@ public class CollisionHandler {
      */
     private void handleChestCollision() {
         Chest chest = level.getChest();
-        if (intersectsWithPlayer(chest)) {
+        if (chest != null && intersectsWithPlayer(chest)) {
             chest.animateChest();
         }
     }

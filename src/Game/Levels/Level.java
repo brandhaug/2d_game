@@ -148,9 +148,11 @@ public class Level {
     }
 
     private void renderChest(GraphicsContext gc, Player player) {
-        chest.setX(chest.getX() - player.getVelocityX());
-        chest.setY(chest.getY() + cameraVelocityY);
-        chest.tick(gc);
+        if (chest != null) {
+            chest.setX(chest.getX() - player.getVelocityX());
+            chest.setY(chest.getY() + cameraVelocityY);
+            chest.tick(gc);
+        }
     }
 
 
