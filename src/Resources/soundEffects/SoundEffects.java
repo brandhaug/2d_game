@@ -12,7 +12,8 @@ public enum SoundEffects {
     GAMEOVER("./Resources/sounds/gameOver.wav"),
     RUN("./Resources/sounds/steps.wav"),
     JUMP("./Resources/sounds/jump.wav"),
-    LANDING("./Resources/sounds/landing.wav");
+    LANDING("./Resources/sounds/landing.wav"),
+    ENEMY_DEATH("./Resources/sounds/enemyDeath.wav");
 
     public static boolean mute;
     private Clip effectClip;

@@ -3,6 +3,8 @@ package Game.GameObjects;
 import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.awt.*;
+
 public class Bullet extends GameObject {
 
     private int damage;
@@ -20,6 +22,7 @@ public class Bullet extends GameObject {
     public void tick(GraphicsContext gc) {
         handleVelocityX();
         handleVelocityY();
+        spriteSheet.drawBounds(gc,getX(),getY());
         render(gc);
     }
 

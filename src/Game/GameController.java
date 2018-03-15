@@ -94,7 +94,7 @@ public class GameController {
      */
     public final static int PLAYER_X_MARGIN = 500;
     public final static int PLAYER_Y_MARGIN = 250;
-    private String mapName = "game";
+    private String mapName = "survival";
 
     /**
      * Classes
@@ -227,16 +227,15 @@ public class GameController {
                 player.setVelocityY(-35);
                 SoundEffects.JUMP.play();
             }
-
             if ((code == KeyCode.E)) {
-                if (bulletAmount > 0) {
+                if (level.getBulletCounter() > 0) {
                     if (player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT ||
                             player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
                         level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, 1, 1));
                     } else {
                         level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, 1, -1));
                     }
-                    bulletAmount--;
+                    level.decreaseBulletCounter();
                 }
             }
         }
@@ -276,10 +275,10 @@ public class GameController {
         sceneChanger = new SceneChanger();
         initializeBackground();
         level = new Level(mapName);
+        if(mapName == "survival") level.setSurvival(true);
         gc = canvas.getGraphicsContext2D();
         player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY());
         coinAmount = level.getCoins().size();
-        bulletAmount = level.getBulletCounter();
         collisionHandler = new CollisionHandler(player, level);
         highscoreHandler = new HighscoreHandler();
 
@@ -334,10 +333,16 @@ public class GameController {
      */
     private void renderGUI() {
         gc.setFill(Color.BLACK);
-        if (bulletAmount >= 0) {
-            gc.fillText("Bullets: " + bulletAmount, 250, 40);
+
+        if (!level.getSurvival()){
+            gc.fillText(level.getCoinCounter() + "/" + coinAmount, 60, 40);
         }
-        gc.fillText(level.getCoinCounter() + "/" + coinAmount, 60, 40);
+
+        if (level.getSurvival()) {
+            gc.fillText("Bullets: " + level.getBulletCounter(), 250, 40);
+            gc.fillText("Wave: " + level.getWaveNr(), 350, 40);
+            gc.fillText("Enemies killed: " + level.getKillCounter(), 450, 40);
+        }
         renderTime();
         drawHealthBar();
     }

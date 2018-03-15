@@ -4,20 +4,16 @@ import CreateLevel.MapParser;
 import Game.GameController;
 import Game.GameObjects.*;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.util.*;
-
-import static java.lang.StrictMath.cos;
-import static java.lang.StrictMath.sqrt;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Level {
     private List<Tile> tiles;
     private List<Coin> coins;
     private List<Enemy> enemies;
-    private List<Bullet> bullets;
-    private List<Bullet> disposeBullets;
+    private List<Enemy> disposeEnemies;
     private Chest chest;
 
     private int coinCounter;
@@ -27,6 +23,22 @@ public class Level {
     private int playerStartPositionX;
     private int playerStartPositionY;
     private boolean cameraInitialized;
+
+    //Survival
+    //TODO: Splitte opp Level og Survival i hver sin klasse?
+    int spawnX;
+    int spawnY;
+    int random;
+    int waveNr = 0;
+    int killsRequired = 0;
+    boolean validSpawn = false;
+    private int enemyAmount = 10;
+    private boolean survival = false;
+    private int [][]spawnSpots = new int [2][67];
+    private List<Bullet> bullets;
+    private List<Bullet> disposeBullets;
+    private List<Ammunition> ammunition;
+    private int killCounter = 0;
     private int bulletCounter;
 
     public Level(String fileName) {
@@ -35,9 +47,14 @@ public class Level {
         enemies = new ArrayList<>();
         bullets = new ArrayList<>();
         disposeBullets = new ArrayList<>();
+        disposeEnemies = new ArrayList<>();
+        ammunition = new ArrayList<>();
         char[][] map = loadMap(fileName);
         parseMap(map);
-        bulletCounter = loadBullets(fileName);
+        bulletCounter = 10;
+        if(survival){
+            wave();
+        }
     }
 
     private void initializeCameraVelocityY() {
@@ -56,6 +73,10 @@ public class Level {
         return enemies;
     }
 
+    public List<Enemy> getDisposeEnemies() {
+        return disposeEnemies;
+    }
+
     public List<Bullet> getBullets() {
         return bullets;
     }
@@ -63,6 +84,11 @@ public class Level {
     public List<Bullet> getDisposeBullets() {
         return disposeBullets;
     }
+
+    public List<Ammunition> getAmmunition() {
+        return ammunition;
+    }
+
 
     public void addCoinCounter() {
         this.coinCounter++;
@@ -72,8 +98,28 @@ public class Level {
         return coinCounter;
     }
 
+    public void addKillCounter() {
+        this.killCounter++;
+    }
+
+    public int getKillCounter(){
+        return killCounter;
+    }
+
+    public void decreaseEnemyCounter(){
+        this.enemyAmount--;
+    }
+
     public int getBulletCounter() {
         return bulletCounter;
+    }
+
+    public void addBulletCounter(int bullets){
+        bulletCounter += bullets;
+    }
+
+    public void decreaseBulletCounter(){
+        bulletCounter -= 1;
     }
 
     public int getLowestTileY() {
@@ -88,9 +134,23 @@ public class Level {
         return playerStartPositionY;
     }
 
+    public void setSurvival(boolean survival){
+        this.survival = survival;
+    }
+
+    public boolean getSurvival(){
+        return survival;
+    }
+
     public void tick(GraphicsContext gc, Player player, double time) {
         handleCameraVelocity(player);
         render(gc, player, time);
+        if(survival)spawnEnemies(player);
+        /*
+        System.out.println("Kills required: " + killsRequired);
+        System.out.println("Enemies killed: " + killCounter);
+        System.out.println("Enemy Amount: " + enemyAmount);
+        */
     }
 
     private void handleCameraVelocity(Player player) {
@@ -120,6 +180,7 @@ public class Level {
         renderEnemies(gc, player);
         renderBullets(gc, player);
         renderChest(gc, player);
+        renderAmmunition(gc,player);
 
 
         if (!cameraInitialized) {
@@ -155,39 +216,41 @@ public class Level {
         }
     }
 
+    private void renderAmmunition(GraphicsContext gc, Player player) {
+        for (Ammunition ammunition : getAmmunition()) {
+            ammunition.setX(ammunition.getX() - player.getVelocityX());
+            ammunition.setY(ammunition.getY() + cameraVelocityY);
+            ammunition.tick(gc);
+        }
+    }
 
     private void renderEnemies(GraphicsContext gc, Player player) {
         for (Enemy enemy : getEnemies()) {
 
-            if (!enemy.getAlive()) {
-                enemy.setVelocityX(0, false);
+            //TODO Make better Enemy AI
+            if (!enemy.getLeftCollision() && enemy.getX() > GameController.PLAYER_X_MARGIN) {
+                enemy.setVelocityX(-enemy.getSpeed(), false);
+                enemy.setRightCollision(false);
+            }else if (!enemy.getRightCollision() && enemy.getX() < GameController.PLAYER_X_MARGIN) {
+                enemy.setVelocityX(enemy.getSpeed(), false);
+                enemy.setLeftCollision(false);
             } else {
-                if (enemy.getY() < player.getY()) {
-                    enemy.setVelocityY(7);
-                }
-                if (enemy.getX() > GameController.PLAYER_X_MARGIN) {
-                    enemy.setVelocityX(-3, true);
-                    enemy.setX(enemy.getX() - player.getVelocityX());
-
-                } else if (enemy.getX() < GameController.PLAYER_X_MARGIN) {
-                    enemy.setVelocityX(2, true);
-                    enemy.setX(enemy.getX() - player.getVelocityX());
-                } else {
-                    enemy.setVelocityY(-10);
-                    enemy.setVelocityX(-1, false);
-                }
+                enemy.setVelocityX(0, false);
             }
+
+            enemy.setX(enemy.getX() - player.getVelocityX());
             enemy.handleSpriteState();
             enemy.setY(enemy.getY() + cameraVelocityY);
-            /*
-            System.out.println("Enemy VELOCITY: " + enemy.getVelocityX());
-            System.out.println("Enemy X: " + enemy.getX());
-            System.out.println("Player X: " + player.getX());
-            System.out.println("-------------------");
-            */
-            System.out.println(enemy.getVelocityY());
+
+            //TODO fix spawn-fail (first enemy spawning)
+            if(enemy.getY() < 0 || enemy.getY() > 5000 || enemy.getX() < -5000 || enemy.getX() > 5000){
+                System.out.println("SPAWN-FAIL: Enemy DELETED!");
+                enemyAmount++;
+                disposeEnemies.add(enemy);
+            }
             enemy.tick(gc);
         }
+        enemies.removeAll(disposeEnemies);
     }
 
     private void renderEnemies(GraphicsContext gc, Player player, double time) {
@@ -198,48 +261,108 @@ public class Level {
         }
     }
 
+    public int getWaveNr(){
+        return waveNr;
+    }
 
-    public void renderBullets(GraphicsContext gc, Player player) {
-        for (Bullet bullet : bullets) {
+    private void wave(Player player){
+        waveNr++;
+        enemyAmount = 10*waveNr;
+        killsRequired += enemyAmount;
+        for (int i = 0; i < waveNr; i++) {
+            ammunition.add(new Ammunition(spawnX - player.getX() + GameController.PLAYER_X_MARGIN,spawnY));
+        }
+    }
+
+    private void wave(){
+        waveNr++;
+        enemyAmount = 10*waveNr;
+        killsRequired += enemyAmount;
+    }
+
+    private void spawnEnemies(Player player) {
+        while(!validSpawn) {
+            random = ThreadLocalRandom.current().nextInt(0, spawnSpots[0].length);
+            spawnX = spawnSpots[0][random];
+            spawnY = spawnSpots[1][random];
+            if (spawnX <= player.getX() - GameController.PLAYER_X_MARGIN || spawnX >= player.getX() + GameController.PLAYER_X_MARGIN) validSpawn = true;
+        }
+        validSpawn = false;
+
+            if (enemyAmount == 0) {
+                if (killCounter >= killsRequired) {
+                    wave(player);
+                } else {
+                    return;
+                }
+            } else if (enemyAmount <= 20 && enemyAmount > 0) {
+                if (spawnY == 89) {
+                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY, EnemyType.ENEMY_A));
+                } else {
+                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY * 4, EnemyType.ENEMY_A));
+                }
+                enemyAmount--;
+            } else if (enemyAmount <= 40 && enemyAmount > 20) {
+                if (spawnY == 88) {
+                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY, EnemyType.ENEMY_C));
+                } else {
+                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY * 4, EnemyType.ENEMY_C));
+                }
+                enemyAmount--;
+            } else if (enemyAmount <= 100 && enemyAmount > 40) {
+                if (spawnY == 88) {
+                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY, EnemyType.ENEMY_C));
+                } else {
+                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY * 4, EnemyType.ENEMY_C));
+                }
+                enemyAmount--;
+            }
+    }
+
+
+    public void renderBullets(GraphicsContext gc,Player player) {
+        Iterator<Bullet> iterator = getBullets().iterator();
+
+        while(iterator.hasNext()) {
+            Bullet bullet = iterator.next();
             bullet.setY(bullet.getY() + cameraVelocityY);
-            if (bullet.getFacing() > 0) {
+            if(bullet.getFacing() > 0){
                 bullet.setVelocityX(50, true);
                 bullet.setX(bullet.getX() - player.getVelocityX());
                 if (player.getVelocityX() >= 0) {
                     bullet.setX(bullet.getX() + player.getVelocityX());
                 }
 
-            } else {
-                bullet.setVelocityX(-50, true);
-                bullet.setX(bullet.getX() + player.getVelocityX());
-                bullet.setX(bullet.getX() - player.getVelocityX());
-            }
-            if (bullet.getX() > GameController.CANVAS_WIDTH || bullet.getX() < 0) {
+            }else{
+                    bullet.setVelocityX(-50, true);
+                    bullet.setX(bullet.getX() - player.getVelocityX());
+                }
+            if(bullet.getX() > GameController.CANVAS_WIDTH || bullet.getX() < 0){
                 disposeBullets.add(bullet);
             }
             bullet.tick(gc);
-        }
+            }
         bullets.removeAll(disposeBullets);
     }
 
 
-    public void addBullet(Bullet b) {
+    public void addBullet(Bullet b){
         bullets.add(b);
     }
 
-    public void removeBullet(Bullet b) {
-        bullets.remove(b);
-    }
 
     private void parseMap(char[][] map) {
         final char TILE = '-';
+        final char AMMO = '.';
         final char COIN = 'C';
+        final char SPAWN = 'x';
         final char ENEMYA = 'a';
         final char ENEMYC = 'c';
         final char START = 's';
         final char END = 'f';
 
         final int COIN_SIZE = 64;
+        int spawnIndex = 0;
 
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
@@ -295,6 +418,13 @@ public class Level {
                     case (START):
                         playerStartPositionX = x * GameController.TILE_SIZE;
                         playerStartPositionY = y * GameController.TILE_SIZE;
+                        break;
+                    case (SPAWN):
+                        spawnSpots[0][spawnIndex] = x * GameController.TILE_SIZE;
+                        spawnSpots[1][spawnIndex] = y;
+                        System.out.print("spawnX: "+spawnSpots[0][spawnIndex] + " ");
+                        System.out.println("spawnY: "+spawnSpots[1][spawnIndex]);
+                        spawnIndex++;
                         break;
                     case (END):
                         chest = new Chest(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE);

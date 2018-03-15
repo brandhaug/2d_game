@@ -19,22 +19,23 @@ public class Enemy extends GameObject{
     private boolean isAlive = true;
     EnemyType enemyType;
 
-    private final int WIDTH = 72;
+    private final int WIDTH = 62;
 
     // States
     public final static int ENEMY_IDLING_RIGHT = 0;
-    public final static int ENEMY_IDLING_LEFT = 1;
-    public final static int ENEMY_RUNNING_RIGHT = 2;
-    public final static int ENEMY_RUNNING_LEFT = 3;
-    public final static int ENEMY_JUMPING_RIGHT = 4;
-    public final static int ENEMY_JUMPING_LEFT = 5;
-    public final static int ENEMY_FALLING_RIGHT = 6;
-    public final static int ENEMY_FALLING_LEFT = 7;
-    public final static int ENEMY_HIT_RIGHT = 8;
+    public final static int ENEMY_RUNNING_RIGHT = 1;
+    public final static int ENEMY_JUMPING_RIGHT = 2;
+    public final static int ENEMY_FALLING_RIGHT = 3;
+    public final static int ENEMY_HIT_RIGHT = 4;
+    public final static int ENEMY_IDLING_LEFT = 5;
+    public final static int ENEMY_RUNNING_LEFT = 6;
+    public final static int ENEMY_JUMPING_LEFT = 7;
+    public final static int ENEMY_FALLING_LEFT = 8;
     public final static int ENEMY_HIT_LEFT = 9;
     public final static int ENEMY_DEAD = 10;
 
     // Spritesheets
+    private SpriteSheet staticSpriteSheet;
     private SpriteSheet idleRightSpriteSheet;
     private SpriteSheet idleLeftSpriteSheet;
     private SpriteSheet runRightSpriteSheet;
@@ -47,7 +48,6 @@ public class Enemy extends GameObject{
     public Enemy(int x, int y, EnemyType enemyType) {
         super(x, y);
         this.enemyType = enemyType;
-        setVelocityY(10);
         initializeSpriteSheets();
         this.hp = enemyType.getHp();
         this.speed = enemyType.getSpeed();
@@ -68,6 +68,10 @@ public class Enemy extends GameObject{
         return damage;
     }
 
+    public int getSpeed() {
+        return speed;
+    }
+
     public void setAlive(boolean isAlive) {
         this.isAlive = isAlive;
     }
@@ -81,7 +85,7 @@ public class Enemy extends GameObject{
     }
 
     public boolean getLastSpriteRight() {
-        return false;
+        return lastSpriteRight;
     }
 
     public void setEnemyhit(boolean enemyhit){
@@ -96,6 +100,9 @@ public class Enemy extends GameObject{
         //setVelocityY(1);
         handleVelocityX();
         handleVelocityY();
+        if(getVelocityY()<=0) {
+            setVelocityY(10);
+        }
         render(gc);
     }
 
@@ -120,13 +127,7 @@ public class Enemy extends GameObject{
     public void handleSpriteState() {
         setLastSpriteState(getCurrentSpriteState());
 
-        if(!isAlive && getVelocityY() == 0){
-            setCurrentSpriteSheet(cloudGroundSpriteSheet);
-            setCurrentSpriteState(ENEMY_DEAD);
-        }else if(!isAlive && getVelocityY() < 0){
-            setCurrentSpriteSheet(cloudOffGroundSpriteSheet);
-            setCurrentSpriteState(ENEMY_DEAD);
-        }else if (getVelocityX() == 0 && getVelocityY() == 0 && (!leftCollision && !rightCollision)) {
+        if (getVelocityX() == 0 && getVelocityY() == 0) {
             if (lastSpriteRight) {
                 lastSpriteRight = true;
                 setCurrentSpriteState(ENEMY_IDLING_RIGHT);
@@ -160,11 +161,11 @@ public class Enemy extends GameObject{
             lastSpriteRight = false;
             setCurrentSpriteState(ENEMY_FALLING_LEFT);
             setCurrentSpriteSheet(runLeftSpriteSheet);
-        } else if (getVelocityX() > 0 || rightCollision) {
+        } else if (getVelocityX() > 0) {
             lastSpriteRight = true;
             setCurrentSpriteState(ENEMY_RUNNING_RIGHT);
             setCurrentSpriteSheet(runRightSpriteSheet);
-        } else if (getVelocityX() < 0 || leftCollision) {
+        } else if (getVelocityX() < 0) {
             lastSpriteRight = false;
             setCurrentSpriteState(ENEMY_RUNNING_LEFT);
             setCurrentSpriteSheet(runLeftSpriteSheet);
@@ -182,14 +183,20 @@ public class Enemy extends GameObject{
         cloudOffGroundSpriteSheet = new SpriteSheet("/Resources/cloud/offGroundCloud.png",5,99,88 );
     }
 
-
-
     public void setRightCollision(boolean rightCollision) {
         this.rightCollision = rightCollision;
     }
 
     public void setLeftCollision(boolean leftCollision) {
         this.leftCollision = leftCollision;
+    }
+
+    public boolean getRightCollision(){
+        return rightCollision;
+    }
+
+    public boolean getLeftCollision(){
+        return leftCollision;
     }
 
     @Override
@@ -206,7 +213,7 @@ public class Enemy extends GameObject{
 
     @Override
     public Rectangle getBoundsBottom() {
-        return new Rectangle(getX(), getY(), 40, 72);
+        return new Rectangle(getX(), getY() , 40, 72);
     }
 
     @Override
@@ -216,7 +223,7 @@ public class Enemy extends GameObject{
 
     @Override
     public Rectangle getBoundsRight() {
-        return new Rectangle(getX() + WIDTH, getY() + 10, 20, 40);
+        return new Rectangle(getX()+WIDTH, getY() + 10, 20, 40);
     }
 
     @Override
@@ -224,5 +231,20 @@ public class Enemy extends GameObject{
         return new Rectangle(getX(), getY() + 10, 20,  40);
     }
 
+    public boolean isFalling() {
+        return getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT || getCurrentSpriteState() == Player.PLAYER_FALLING_LEFT;
+    }
+
+    public boolean isJumping() {
+        return getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT || getCurrentSpriteState() == Player.PLAYER_JUMPING_LEFT;
+    }
+
+    public boolean isIdling() {
+        return getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || getCurrentSpriteState() == Player.PLAYER_IDLING_LEFT;
+    }
+
+    public boolean isRunning() {
+        return getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT;
+    }
 
 }
