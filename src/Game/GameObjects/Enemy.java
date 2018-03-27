@@ -15,6 +15,7 @@ public class Enemy extends GameObject{
 
     private boolean rightCollision = false;
     private boolean leftCollision = false;
+    private boolean firstCollision = false;
     public boolean lastSpriteRight = true;
     private boolean isAlive = true;
     EnemyType enemyType;
@@ -86,6 +87,14 @@ public class Enemy extends GameObject{
 
     public boolean getLastSpriteRight() {
         return lastSpriteRight;
+    }
+
+    public void setFirstCollision(){
+        firstCollision = true;
+    }
+
+    public boolean getFirstCollision(){
+        return firstCollision;
     }
 
     public void setEnemyhit(boolean enemyhit){

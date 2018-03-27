@@ -24,8 +24,8 @@ public class Level {
     private int playerStartPositionY;
     private boolean cameraInitialized;
 
-    //Survival
-    //TODO: Splitte opp Level og Survival i hver sin klasse?
+    //survival
+    //TODO: Splitte opp Level og survival i hver sin klasse?
     int spawnX;
     int spawnY;
     int random;
@@ -34,12 +34,13 @@ public class Level {
     boolean validSpawn = false;
     private int enemyAmount = 10;
     private boolean survival = false;
-    private int [][]spawnSpots = new int [2][67];
+    private int [][]spawnSpots = new int [2][25];
     private List<Bullet> bullets;
     private List<Bullet> disposeBullets;
     private List<Ammunition> ammunition;
     private int killCounter = 0;
     private int bulletCounter;
+    private int playerChangeY;
 
     public Level(String fileName) {
         tiles = new ArrayList<>();
@@ -52,6 +53,7 @@ public class Level {
         char[][] map = loadMap(fileName);
         parseMap(map);
         bulletCounter = 10;
+        playerChangeY = getPlayerStartPositionY();
         if(survival){
             wave();
         }
@@ -146,6 +148,7 @@ public class Level {
         handleCameraVelocity(player);
         render(gc, player, time);
         if(survival)spawnEnemies(player);
+
         /*
         System.out.println("Kills required: " + killsRequired);
         System.out.println("Enemies killed: " + killCounter);
@@ -170,7 +173,13 @@ public class Level {
                     cameraVelocityY = 0;
                 }
             }
+            playerChangeY += cameraVelocityY;
+            //System.out.println("CAM VELOCITY: " + cameraVelocityY);
         }
+    }
+
+    private int getPlayerChangeY(){
+        return Math.abs(playerStartPositionY - playerChangeY + 190);
     }
 
     private void render(GraphicsContext gc, Player player, double time) {
@@ -238,17 +247,23 @@ public class Level {
                 enemy.setVelocityX(0, false);
             }
 
-            enemy.setX(enemy.getX() - player.getVelocityX());
-            enemy.handleSpriteState();
-            enemy.setY(enemy.getY() + cameraVelocityY);
 
-            //TODO fix spawn-fail (first enemy spawning)
-            if(enemy.getY() < 0 || enemy.getY() > 5000 || enemy.getX() < -5000 || enemy.getX() > 5000){
-                System.out.println("SPAWN-FAIL: Enemy DELETED!");
+            enemy.setX(enemy.getX() - player.getVelocityX());
+            //if(enemy.getFirstCollision() == true)enemy.setY(enemy.getY() + cameraVelocityY);
+            if(enemy.getY() <= 0)enemy.setY(enemy.getY() - cameraVelocityY);
+            enemy.setY(enemy.getY() + cameraVelocityY);
+            enemy.handleSpriteState();
+
+            //TODO fix spawn-fail
+            if(enemy.getY() < -2000 || enemy.getY() > 5000 || enemy.getX() < -5000 || enemy.getX() > 5000){
+                System.out.print("SPAWN-FAIL: Enemy DELETED!");
+                System.out.println("ENM X: " + enemy.getX() + " " + "ENM Y: " + enemy.getY());
                 enemyAmount++;
                 disposeEnemies.add(enemy);
             }
             enemy.tick(gc);
+            System.out.println("ENEMY Y: " + enemy.getY() + "");
+            //System.out.println("PLAYER Y: " + player.getY());
         }
         enemies.removeAll(disposeEnemies);
     }
@@ -266,11 +281,20 @@ public class Level {
     }
 
     private void wave(Player player){
+        int spawnX;
+        int spawnY;
+        int random;
+
         waveNr++;
         enemyAmount = 10*waveNr;
         killsRequired += enemyAmount;
+
         for (int i = 0; i < waveNr; i++) {
-            ammunition.add(new Ammunition(spawnX - player.getX() + GameController.PLAYER_X_MARGIN,spawnY));
+            random = randomSpawnX(player);
+            spawnX = spawnSpots[0][random];
+            spawnY = spawnSpots[1][random] - getPlayerChangeY() - 76;
+                ammunition.add(new Ammunition(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY));
+
         }
     }
 
@@ -280,41 +304,54 @@ public class Level {
         killsRequired += enemyAmount;
     }
 
-    private void spawnEnemies(Player player) {
+    private int randomSpawnX(Player player){
+        int spawnX;
         while(!validSpawn) {
             random = ThreadLocalRandom.current().nextInt(0, spawnSpots[0].length);
             spawnX = spawnSpots[0][random];
-            spawnY = spawnSpots[1][random];
             if (spawnX <= player.getX() - GameController.PLAYER_X_MARGIN || spawnX >= player.getX() + GameController.PLAYER_X_MARGIN) validSpawn = true;
         }
         validSpawn = false;
+        return random;
+    }
 
-            if (enemyAmount == 0) {
-                if (killCounter >= killsRequired) {
-                    wave(player);
-                } else {
-                    return;
-                }
-            } else if (enemyAmount <= 20 && enemyAmount > 0) {
-                if (spawnY == 89) {
-                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY, EnemyType.ENEMY_A));
-                } else {
-                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY * 4, EnemyType.ENEMY_A));
-                }
+    /*
+    private boolean validSpawnY = false;
+    private int randomSpawnY(Player player){
+        int spawnY = 0;
+        while(!validSpawnY) {
+            spawnY = spawnSpots [randomSpawnX(player);
+            if (spawnY > 0) validSpawn = true;
+        }
+        validSpawn = false;
+        return spawnY;
+    }
+    */
+
+    private void spawnEnemies(Player player) {
+        int random = randomSpawnX(player);
+        spawnX = spawnSpots[0][random];
+        spawnY = spawnSpots[1][random];
+
+        if(waveNr > 1){
+            spawnY -= getPlayerChangeY();
+        }
+
+        if (enemyAmount == 0) {
+            if (killCounter >= killsRequired) {
+                wave(player);
+            } else {
+                return;
+            }
+
+        } else if (enemyAmount <= 20 && enemyAmount > 0 && cameraVelocityY == 0) {
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_A.getIdleH(), EnemyType.ENEMY_A));
                 enemyAmount--;
-            } else if (enemyAmount <= 40 && enemyAmount > 20) {
-                if (spawnY == 88) {
-                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY, EnemyType.ENEMY_C));
-                } else {
-                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY * 4, EnemyType.ENEMY_C));
-                }
+            } else if (enemyAmount <= 40 && enemyAmount > 20 && cameraVelocityY == 0) {
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_C.getIdleH(), EnemyType.ENEMY_C));
                 enemyAmount--;
-            } else if (enemyAmount <= 100 && enemyAmount > 40) {
-                if (spawnY == 88) {
-                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY, EnemyType.ENEMY_C));
-                } else {
-                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY * 4, EnemyType.ENEMY_C));
-                }
+            } else if (enemyAmount <= 100 && enemyAmount > 40 && cameraVelocityY == 0) {
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_C.getIdleH(), EnemyType.ENEMY_C));
                 enemyAmount--;
             }
     }
@@ -353,7 +390,6 @@ public class Level {
 
     private void parseMap(char[][] map) {
         final char TILE = '-';
-        final char AMMO = '.';
         final char COIN = 'C';
         final char SPAWN = 'x';
         final char ENEMYA = 'a';
@@ -421,7 +457,7 @@ public class Level {
                         break;
                     case (SPAWN):
                         spawnSpots[0][spawnIndex] = x * GameController.TILE_SIZE;
-                        spawnSpots[1][spawnIndex] = y;
+                        spawnSpots[1][spawnIndex] = y * GameController.TILE_SIZE;
                         System.out.print("spawnX: "+spawnSpots[0][spawnIndex] + " ");
                         System.out.println("spawnY: "+spawnSpots[1][spawnIndex]);
                         spawnIndex++;

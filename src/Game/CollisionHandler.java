@@ -79,6 +79,7 @@ public class CollisionHandler {
 
             if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isJumping()) {
                 handleTileTopCollision(player);
+                //System.out.println("TILE Y: " + tile.getY()/GameController.TILE_SIZE);
             }
             if (player.getBoundsTop().intersects(tile.getBoundsBottom()) && !player.isFalling()) {
                 handleTileBottomCollision(player);
@@ -133,6 +134,7 @@ public class CollisionHandler {
         }
         */
         gameObject.setVelocityY(0);
+        gameObject.setFirstCollision();
         bouncing = false;
     }
 

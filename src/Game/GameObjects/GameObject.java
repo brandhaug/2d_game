@@ -67,6 +67,16 @@ public abstract class GameObject {
         }
     }
 
+    private boolean firstCollision = false;
+
+    public void setFirstCollision(){
+        firstCollision = true;
+    }
+
+    public boolean getFirstCollision(){
+        return firstCollision;
+    }
+
     public int getVelocityY() {
         return velocityY;
     }
