@@ -4,7 +4,6 @@ import Game.GameObjects.*;
 import Game.Levels.Level;
 import Resources.soundEffects.SoundEffects;
 
-import java.lang.management.PlatformLoggingMXBean;
 import java.util.*;
 
 
@@ -233,23 +232,27 @@ public class CollisionHandler {
                     disposeEnemies.add(enemy);
                 }else {
                     enemy.setHp(enemy.getHp()-bullet.getDamage());
-                    enemy.setEnemyhit(true);
-                    enemy.setY(enemy.getY() - (enemy.getHeightHit()-enemy.getHeight()));
-                    Timer timer = new Timer();
-                    timer.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            enemy.setEnemyhit(false);
-                            timer.cancel();
-                        }
-                    }, 500);
+                    enemyIsHit(enemy);
                 }
             }
         }
     }
 
+    private void enemyIsHit(Enemy enemy){
+        enemy.setEnemyhit(true);
+        enemy.setY(enemy.getY() - (enemy.getHeightHit()-enemy.getHeight()));
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                enemy.setEnemyhit(false);
+                timer.cancel();
+            }
+        }, 700);
+    }
 
-    private void hitTimeOut(){
+
+    private void playerHitTimeOut(){
         collisionOn = false;
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -258,31 +261,32 @@ public class CollisionHandler {
                 collisionOn = true;
                 timer.cancel();
             }
-        }, 500);
+        }, 700);
     }
 
     public void handleEnemyTopCollision(int enemyDamage, Enemy enemy, Iterator<Enemy> enemyIterator) {
         playerHit(enemyDamage,false);
-        if(enemy.getHp() <= 1) {
+        if(enemy.getHp() == 1) {
             level.addKillCounter();
             SoundEffects.ENEMY_DEATH.play();
             enemyIterator.remove();
         }else{
             enemy.setHp(enemy.getHp()-1);
+            enemyIsHit(enemy);
         }
     }
 
     private void handleEnemyBottomCollision(int enemyDamage) {
         playerHit(enemyDamage,true);
-        hitTimeOut();
+        playerHitTimeOut();
     }
 
     private void handleEnemyRightCollision(int enemyDamage) {
-        hitTimeOut();
+        playerHitTimeOut();
         playerHit(enemyDamage,true);
     }
     private void handleEnemyLeftCollision(int enemyDamage) {
-        hitTimeOut();
+        playerHitTimeOut();
         playerHit(enemyDamage,true);
     }
 
