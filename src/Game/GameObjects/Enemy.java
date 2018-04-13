@@ -11,6 +11,9 @@ public class Enemy extends GameObject{
     private int speed;
     private int damage;
     private int points;
+    private int width;
+    private int height;
+    private int heightHit;
     private boolean enemyhit = false;
 
     private boolean rightCollision = false;
@@ -48,17 +51,21 @@ public class Enemy extends GameObject{
 
     public Enemy(int x, int y, EnemyType enemyType) {
         super(x, y);
+        setVelocityY(7);
         this.enemyType = enemyType;
         initializeSpriteSheets();
         this.hp = enemyType.getHp();
         this.speed = enemyType.getSpeed();
         this.damage = enemyType.getDamage();
         this.points = enemyType.getPoints();
+        this.width = enemyType.getRunW();
+        this.height = enemyType.getRunH();
+        this.heightHit = enemyType.getHitH();
         System.out.println(hp);
     }
 
     public void setHp(int hp) {
-        this.hp -= hp;
+        this.hp = hp;
     }
 
     public int getHp() {
@@ -68,6 +75,19 @@ public class Enemy extends GameObject{
     public int getDamage() {
         return damage;
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getHeightHit() {
+        return heightHit;
+    }
+
 
     public int getSpeed() {
         return speed;
@@ -184,8 +204,8 @@ public class Enemy extends GameObject{
     public void initializeSpriteSheets() {
         idleRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_idleRight.png", 4, enemyType.getIdleW(), enemyType.getIdleH());
         idleLeftSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_idleLeft.png" , 4, enemyType.getIdleW(), enemyType.getIdleH());
-        runRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_runRight.png", 4, enemyType.getRundW(), enemyType.getRunH());
-        runLeftSpriteSheet = new SpriteSheet("/Resources/enemies/"  + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_runLeft.png", 4, enemyType.getRundW(), enemyType.getRunH());
+        runRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_runRight.png", 4, enemyType.getRunW(), enemyType.getRunH());
+        runLeftSpriteSheet = new SpriteSheet("/Resources/enemies/"  + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_runLeft.png", 4, enemyType.getRunW(), enemyType.getRunH());
         hitRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_hitRight.png", 2, enemyType.getHitW(), enemyType.getHitH());
         hitLeftSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_hitLeft.png", 2, enemyType.getHitW(), enemyType.getHitH());
         cloudGroundSpriteSheet = new SpriteSheet("/Resources/cloud/groundCloud.png",5, 132, 88);
@@ -212,12 +232,14 @@ public class Enemy extends GameObject{
     public void render(GraphicsContext gc) {
         getCurrentSpriteSheet().render(gc, getX(), getY(), getCurrentSpriteState(), getLastSpriteState());
 
+        /*
         // Draw bounds
         gc.setFill(Color.BLACK);
         gc.strokeRect(getX() + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 20, WIDTH - 40, 20);
         gc.strokeRect(getX() + 20, getY(), WIDTH - 40, 20);
         gc.strokeRect(getX() + WIDTH - 20, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
         gc.strokeRect(getX(), getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
+        */
     }
 
     @Override

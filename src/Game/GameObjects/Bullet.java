@@ -22,7 +22,7 @@ public class Bullet extends GameObject {
     public void tick(GraphicsContext gc) {
         handleVelocityX();
         handleVelocityY();
-        spriteSheet.drawBounds(gc,getX(),getY());
+        //spriteSheet.drawBounds(gc,getX(),getY());
         render(gc);
     }
 

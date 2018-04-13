@@ -43,7 +43,12 @@
       </Pane>
       <Pane fx:id="gameWonPane" layoutX="341.0" layoutY="178.0" prefHeight="365.0" prefWidth="597.0" styleClass="gameWonPane" visible="false">
          <children>
-            <Text fx:id="gameWonCoins" fill="WHITE" layoutX="111.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Coins collected: ">
+            <Text fx:id="gameWonCoins" fill="WHITE" layoutX="111.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Coins collected: " visible="false">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Text>
+             <Text fx:id="killAmount" fill="WHITE" layoutX="111.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enemy kills: " visible="false">
                <font>
                   <Font size="30.0" />
                </font>

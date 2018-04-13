@@ -72,6 +72,8 @@ public class GameController {
     @FXML
     private Text gameWonCoins;
     @FXML
+    private Text killAmount;
+    @FXML
     private Text gameWonTime;
     @FXML
     private Text gameWonHighScore;
@@ -216,7 +218,7 @@ public class GameController {
     @FXML
     private void handleKeyPressed(KeyEvent event) {
         KeyCode code = event.getCode();
-        if (!gamePaused && !gameOver) {
+        if (!gamePaused && !gameOver && level.getCameraStable()) {
             if (code == KeyCode.RIGHT || code == KeyCode.D) {
                 player.setVelocityX(10, false);
             }
@@ -363,11 +365,29 @@ public class GameController {
      * Sets game won to true if the player has reached the chest.
      */
     private void checkGameWon() {
-        if (level.getChest() != null && level.getChest().isAnimated()) {
+        if (level.getSurvival()) {
+            if (player.getHp() <= 0) {
+                gameWon = true;
+                gameWonPane.setVisible(true);
+                killAmount.setVisible(true);
+                killAmount.setText(killAmount.getText() + String.valueOf(level.getKillCounter()));
+                gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
+                highscoreHandler.addSurvivalPoints(level.getKillCounter());
+
+                if (highscoreHandler.isNewHighscore(mapName, timeSeconds, level.getKillCounter())) {
+                    gameWonHighScore.setText("Congratulations, it's a new high score!");
+                    highscoreHandler.addToHighscore(mapName, timeSeconds, level.getKillCounter());
+                }
+                canvas.setOpacity(0.7f);
+            }
+
+        } else if (level.getChest() != null && level.getChest().isAnimated()) {
             gameWon = true;
             gameWonPane.setVisible(true);
+            gameWonCoins.setVisible(true);
             gameWonCoins.setText(gameWonCoins.getText() + String.valueOf(level.getCoinCounter()));
             gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
+
             if (highscoreHandler.isNewHighscore(mapName, timeSeconds, level.getCoinCounter())) {
                 gameWonHighScore.setText("Congratulations, it's a new high score!");
                 highscoreHandler.addToHighscore(mapName, timeSeconds, level.getCoinCounter());

@@ -76,6 +76,7 @@ public class CollisionHandler {
 
         for (Tile tile : level.getTiles()) {
             handleEnemyTileCollision(tile);
+            handleTileBulletCollision(tile);
 
             if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isJumping()) {
                 handleTileTopCollision(player);
@@ -115,6 +116,27 @@ public class CollisionHandler {
 
             if (enemy.getBoundsRight().intersects(tile.getBoundsLeft())) {
                 handleTileLeftCollision(enemy);
+            }
+        }
+    }
+
+    private void handleTileBulletCollision(Tile tile) {
+        for (Bullet bullet : level.getBullets()) {
+
+            if (bullet.getBoundsBottom().intersects(tile.getBoundsLeft())) {
+                disposeBullets.add(bullet);
+            }
+
+            if (bullet.getBoundsBottom().intersects(tile.getBoundsRight())) {
+                disposeBullets.add(bullet);
+            }
+
+            if (bullet.getBoundsTop().intersects(tile.getBoundsRight())) {
+                disposeBullets.add(bullet);
+            }
+
+            if (bullet.getBoundsTop().intersects(tile.getBoundsLeft())) {
+                disposeBullets.add(bullet);
             }
         }
     }
@@ -181,7 +203,7 @@ public class CollisionHandler {
 
                 if (collisionOn) {
                     if (e.getBoundsTop().intersects(player.getBoundsBottom())) {
-                        handleEnemyTopCollision(e.getDamage(), iterator);
+                        handleEnemyTopCollision(e.getDamage(), e, iterator);
                     }
 
                     if (e.getBoundsRight().intersects(player.getBoundsLeft())) {
@@ -200,7 +222,6 @@ public class CollisionHandler {
         }
 
     private void handleEnemyBulletCollision(Enemy enemy, Iterator<Enemy> enemyIterator) {
-
         for (Bullet bullet : level.getBullets()) {
             if (bullet.getBoundsTop().intersects(enemy.getBoundsLeft()) || bullet.getBoundsTop().intersects(enemy.getBoundsRight())
                     || bullet.getBoundsBottom().intersects(enemy.getBoundsLeft()) || bullet.getBoundsBottom().intersects(enemy.getBoundsRight())) {
@@ -211,14 +232,14 @@ public class CollisionHandler {
                     SoundEffects.ENEMY_DEATH.play();
                     disposeEnemies.add(enemy);
                 }else {
-                    enemy.setHp(bullet.getDamage());
+                    enemy.setHp(enemy.getHp()-bullet.getDamage());
                     enemy.setEnemyhit(true);
+                    enemy.setY(enemy.getY() - (enemy.getHeightHit()-enemy.getHeight()));
                     Timer timer = new Timer();
                     timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
                             enemy.setEnemyhit(false);
-                            //enemy.setY(enemy.getY() - 40);
                             timer.cancel();
                         }
                     }, 500);
@@ -227,10 +248,6 @@ public class CollisionHandler {
         }
     }
 
-    public void handleEnemyTopCollision(int enemyDamage, Iterator<Enemy> enemyIterator) {
-        playerHit(enemyDamage,false);
-        enemyIterator.remove();
-    }
 
     private void hitTimeOut(){
         collisionOn = false;
@@ -241,7 +258,18 @@ public class CollisionHandler {
                 collisionOn = true;
                 timer.cancel();
             }
-        }, 2000);
+        }, 500);
+    }
+
+    public void handleEnemyTopCollision(int enemyDamage, Enemy enemy, Iterator<Enemy> enemyIterator) {
+        playerHit(enemyDamage,false);
+        if(enemy.getHp() <= 1) {
+            level.addKillCounter();
+            SoundEffects.ENEMY_DEATH.play();
+            enemyIterator.remove();
+        }else{
+            enemy.setHp(enemy.getHp()-1);
+        }
     }
 
     private void handleEnemyBottomCollision(int enemyDamage) {
@@ -260,13 +288,10 @@ public class CollisionHandler {
 
     private void playerHit(int enemyDamage, boolean damage) {
         player.setVelocityY(-10);
-        if(damage) {
+        if (damage) {
             SoundEffects.HIT.play();
             player.setHp(player.getHp() - enemyDamage);
             if (player.getHp() <= 0) player.setAlive(false);
-        }else{
-            level.addKillCounter();
-            SoundEffects.ENEMY_DEATH.play();
         }
     }
 

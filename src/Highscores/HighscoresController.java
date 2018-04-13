@@ -1,7 +1,6 @@
 package Highscores;
 
 import SceneChanger.SceneChanger;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -38,6 +37,7 @@ public class HighscoresController {
         TreeItem<String> root = new TreeItem<>();
         root.setExpanded(true);
 
+        boolean survival = false;
         // Set branches
         TreeItem<String> map = null;
         int placement = 1;
@@ -47,12 +47,18 @@ public class HighscoresController {
                 int position = item.indexOf("=");
                 String mapName = item.substring(position + 1, item.length());
                 map = makeBranch(mapName, root);
-            } else {
+                } else {
+                String info;
                 if (map != null) {
+                    if(map.getValue().matches(".*survival.*")) survival = true;
                     int time = highscoreHandler.getTimeFromLine(item);
-                    int coins = highscoreHandler.getCoinsFromLine(item);
-                    String info = "Time: " + time + "\n" + "Coins: " + coins;
-
+                    int objectAmount = highscoreHandler.getObjectAmountFromLine(item);
+                    if (survival) {
+                        info = "Time: " + time + "\n" + "Kills: " + objectAmount;
+                    }else {
+                    info = "Time: " + time + "\n" + "Coins: " + objectAmount;
+                }
+                    survival = false;
                     makeBranch(info, map, placement);
                     placement++;
                 }

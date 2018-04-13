@@ -1,9 +1,6 @@
 package Highscores;
 
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,13 +15,16 @@ import java.util.stream.Stream;
  */
 public class HighscoreHandler {
 
-    private final static String FILE_PATH = "highscores.txt";
+    private final static String FILE_PATH = "highscore.txt";
+    private final static String FILE_PATH_SurvivalPoints = "survivalPoints.txt";
     private final static short NUMBER_OF_PLACEMENTS = 3;
     private Path path;
+    private Path pointsPath;
 
     public HighscoreHandler() {
         createFileIfNotExists();
         path = Paths.get(FILE_PATH);
+        pointsPath = Paths.get(FILE_PATH_SurvivalPoints);
     }
 
     public void addToHighscore(String mapName, int time, int coins) {
@@ -65,7 +65,19 @@ public class HighscoreHandler {
         }
     }
 
-    private void addNewPlacement(String mapName, int time, int coins) {
+    public void addSurvivalPoints(int gamePoints){
+        try {
+            List<String> fileContent = new ArrayList<>(Files.readAllLines(pointsPath, StandardCharsets.UTF_8));
+            int currentPoints = Integer.parseInt(fileContent.get(0));
+            int newPoints = currentPoints + gamePoints;
+            fileContent.set(0, Integer.toString(newPoints));
+            Files.write(pointsPath,fileContent, StandardCharsets.UTF_8);
+        }catch (IOException e) {
+          e.printStackTrace();
+        }
+    }
+
+    private void addNewPlacement(String mapName, int time, int objectAmount) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
             int position = 0;
@@ -81,21 +93,39 @@ public class HighscoreHandler {
                         position++;
 
                         if (line == null || line.contains("map=")) {
-                            lines.add(position, "time=" + time + ",coins=" + coins);
+                            if(mapName.matches(".*survival.*")){
+                                lines.add(position, "time=" + time + ",kills=" + objectAmount);
+                            }else{
+                                lines.add(position, "time=" + time + ",coins=" + objectAmount);
+                            }
                             Files.write(path, lines, StandardCharsets.UTF_8);
                             break;
                         } else {
+                            int placementObjects = getObjectAmountFromLine(line);
                             int placementTime = getTimeFromLine(line);
-                            if (time < placementTime) {
-                                lines.add(position, "time=" + time + ",coins=" + coins);
-                                Files.write(path, lines, StandardCharsets.UTF_8);
-                                break;
-                            } else if (time == placementTime) {
-                                int placementCoins = getCoinsFromLine(line);
-                                if (coins > placementCoins) {
-                                    lines.add(position - 1, "time=" + time + ",coins=" + coins);
+                            if (mapName.matches(".*survival.*")) {
+                                if (objectAmount > placementObjects) {
+                                    lines.add(position, "time=" + time + ",kills=" + objectAmount);
                                     Files.write(path, lines, StandardCharsets.UTF_8);
                                     break;
+                                } else if (objectAmount == placementObjects) {
+                                    if (time < placementTime) {
+                                        lines.add(position - 1, "time=" + time + ",kills=" + objectAmount);
+                                        Files.write(path, lines, StandardCharsets.UTF_8);
+                                        break;
+                                    }
+                                }
+                            } else {
+                                if (time < placementTime) {
+                                    lines.add(position, "time=" + time + ",coins=" + objectAmount);
+                                    Files.write(path, lines, StandardCharsets.UTF_8);
+                                    break;
+                                } else if (time == placementTime) {
+                                    if (objectAmount > placementObjects) {
+                                        lines.add(position - 1, "time=" + time + ",coins=" + objectAmount);
+                                        Files.write(path, lines, StandardCharsets.UTF_8);
+                                        break;
+                                    }
                                 }
                             }
                         }
@@ -110,11 +140,17 @@ public class HighscoreHandler {
         }
     }
 
-    private void addFirstPlacement(String mapName, int time, int coins) {
+    private void addFirstPlacement(String mapName, int time, int objects) {
         try {
             List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
             lines.add(lines.size(), "map=" + mapName);
-            lines.add(lines.size(), "time=" + time + ",coins=" + coins);
+
+            if (mapName.matches(".*survival.*")) {
+                lines.add(lines.size(), "time=" + time + ",kills=" + objects);
+            }else{
+                lines.add(lines.size(), "time=" + time + ",coins=" + objects);
+            }
+
             Files.write(path, lines, StandardCharsets.UTF_8);
 
             /*FileWriter fw = new FileWriter(FILE_PATH, true);
@@ -132,7 +168,7 @@ public class HighscoreHandler {
         return !mapExistsInFile(mapName) || isBetterPlacement(mapName, time, coins);
     }
 
-    private boolean isBetterPlacement(String mapName, int time, int coins) {
+    private boolean isBetterPlacement(String mapName, int time, int objects) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
             String line = reader.readLine();
@@ -145,13 +181,22 @@ public class HighscoreHandler {
                             return true;
                         } else {
                             int placementTime = getTimeFromLine(line);
-
-                            if (time < placementTime) {
-                                return true;
-                            } else if (time == placementTime) {
-                                int placementCoins = getCoinsFromLine(line);
-                                if (coins > placementCoins) {
+                            int placementObjects = getObjectAmountFromLine(line);
+                            if (mapName.matches(".*survival.*")) {
+                                if(objects > placementObjects){
                                     return true;
+                                }else if(objects == placementObjects){
+                                    if(time < placementTime){
+                                        return true;
+                                    }
+                                }
+                            } else {
+                                if (time < placementTime) {
+                                    return true;
+                                } else if (time == placementTime) {
+                                    if (objects > placementObjects) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
@@ -180,6 +225,8 @@ public class HighscoreHandler {
         try {
             File file = new File(FILE_PATH);
             file.createNewFile();
+            File fileSurvivalScore = new File(FILE_PATH_SurvivalPoints);
+            fileSurvivalScore.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -194,11 +241,11 @@ public class HighscoreHandler {
         return Integer.parseInt(timeString);
     }
 
-    public int getCoinsFromLine(String line) {
+    public int getObjectAmountFromLine(String line) {
         StringBuilder sb = new StringBuilder(line);
         int index = sb.lastIndexOf("=");
-        String coinsString = sb.substring(index + 1, sb.length());
-        return Integer.parseInt(coinsString);
+        String amountString = sb.substring(index + 1, sb.length());
+        return Integer.parseInt(amountString);
     }
 
     public ArrayList<String> getArrayListFromFile() {

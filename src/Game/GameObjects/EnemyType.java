@@ -1,14 +1,16 @@
 package Game.GameObjects;
 
 public enum  EnemyType {
-    ENEMY_A("A",1,2,5,1,84,76,84,76,86,92),
-    ENEMY_B("B",2,3,10,2,84,76,84,76,86,92),
-    ENEMY_C("C",3,4,15,3,78,76,78,76,79,88),
-    ENEMY_D("D",4,3,20,4,78,76,78,76,79,88),
-    ENEMY_E("E",5,4,25,6,78,76,78,76,79,88),
-    ENEMY_F("F",6,4,30,10,78,76,78,76,79,88),
-    ENEMY_G("G",7,5,40,20,78,76,78,76,79,88),
-    ENEMY_H("H",8,5,50,30,78,76,78,76,79,88);
+    //FileName,hp,speed,damage,points,idleW,idleH,runW,runH,hitW,hitH
+    ENEMY_A("A",1, 2, 1,  1,84,76,84,76,86, 92),
+    ENEMY_B("B",2, 2, 2,  3,78,76,78,76,79, 88),
+    ENEMY_C("C",3, 2, 4,  5,68,83,68,83,70,101),
+    ENEMY_D("D",4, 2, 5, 10,85,95,85,95,87, 93),
+    ENEMY_E("E",5, 3, 6, 20,83,76,83,76,83, 98),
+    ENEMY_F("F",6, 3, 7, 30,65,76,65,76,65, 91),
+    ENEMY_G("G",7, 3, 8, 50,69,76,69,76,69, 81),
+    ENEMY_H("H",8, 3,10, 70,65,76,65,76,65, 90),
+    ENEMY_I("I",10,4,15,100,99,77,99,77,99, 89);
 
     private String fileName;
     private int hp;
@@ -48,7 +50,7 @@ public enum  EnemyType {
         return idleH;
     }
 
-    public int getRundW(){
+    public int getRunW(){
         return runW;
     }
 

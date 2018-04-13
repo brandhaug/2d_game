@@ -23,6 +23,7 @@ public class Level {
     private int playerStartPositionX;
     private int playerStartPositionY;
     private boolean cameraInitialized;
+    private boolean cameraStable;
 
     //survival
     //TODO: Splitte opp Level og survival i hver sin klasse?
@@ -34,7 +35,7 @@ public class Level {
     boolean validSpawn = false;
     private int enemyAmount = 10;
     private boolean survival = false;
-    private int [][]spawnSpots = new int [2][25];
+    private int [][]spawnSpots = new int [2][75];
     private List<Bullet> bullets;
     private List<Bullet> disposeBullets;
     private List<Ammunition> ammunition;
@@ -108,6 +109,10 @@ public class Level {
         return killCounter;
     }
 
+    public boolean getCameraStable(){
+        return cameraStable;
+    }
+
     public void decreaseEnemyCounter(){
         this.enemyAmount--;
     }
@@ -115,6 +120,11 @@ public class Level {
     public int getBulletCounter() {
         return bulletCounter;
     }
+
+    public int getWaveNr(){
+        return waveNr;
+    }
+
 
     public void addBulletCounter(int bullets){
         bulletCounter += bullets;
@@ -171,10 +181,10 @@ public class Level {
                     cameraVelocityY = 10;
                 } else {
                     cameraVelocityY = 0;
+                    cameraStable = true;
                 }
             }
             playerChangeY += cameraVelocityY;
-            //System.out.println("CAM VELOCITY: " + cameraVelocityY);
         }
     }
 
@@ -233,39 +243,48 @@ public class Level {
         }
     }
 
+    boolean enemyAttack;
+
     private void renderEnemies(GraphicsContext gc, Player player) {
         for (Enemy enemy : getEnemies()) {
+            checkOutOfBounds(enemy);
+            if(enemy.getX() < -enemy.getWidth() || enemy.getX() > player.getX() + GameController.PLAYER_X_MARGIN) enemyAttack = false;
 
-            //TODO Make better Enemy AI
-            if (!enemy.getLeftCollision() && enemy.getX() > GameController.PLAYER_X_MARGIN) {
-                enemy.setVelocityX(-enemy.getSpeed(), false);
-                enemy.setRightCollision(false);
-            }else if (!enemy.getRightCollision() && enemy.getX() < GameController.PLAYER_X_MARGIN) {
-                enemy.setVelocityX(enemy.getSpeed(), false);
-                enemy.setLeftCollision(false);
+            if (!enemy.getLeftCollision() && enemy.getX() > GameController.PLAYER_X_MARGIN && enemyAttack) {
+                    enemy.setVelocityX(-enemy.getSpeed(), false);
+                    enemy.setRightCollision(false);
+            }else if (!enemy.getRightCollision() && enemy.getX() < GameController.PLAYER_X_MARGIN && enemyAttack) {
+                    enemy.setVelocityX(enemy.getSpeed(), false);
+                    enemy.setLeftCollision(false);
             } else {
                 enemy.setVelocityX(0, false);
             }
-
-
             enemy.setX(enemy.getX() - player.getVelocityX());
-            //if(enemy.getFirstCollision() == true)enemy.setY(enemy.getY() + cameraVelocityY);
+
+            //if enemy collides with tileSide while falling
+            if(enemy.getVelocityY() > 0){
+                enemy.setVelocityY(10);
+                enemy.setRightCollision(false);
+                enemy.setRightCollision(false);
+            }
+
             if(enemy.getY() <= 0)enemy.setY(enemy.getY() - cameraVelocityY);
             enemy.setY(enemy.getY() + cameraVelocityY);
             enemy.handleSpriteState();
-
-            //TODO fix spawn-fail
-            if(enemy.getY() < -2000 || enemy.getY() > 5000 || enemy.getX() < -5000 || enemy.getX() > 5000){
-                System.out.print("SPAWN-FAIL: Enemy DELETED!");
-                System.out.println("ENM X: " + enemy.getX() + " " + "ENM Y: " + enemy.getY());
-                enemyAmount++;
-                disposeEnemies.add(enemy);
-            }
             enemy.tick(gc);
-            System.out.println("ENEMY Y: " + enemy.getY() + "");
-            //System.out.println("PLAYER Y: " + player.getY());
+            enemyAttack = true;
         }
         enemies.removeAll(disposeEnemies);
+    }
+
+    private void checkOutOfBounds(Enemy enemy){
+        if(enemy.getY() < -GameController.CANVAS_HEIGHT-GameController.PLAYER_Y_MARGIN
+                || enemy.getY() > GameController.CANVAS_HEIGHT + GameController.PLAYER_Y_MARGIN) {
+            System.out.print("SPAWN-FAIL: Enemy DELETED!");
+            System.out.println("ENM X: " + enemy.getX() + " " + "ENM Y: " + enemy.getY());
+            enemyAmount++;
+            disposeEnemies.add(enemy);
+        }
     }
 
     private void renderEnemies(GraphicsContext gc, Player player, double time) {
@@ -274,10 +293,6 @@ public class Level {
             enemy.setY((int) (300 + (128 * Math.sin(time))));
             enemy.tick(gc);
         }
-    }
-
-    public int getWaveNr(){
-        return waveNr;
     }
 
     private void wave(Player player){
@@ -289,8 +304,8 @@ public class Level {
         enemyAmount = 10*waveNr;
         killsRequired += enemyAmount;
 
-        for (int i = 0; i < waveNr; i++) {
-            random = randomSpawnX(player);
+        for (int i = 0; i < waveNr/2; i++) {
+            random = randomSpawn(player);
             spawnX = spawnSpots[0][random];
             spawnY = spawnSpots[1][random] - getPlayerChangeY() - 76;
                 ammunition.add(new Ammunition(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY));
@@ -304,7 +319,7 @@ public class Level {
         killsRequired += enemyAmount;
     }
 
-    private int randomSpawnX(Player player){
+    private int randomSpawn(Player player){
         int spawnX;
         while(!validSpawn) {
             random = ThreadLocalRandom.current().nextInt(0, spawnSpots[0].length);
@@ -315,21 +330,8 @@ public class Level {
         return random;
     }
 
-    /*
-    private boolean validSpawnY = false;
-    private int randomSpawnY(Player player){
-        int spawnY = 0;
-        while(!validSpawnY) {
-            spawnY = spawnSpots [randomSpawnX(player);
-            if (spawnY > 0) validSpawn = true;
-        }
-        validSpawn = false;
-        return spawnY;
-    }
-    */
-
     private void spawnEnemies(Player player) {
-        int random = randomSpawnX(player);
+        int random = randomSpawn(player);
         spawnX = spawnSpots[0][random];
         spawnY = spawnSpots[1][random];
 
@@ -343,17 +345,36 @@ public class Level {
             } else {
                 return;
             }
-
-        } else if (enemyAmount <= 20 && enemyAmount > 0 && cameraVelocityY == 0) {
+        } else if (cameraVelocityY == 0) {
+            if (enemyAmount <= 20 && enemyAmount > 0) {
                 enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_A.getIdleH(), EnemyType.ENEMY_A));
                 enemyAmount--;
             } else if (enemyAmount <= 40 && enemyAmount > 20 && cameraVelocityY == 0) {
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_B.getIdleH(), EnemyType.ENEMY_B));
+                enemyAmount--;
+            } else if (enemyAmount <= 60 && enemyAmount > 40 && cameraVelocityY == 0) {
                 enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_C.getIdleH(), EnemyType.ENEMY_C));
                 enemyAmount--;
-            } else if (enemyAmount <= 100 && enemyAmount > 40 && cameraVelocityY == 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_C.getIdleH(), EnemyType.ENEMY_C));
+            } else if (enemyAmount <= 80 && enemyAmount > 60 && cameraVelocityY == 0) {
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_D.getIdleH(), EnemyType.ENEMY_D));
+                enemyAmount--;
+            }else if (enemyAmount <= 100 && enemyAmount > 80 && cameraVelocityY == 0) {
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_E.getIdleH(), EnemyType.ENEMY_E));
+                enemyAmount--;
+            }else if (enemyAmount <= 120 && enemyAmount > 100 && cameraVelocityY == 0) {
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_F.getIdleH(), EnemyType.ENEMY_F));
+                enemyAmount--;
+            }else if (enemyAmount <= 140 && enemyAmount > 120 && cameraVelocityY == 0) {
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_G.getIdleH(), EnemyType.ENEMY_G));
+                enemyAmount--;
+            }else if (enemyAmount <= 160 && enemyAmount > 140 && cameraVelocityY == 0) {
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_H.getIdleH(), EnemyType.ENEMY_H));
+                enemyAmount--;
+            }else if (enemyAmount <= 180 && enemyAmount > 160 && cameraVelocityY == 0) {
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_I.getIdleH(), EnemyType.ENEMY_I));
                 enemyAmount--;
             }
+        }
     }
 
 
