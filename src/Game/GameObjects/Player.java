@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 
 import java.awt.*;
 
-public class Player extends GameObject {
+public class Player extends GameObject implements Runnable{
 
     private final int WIDTH = 72;
 
@@ -212,5 +212,10 @@ public class Player extends GameObject {
 
     public boolean isRunning() {
         return getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || getCurrentSpriteState() == Player.PLAYER_RUNNING_LEFT;
+    }
+
+    @Override
+    public void run() {
+
     }
 }

@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Level {
+public class Level implements Runnable{
     private List<Tile> tiles;
     private List<Coin> coins;
     private List<Enemy> enemies;
@@ -27,21 +27,25 @@ public class Level {
 
     //survival
     //TODO: Splitte opp Level og survival i hver sin klasse?
-    int spawnX;
-    int spawnY;
-    int random;
-    int waveNr = 0;
-    int killsRequired = 0;
+    private int spawnX;
+    private int spawnY;
+    private int random;
+    private int waveNr = 0;
+    private int killsRequired = 0;
+    private int killCounter = 0;
+    private int bulletCounter;
+    private int playerChangeY;
+
     boolean validSpawn = false;
-    private int enemyAmount = 10;
+    boolean enemyAttack;
+    boolean playerIsAlive = true;
+    private int enemyAmount = 0;
     private boolean survival = false;
     private int [][]spawnSpots = new int [2][75];
     private List<Bullet> bullets;
     private List<Bullet> disposeBullets;
     private List<Ammunition> ammunition;
-    private int killCounter = 0;
-    private int bulletCounter;
-    private int playerChangeY;
+
 
     public Level(String fileName) {
         tiles = new ArrayList<>();
@@ -53,11 +57,8 @@ public class Level {
         ammunition = new ArrayList<>();
         char[][] map = loadMap(fileName);
         parseMap(map);
-        bulletCounter = 10;
         playerChangeY = getPlayerStartPositionY();
-        if(survival){
-            wave();
-        }
+        bulletCounter = 0;
     }
 
     private void initializeCameraVelocityY() {
@@ -150,6 +151,10 @@ public class Level {
         this.survival = survival;
     }
 
+    public void setBulletCounter(int bulletCounter){
+        this.bulletCounter = bulletCounter;
+    }
+
     public boolean getSurvival(){
         return survival;
     }
@@ -165,6 +170,7 @@ public class Level {
         System.out.println("Enemy Amount: " + enemyAmount);
         */
     }
+
 
     private void handleCameraVelocity(Player player) {
         if (!cameraInitialized) {
@@ -243,11 +249,10 @@ public class Level {
         }
     }
 
-    boolean enemyAttack;
-
     private void renderEnemies(GraphicsContext gc, Player player) {
         for (Enemy enemy : getEnemies()) {
-            checkOutOfBounds(enemy);
+            if(survival) checkOutOfBounds(enemy);
+
             if(enemy.getX() < -enemy.getWidth() || enemy.getX() > player.getX() + GameController.PLAYER_X_MARGIN) enemyAttack = false;
 
             if (!enemy.getLeftCollision() && enemy.getX() > GameController.PLAYER_X_MARGIN && enemyAttack) {
@@ -268,8 +273,9 @@ public class Level {
                 enemy.setRightCollision(false);
             }
 
-            if(enemy.getY() <= 0)enemy.setY(enemy.getY() - cameraVelocityY);
-            enemy.setY(enemy.getY() + cameraVelocityY);
+
+                enemy.setY(enemy.getY() + cameraVelocityY);
+
             enemy.handleSpriteState();
             enemy.tick(gc);
             enemyAttack = true;
@@ -279,9 +285,8 @@ public class Level {
 
     private void checkOutOfBounds(Enemy enemy){
         if(enemy.getY() < -GameController.CANVAS_HEIGHT-GameController.PLAYER_Y_MARGIN
-                || enemy.getY() > GameController.CANVAS_HEIGHT + GameController.PLAYER_Y_MARGIN) {
-            System.out.print("SPAWN-FAIL: Enemy DELETED!");
-            System.out.println("ENM X: " + enemy.getX() + " " + "ENM Y: " + enemy.getY());
+                || enemy.getY() > GameController.CANVAS_HEIGHT + GameController.PLAYER_Y_MARGIN+lowestTileY) {
+            System.err.println("SPAWN-FAIL: Enemy DELETED!: ENM X: " + enemy.getX() + " " + "ENM Y: " + enemy.getY());
             enemyAmount++;
             disposeEnemies.add(enemy);
         }
@@ -313,12 +318,6 @@ public class Level {
         }
     }
 
-    private void wave(){
-        waveNr++;
-        enemyAmount = 10*waveNr;
-        killsRequired += enemyAmount;
-    }
-
     private int randomSpawn(Player player){
         int spawnX;
         while(!validSpawn) {
@@ -330,15 +329,13 @@ public class Level {
         return random;
     }
 
+
+    @Override
+    public void run() {
+
+    }
+
     private void spawnEnemies(Player player) {
-        int random = randomSpawn(player);
-        spawnX = spawnSpots[0][random];
-        spawnY = spawnSpots[1][random];
-
-        if(waveNr > 1){
-            spawnY -= getPlayerChangeY();
-        }
-
         if (enemyAmount == 0) {
             if (killCounter >= killsRequired) {
                 wave(player);
@@ -346,9 +343,19 @@ public class Level {
                 return;
             }
         } else if (cameraVelocityY == 0) {
+            int random = randomSpawn(player);
+            spawnX = spawnSpots[0][random];
+            spawnY = spawnSpots[1][random];
+
+            if(waveNr > 1){
+                spawnY -= getPlayerChangeY();
+            }
+
             if (enemyAmount <= 20 && enemyAmount > 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_A.getIdleH(), EnemyType.ENEMY_A));
-                enemyAmount--;
+                if(spawnY-EnemyType.ENEMY_A.getRunH() > GameController.TILE_SIZE) {
+                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_A.getIdleH(), EnemyType.ENEMY_A));
+                    enemyAmount--;
+                }
             } else if (enemyAmount <= 40 && enemyAmount > 20 && cameraVelocityY == 0) {
                 enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_B.getIdleH(), EnemyType.ENEMY_B));
                 enemyAmount--;
@@ -493,11 +500,6 @@ public class Level {
     public char[][] loadMap(String fileName) {
         File file = new File(getClass().getResource("/Resources/maps/" + fileName).getPath());
         return MapParser.getArrayFromFile(file);
-    }
-
-    public int loadBullets(String fileName) {
-        File file = new File(getClass().getResource("/Resources/maps/" + fileName).getPath());
-        return MapParser.getBulletAmount(file);
     }
 
     public Chest getChest() {

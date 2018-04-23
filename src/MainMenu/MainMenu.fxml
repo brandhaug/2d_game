@@ -3,6 +3,13 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Label?>
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url('Resources/background/background_main_menu.png');" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainMenu.MainMenuController">
     <children>
         <Button fx:id="infoButton" layoutX="186.0" layoutY="624.0" mnemonicParsing="false" onAction="#openInfo" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/info.png');" styleClass="button" />
@@ -10,7 +17,69 @@
         <Button fx:id="musicButton" layoutX="1184.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleMusic" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/music_on.png');" styleClass="button" />
         <Button fx:id="soundButton" layoutX="1099.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/sound_on.png');" styleClass="button" />
         <Button fx:id="exitButton" layoutX="21.0" layoutY="624.0" mnemonicParsing="false" onAction="#exit" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/exit.png');" styleClass="button" />
-        <Button fx:id="playButton" layoutX="596.0" layoutY="328.0" mnemonicParsing="false" onAction="#openGame" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/play.png');" styleClass="button" />
+        <Button fx:id="playButtonLevel" layoutX="532.0" layoutY="228.0" mnemonicParsing="false" onAction="#openGameLevel" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/classic.png');" styleClass="button" />
+        <Button fx:id="playButtonSurvival" layoutX="532.0" layoutY="328.0" mnemonicParsing="false" onAction="#chooseBullet" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/survival.png');" styleClass="button" />
+        <Label fx:id="killCoinInfo" layoutX="562.0" layoutY="378.0" mnemonicParsing="false" prefHeight="128.0" prefWidth="128.0" style="-fx-text-fill: white; -fx-alignment: center; -fx-font-size: 15;"/>
+        <Pane fx:id="chooseBulletPane" layoutX="351.0" layoutY="178.0" prefHeight="400.0" prefWidth="546.0" styleClass="chooseBulletPane" visible="false">
+            <children>
+                <Text fx:id="chooseBullet" layoutX="100.0" layoutY="74.0" strokeWidth="0.0" text="Choose your bullet" textAlignment="CENTER">
+                    <font>
+                        <Font name="Tahoma" size="40.0" />
+                    </font>
+                </Text>
+
+                <Button fx:id="BULLET_A" onAction="#bulletSelected" layoutX="36.0" layoutY="115.0" mnemonicParsing="false" prefHeight="192.0" prefWidth="128.0" style="-fx-graphic: url('Resources/buttons/bullet_A_Unavailable.png');" styleClass="button" />
+                <Button fx:id="killCoin1" scaleX="0.7" scaleY="0.7" prefHeight="24.0" prefWidth="24.0" layoutX="32.0" layoutY="322.0" mouseTransparent="true" pickOnBounds="true" style="-fx-graphic: url('Resources/coin/killCoin.png');" />
+                <Text fx:id="bullet1Price" layoutX="94.0" layoutY="352.0" strokeWidth="0.0" text="10" style="-fx-font-weight: bold">
+                    <font>
+                        <Font name="Tahoma" size="20.0" />
+                    </font>
+                </Text>
+                <Text fx:id="bullet1Owned" styleClass="availableText" layoutX="51.0" layoutY="352.0" strokeWidth="0.0" text="AVAILABLE" visible="false">
+                    <font>
+                        <Font name="Tahoma" size="20.0" />
+                    </font>
+                </Text>
+
+                <Button fx:id="BULLET_B" onAction="#bulletSelected" layoutX="200.0" layoutY="115.0" mnemonicParsing="false" prefHeight="192.0" prefWidth="128.0" style="-fx-graphic: url('Resources/buttons/bullet_B_Unavailable.png');" styleClass="button" />
+                <Button fx:id="killCoin2" scaleX="0.7" scaleY="0.7" prefHeight="24.0" prefWidth="24.0" layoutX="196.0" layoutY="322.0" mouseTransparent="true" pickOnBounds="true" style="-fx-graphic: url('Resources/coin/killCoin.png');" />
+                <Text fx:id="bullet2Price" layoutX="248.0" layoutY="351.0" strokeWidth="0.0" text="1000" style="-fx-font-weight: bold">
+                    <font>
+                        <Font name="Tahoma" size="20.0" />
+                    </font>
+                </Text>
+                <Text fx:id="bullet2Owned" layoutX="212.0" layoutY="352.0" strokeWidth="0.0" text="AVAILABLE" style="-fx-font-weight: bold; color: #009700;" visible="false">
+                    <font>
+                        <Font name="Tahoma" size="20.0" />
+                    </font>
+                </Text>
+
+                <Button fx:id="BULLET_C" onAction="#bulletSelected" layoutX="364.0" layoutY="115.0" mnemonicParsing="false" prefHeight="192.0" prefWidth="128.0" style="-fx-graphic: url('Resources/buttons/bullet_C_Unavailable.png');" styleClass="button" />
+                <Button fx:id="killCoin3" scaleX="0.7" scaleY="0.7" prefHeight="24.0" prefWidth="24.0" layoutX="360.0" layoutY="322.0" mouseTransparent="true" pickOnBounds="true" style="-fx-graphic: url('Resources/coin/killCoin.png');" />
+                <Text fx:id="bullet3Price" layoutX="413.0" layoutY="351.0" strokeWidth="0.0" text="100000" style="-fx-font-weight: bold">
+                    <font>
+                        <Font name="Tahoma" size="20.0" />
+                    </font>
+                </Text>
+                <Text fx:id="bullet3Owned" layoutX="380.0" layoutY="351.0" strokeWidth="0.0" text="AVAILABLE" style="-fx-font-weight: bold; color: green;" visible="false">
+                    <font>
+                        <Font name="Tahoma" size="20.0" />
+                    </font>
+                </Text>
+            </children>
+        </Pane>
+
+        <Pane fx:id="buyBulletPane" layoutX="341.0" layoutY="178.0" prefHeight="365.0" prefWidth="597.0" styleClass="gameWonPane" visible="false">
+            <children>
+                <Text fx:id="buyBullet" layoutX="48.0" layoutY="74.0" strokeWidth="0.0" text="Do you want to buy this bullet?">
+                    <font>
+                        <Font name="Tahoma" size="35.0" />
+                    </font>
+                </Text>
+                    <Button fx:id="confirm" onAction="#bulletPurchase" layoutX="48.0" layoutY="262.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/retry.png');" styleClass="button" />
+                    <Button fx:id="decline"  layoutX="148.0" layoutY="262.0" mnemonicParsing="false"  prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/retry.png');" styleClass="button" />
+            </children>
+        </Pane>
 
         <!--<Pane fx:id="mapsPane" layoutX="220.0" layoutY="102.0" prefHeight="438.0" prefWidth="841.0" style="-fx-background-color: lightgrey;">-->
             <!--<children>-->

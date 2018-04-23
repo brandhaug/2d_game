@@ -61,7 +61,7 @@ public class Enemy extends GameObject{
         this.width = enemyType.getRunW();
         this.height = enemyType.getRunH();
         this.heightHit = enemyType.getHitH();
-        System.out.println(hp);
+        //System.out.println(hp);
     }
 
     public void setHp(int hp) {
@@ -88,9 +88,12 @@ public class Enemy extends GameObject{
         return heightHit;
     }
 
-
     public int getSpeed() {
         return speed;
+    }
+
+    public int getPoints(){
+        return points;
     }
 
     public void setAlive(boolean isAlive) {

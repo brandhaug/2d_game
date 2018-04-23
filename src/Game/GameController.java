@@ -1,9 +1,12 @@
 package Game;
 
 import Game.GameObjects.Bullet;
+import Game.GameObjects.BulletType;
 import Game.GameObjects.Player;
+import MainMenu.MainMenuController;
 import Game.Levels.Level;
 import Highscores.HighscoreHandler;
+import MainMenu.MainMenuController;
 import Resources.soundEffects.SoundEffects;
 import SceneChanger.SceneChanger;
 import javafx.animation.AnimationTimer;
@@ -23,6 +26,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.time.StopWatch;
+import sun.applet.Main;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -41,6 +45,8 @@ public class GameController {
     private Canvas canvas;
     @FXML
     private ImageView gameWonCoinImage;
+    @FXML
+    private ImageView gameWonKillsImage;
     @FXML
     private ImageView gameWonTimerImage;
     @FXML
@@ -72,13 +78,13 @@ public class GameController {
     @FXML
     private Text gameWonCoins;
     @FXML
+    private Text gameWonKills;
+    @FXML
     private Text killAmount;
     @FXML
     private Text gameWonTime;
     @FXML
     private Text gameWonHighScore;
-    @FXML
-    private Text gameOverText;
     @FXML
     private Text pauseText;
 
@@ -96,7 +102,7 @@ public class GameController {
      */
     public final static int PLAYER_X_MARGIN = 500;
     public final static int PLAYER_Y_MARGIN = 250;
-    private String mapName = "survival";
+    public static String mapName;
 
     /**
      * Classes
@@ -225,19 +231,20 @@ public class GameController {
             if (code == KeyCode.LEFT || code == KeyCode.A) {
                 player.setVelocityX(-10, false);
             }
-            if ((code == KeyCode.UP || code == KeyCode.W) && player.getVelocityY() == 0) {
+            if ((code == KeyCode.UP || code == KeyCode.W) && player.getVelocityY() == 0 && CollisionHandler.playerEnemyCollision) {
                 player.setVelocityY(-35);
                 SoundEffects.JUMP.play();
             }
             if ((code == KeyCode.E)) {
-                if (level.getBulletCounter() > 0) {
+                if (level.getBulletCounter() > 0 && fireRate == 100) {
                     if (player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT ||
                             player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
-                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, 1, 1));
+                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, 1, bulletType));
                     } else {
-                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, 1, -1));
+                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, -1, bulletType));
                     }
                     level.decreaseBulletCounter();
+                    fireRate = 0;
                 }
             }
         }
@@ -266,6 +273,8 @@ public class GameController {
         }
     }
 
+    private byte fireRate = 100;
+    private BulletType bulletType;
     /**
      * Initializes necessary variables and object of the game.
      * Starts an AnimationTimer which keeps the game running by calling on gameLoop method.
@@ -276,13 +285,21 @@ public class GameController {
     public void initialize() {
         sceneChanger = new SceneChanger();
         initializeBackground();
-        level = new Level(mapName);
-        if(mapName == "survival") level.setSurvival(true);
+        //level = new Level(mapName);
+        Thread spawningThread = new Thread(level = new Level(mapName));
+        spawningThread.setDaemon(true);
+        spawningThread.start();
         gc = canvas.getGraphicsContext2D();
         player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY());
         coinAmount = level.getCoins().size();
         collisionHandler = new CollisionHandler(player, level);
         highscoreHandler = new HighscoreHandler();
+
+        if(mapName.contains("survival")){
+            level.setSurvival(true);
+            level.setBulletCounter(10);
+            bulletType = BulletType.valueOf(MainMenuController.selectedBullet);
+        }
 
         final long startNanoTime = System.nanoTime();
         initialized = true;
@@ -297,6 +314,8 @@ public class GameController {
             }
         }.start();
     }
+
+
 
     /**
      * Start the players run sound, if the player is running.
@@ -328,6 +347,8 @@ public class GameController {
         renderGUI();
         checkGameOver();
         checkGameWon();
+        if(fireRate < 100)fireRate += bulletType.getFireRate();
+        System.out.println(fireRate);
     }
 
     /**
@@ -344,6 +365,7 @@ public class GameController {
             gc.fillText("Bullets: " + level.getBulletCounter(), 250, 40);
             gc.fillText("Wave: " + level.getWaveNr(), 350, 40);
             gc.fillText("Enemies killed: " + level.getKillCounter(), 450, 40);
+            gc.fillText("KillCoins earned: " + CollisionHandler.killcoins, 600, 40);
         }
         renderTime();
         drawHealthBar();
@@ -361,6 +383,10 @@ public class GameController {
         }
     }
 
+    public static void setMapName(String map){
+        mapName = map;
+    }
+
     /**
      * Sets game won to true if the player has reached the chest.
      */
@@ -369,10 +395,11 @@ public class GameController {
             if (player.getHp() <= 0) {
                 gameWon = true;
                 gameWonPane.setVisible(true);
+                gameWonKillsImage.setVisible(true);
                 killAmount.setVisible(true);
                 killAmount.setText(killAmount.getText() + String.valueOf(level.getKillCounter()));
                 gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
-                highscoreHandler.addSurvivalPoints(level.getKillCounter());
+                highscoreHandler.addSurvivalInfo(CollisionHandler.killcoins);
 
                 if (highscoreHandler.isNewHighscore(mapName, timeSeconds, level.getKillCounter())) {
                     gameWonHighScore.setText("Congratulations, it's a new high score!");
@@ -385,6 +412,7 @@ public class GameController {
             gameWon = true;
             gameWonPane.setVisible(true);
             gameWonCoins.setVisible(true);
+            gameWonCoinImage.setVisible(true);
             gameWonCoins.setText(gameWonCoins.getText() + String.valueOf(level.getCoinCounter()));
             gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
 

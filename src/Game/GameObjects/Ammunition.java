@@ -1,6 +1,8 @@
 package Game.GameObjects;
 
+import Game.Levels.Level;
 import Game.SpriteSheets.SpriteSheet;
+import MainMenu.MainMenuController;
 
 public class Ammunition extends GameObject {
 
@@ -13,7 +15,7 @@ public class Ammunition extends GameObject {
 
     @Override
     public void initializeSpriteSheets() {
-        spriteSheet = new SpriteSheet("/Resources/bullets/ammo.png", 1, 76, 76);
+        spriteSheet = new SpriteSheet("/Resources/bullets/ammo_"+ MainMenuController.selectedBullet+".png", 1, 76, 76);
         setCurrentSpriteSheet(spriteSheet);
     }
 }

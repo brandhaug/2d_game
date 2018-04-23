@@ -1,18 +1,26 @@
 package MainMenu;
 
+import Game.GameController;
 import SceneChanger.SceneChanger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 import javax.sound.sampled.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 public class MainMenuController {
@@ -28,24 +36,44 @@ public class MainMenuController {
 //    @FXML
 //    private ImageView map4;
     @FXML
-    private Button infoButton;
+    private Button infoButton, exitButton, highscoresButton, playButtonSurvival,
+        playButtonLevel, soundButton, musicButton, BULLET_A, BULLET_B, BULLET_C,
+        createLevelButton, confirm,  decline, killCoin1, killCoin2, killCoin3;
     @FXML
-    private Button exitButton;
+    private Text bullet1Price, bullet2Price;
     @FXML
-    private Button highscoresButton;
+    private Text bullet3Price;
     @FXML
-    private Button playButton;
+    private Text bullet1Owned;
     @FXML
-    private Button soundButton;
+    private Text bullet2Owned;
     @FXML
-    private Button musicButton;
+    private Text bullet3Owned;
     @FXML
-    private Button createLevelButton;
+    private Label killCoinInfo;
+    @FXML
+    private Pane chooseBulletPane;
+    @FXML
+    private Pane buyBulletPane;
+    @FXML
+    private Pane buyBulletPaneConfirm;
 
     private SceneChanger sceneChanger;
     private Preferences preferences = Preferences.userRoot();
     private Clip musicClip;
     private boolean initialized = false;
+    private boolean bullet1Available;
+    private boolean bullet2Available;
+    private boolean bullet3Available;
+    private String bulletPrice;
+    public static String selectedBullet;
+
+    private final static String FILE_PATH_SurvivalInfo = "survivalInfo.txt";
+    Path survivalPath = Paths.get(FILE_PATH_SurvivalInfo);
+    List<String> fileContent = new ArrayList<>(Files.readAllLines(survivalPath, StandardCharsets.UTF_8));
+
+    public MainMenuController() throws IOException {
+    }
 
     @FXML
     protected void exit() {
@@ -88,9 +116,135 @@ public class MainMenuController {
     }
 
     @FXML
-    protected void openGame(ActionEvent event) {
+    protected void openGameLevel(ActionEvent event) {
         musicClip.stop();
+        GameController.setMapName("game");
         sceneChanger.changeScene(event, "../Game/Game.fxml", true);
+    }
+
+    @FXML
+    protected void openGameSurvival(ActionEvent event) {
+        musicClip.stop();
+        GameController.setMapName("survival");
+        sceneChanger.changeScene(event, "../Game/Game.fxml", true);
+    }
+
+    @FXML
+    protected void bulletSelected(ActionEvent event) {
+        int points = getKillCoins();
+
+        if(BULLET_A.isFocused()) {
+            selectedBullet = BULLET_A.getId();
+            if (bullet1Available) {
+                openGameSurvival(event);
+            } else if (points >= Integer.parseInt(bullet1Price.getText())) {
+                buyBulletPane.setVisible(true);
+                bulletPrice = bullet1Price.getText();
+            }
+        }
+        if(BULLET_B.isFocused()) {
+            selectedBullet = BULLET_B.getId();
+            if (bullet2Available) {
+                openGameSurvival(event);
+            } else if (points >= Integer.parseInt(bullet2Price.getText())) {
+                buyBulletPane.setVisible(true);
+                bulletPrice = bullet2Price.getText();
+            }
+        }
+        if(BULLET_C.isFocused()){
+            selectedBullet = BULLET_C.getId();
+            if(bullet3Available){
+                openGameSurvival(event);
+            }else if(points >= Integer.parseInt(bullet3Price.getText())) {
+                buyBulletPane.setVisible(true);
+                bulletPrice = bullet3Price.getText();
+            }
+        }
+    }
+
+    private int getKillCoins(){
+        int points = 0;
+        try {
+            points = Integer.parseInt(fileContent.get(0));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return points;
+    }
+
+    @FXML
+    protected void bulletPurchase(){
+        buyBulletPane.setVisible(true);
+        int points = getKillCoins();
+
+        if(confirm.isFocused()) {
+            try {
+                fileContent.set(0, Integer.toString(points - Integer.parseInt(bulletPrice)));
+                Files.write(survivalPath, fileContent, StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            updateAvailableBullets();
+            buyBulletPane.setVisible(false);
+        }else if(decline.isFocused()) buyBulletPane.setVisible(false);
+    }
+
+    private void updateAvailableBullets(){
+        int position = 0;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH_SurvivalInfo));
+            String line = reader.readLine();
+            while(line != null){
+                if(line.contains(selectedBullet)) {
+                    fileContent.set(position, selectedBullet + "=true");
+                    Files.write(survivalPath, fileContent, StandardCharsets.UTF_8);
+                }
+                    position++;
+                    line = reader.readLine();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        chooseBullet();
+    }
+
+    @FXML
+    protected void chooseBullet() {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH_SurvivalInfo));
+            String line = reader.readLine();
+
+            line = reader.readLine();
+            if(line.contains("true")){
+                BULLET_A.setStyle("-fx-graphic: 'Resources/buttons/bullet_A_Available.png'");
+                bullet1Available = true;
+                bullet1Price.setVisible(false);
+                killCoin1.setVisible(false);
+                bullet1Owned.setVisible(true);
+            }
+
+            line = reader.readLine();
+            if(line.contains("true")) {
+                BULLET_B.setStyle("-fx-graphic: 'Resources/buttons/bullet_B_Available.png'");
+                bullet2Available = true;
+                bullet2Price.setVisible(false);
+                killCoin2.setVisible(false);
+                bullet2Owned.setVisible(true);
+            }
+
+            line = reader.readLine();
+            if(line.contains("true")){
+                BULLET_C.setStyle("-fx-graphic: 'Resources/buttons/bullet_C_Available.png'");
+                bullet3Available = true;
+                bullet3Price.setVisible(false);
+                killCoin3.setVisible(false);
+                bullet3Owned.setVisible(true);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        chooseBulletPane.setVisible(true);
     }
 
     @FXML
@@ -114,6 +268,7 @@ public class MainMenuController {
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();
+        killCoinInfo.setText("KillCoins: " + getKillCoins());
 
         // TODO: Sett styles i FXML eller i stylesheet
 //        mapsPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.3);");

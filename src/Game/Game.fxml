@@ -58,9 +58,14 @@
                   <Font size="30.0" />
                </font>
             </Text>
-            <ImageView fx:id="gameWonCoinImage" fitHeight="82.0" fitWidth="79.0" layoutX="32.0" layoutY="97.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="gameWonCoinImage" fitHeight="82.0" fitWidth="79.0" layoutX="32.0" layoutY="97.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" visible="false">
                <image>
                   <Image url="@../Resources/buttons/coin.png" />
+               </image>
+            </ImageView>
+             <ImageView fx:id="gameWonKillsImage" fitHeight="52.0" fitWidth="49.0" layoutX="50.0" layoutY="110.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" visible="false">
+               <image>
+                  <Image url="@../Resources/buttons/kills.png" />
                </image>
             </ImageView>
             <ImageView fx:id="gameWonTimerImage" fitHeight="49.0" fitWidth="47.0" layoutX="48.0" layoutY="176.0" pickOnBounds="true" preserveRatio="true">

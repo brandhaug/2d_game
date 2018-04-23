@@ -16,15 +16,15 @@ import java.util.stream.Stream;
 public class HighscoreHandler {
 
     private final static String FILE_PATH = "highscore.txt";
-    private final static String FILE_PATH_SurvivalPoints = "survivalPoints.txt";
+    private final static String FILE_PATH_SurvivalInfo = "survivalInfo.txt";
     private final static short NUMBER_OF_PLACEMENTS = 3;
     private Path path;
-    private Path pointsPath;
+    private Path survivalPath;
 
     public HighscoreHandler() {
         createFileIfNotExists();
         path = Paths.get(FILE_PATH);
-        pointsPath = Paths.get(FILE_PATH_SurvivalPoints);
+        survivalPath = Paths.get(FILE_PATH_SurvivalInfo);
     }
 
     public void addToHighscore(String mapName, int time, int coins) {
@@ -65,13 +65,13 @@ public class HighscoreHandler {
         }
     }
 
-    public void addSurvivalPoints(int gamePoints){
+    public void addSurvivalInfo(int gamePoints){
         try {
-            List<String> fileContent = new ArrayList<>(Files.readAllLines(pointsPath, StandardCharsets.UTF_8));
+            List<String> fileContent = new ArrayList<>(Files.readAllLines(survivalPath, StandardCharsets.UTF_8));
             int currentPoints = Integer.parseInt(fileContent.get(0));
             int newPoints = currentPoints + gamePoints;
-            fileContent.set(0, Integer.toString(newPoints));
-            Files.write(pointsPath,fileContent, StandardCharsets.UTF_8);
+            fileContent.set(0,Integer.toString(newPoints));
+            Files.write(survivalPath,fileContent, StandardCharsets.UTF_8);
         }catch (IOException e) {
           e.printStackTrace();
         }
@@ -225,7 +225,7 @@ public class HighscoreHandler {
         try {
             File file = new File(FILE_PATH);
             file.createNewFile();
-            File fileSurvivalScore = new File(FILE_PATH_SurvivalPoints);
+            File fileSurvivalScore = new File(FILE_PATH_SurvivalInfo);
             fileSurvivalScore.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();

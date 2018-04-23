@@ -1,0 +1,4 @@
+10
+BULLET_A=false
+BULLET_B=false
+BULLET_C=false

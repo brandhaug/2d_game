@@ -12,9 +12,8 @@ public class CollisionHandler {
     private Level level;
     private List<Bullet> disposeBullets;
     private List<Enemy> disposeEnemies;
-
-    private boolean bouncing = false;
-    private boolean collisionOn = true;
+    public static boolean playerEnemyCollision = true;
+    static int killcoins;
 
     /**
      * Sets the variables in class from parameters.
@@ -156,7 +155,6 @@ public class CollisionHandler {
         */
         gameObject.setVelocityY(0);
         gameObject.setFirstCollision();
-        bouncing = false;
     }
 
     /**
@@ -200,7 +198,7 @@ public class CollisionHandler {
 
                 handleEnemyBulletCollision(e, iterator);
 
-                if (collisionOn) {
+                if (playerEnemyCollision) {
                     if (e.getBoundsTop().intersects(player.getBoundsBottom())) {
                         handleEnemyTopCollision(e.getDamage(), e, iterator);
                     }
@@ -227,6 +225,7 @@ public class CollisionHandler {
                 disposeBullets.add(bullet);
                 if(enemy.getHp() <= bullet.getDamage()) {
                     enemy.setAlive(false);
+                    killcoins += enemy.getPoints();
                     level.addKillCounter();
                     SoundEffects.ENEMY_DEATH.play();
                     disposeEnemies.add(enemy);
@@ -253,12 +252,12 @@ public class CollisionHandler {
 
 
     private void playerHitTimeOut(){
-        collisionOn = false;
+        playerEnemyCollision = false;
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                collisionOn = true;
+                playerEnemyCollision = true;
                 timer.cancel();
             }
         }, 700);
@@ -268,6 +267,7 @@ public class CollisionHandler {
         playerHit(enemyDamage,false);
         if(enemy.getHp() == 1) {
             level.addKillCounter();
+            killcoins += enemy.getPoints();
             SoundEffects.ENEMY_DEATH.play();
             enemyIterator.remove();
         }else{
