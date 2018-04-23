@@ -3,6 +3,7 @@ package Game.Levels;
 import CreateLevel.MapParser;
 import Game.GameController;
 import Game.GameObjects.*;
+import MainMenu.MainMenuController;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.File;
@@ -392,14 +393,14 @@ public class Level implements Runnable{
             Bullet bullet = iterator.next();
             bullet.setY(bullet.getY() + cameraVelocityY);
             if(bullet.getFacing() > 0){
-                bullet.setVelocityX(50, true);
+                bullet.setVelocityX(BulletType.valueOf(MainMenuController.selectedBullet).getSpeed(), true);
                 bullet.setX(bullet.getX() - player.getVelocityX());
                 if (player.getVelocityX() >= 0) {
                     bullet.setX(bullet.getX() + player.getVelocityX());
                 }
 
             }else{
-                    bullet.setVelocityX(-50, true);
+                    bullet.setVelocityX(-BulletType.valueOf(MainMenuController.selectedBullet).getSpeed(), true);
                     bullet.setX(bullet.getX() - player.getVelocityX());
                 }
             if(bullet.getX() > GameController.CANVAS_WIDTH || bullet.getX() < 0){

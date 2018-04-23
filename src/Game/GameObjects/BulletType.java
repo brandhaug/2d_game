@@ -1,10 +1,10 @@
 package Game.GameObjects;
 
 public enum BulletType {
-    //FileName,hp,speed,damage,points,width,height
-    BULLET_A("A",1, 1, 2, 30,14),
-    BULLET_B("B",2, 2, 5, 30,14),
-    BULLET_C("C",3, 4, 10 ,44,14);
+    //FileName,damage,speed,fireRate,width,height
+    BULLET_A("A",1, 35, 2, 30,14),
+    BULLET_B("B",2, 35, 5, 30,14),
+    BULLET_C("C",3, 50, 10 ,44,14);
 
     private String fileName;
     private int damage;
