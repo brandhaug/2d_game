@@ -20,8 +20,9 @@
         <Button fx:id="playButtonLevel" layoutX="532.0" layoutY="228.0" mnemonicParsing="false" onAction="#openGameLevel" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/classic.png');" styleClass="button" />
         <Button fx:id="playButtonSurvival" layoutX="532.0" layoutY="328.0" mnemonicParsing="false" onAction="#chooseBullet" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/survival.png');" styleClass="button" />
         <Label fx:id="killCoinInfo" layoutX="562.0" layoutY="378.0" mnemonicParsing="false" prefHeight="128.0" prefWidth="128.0" style="-fx-text-fill: white; -fx-alignment: center; -fx-font-size: 15;"/>
-        <Pane fx:id="chooseBulletPane" layoutX="351.0" layoutY="178.0" prefHeight="400.0" prefWidth="546.0" styleClass="chooseBulletPane" visible="false">
+        <Pane fx:id="chooseBulletPane" layoutX="351.0" layoutY="178.0" prefHeight="396.0" prefWidth="546.0" styleClass="chooseBulletPane" visible="false">
             <children>
+                <Button fx:id="exitChooseBulletPane" onAction="#bulletSelected" prefHeight="32.0" prefWidth="32.0" layoutX="490" layoutY="10" mnemonicParsing="false" style="-fx-graphic: url('Resources/buttons/exitPane.png');" styleClass="button" visible="true"/>
                 <Text fx:id="chooseBullet" layoutX="100.0" layoutY="74.0" strokeWidth="0.0" text="Choose your bullet" textAlignment="CENTER">
                     <font>
                         <Font name="Tahoma" size="40.0" />
@@ -69,15 +70,16 @@
             </children>
         </Pane>
 
-        <Pane fx:id="buyBulletPane" layoutX="341.0" layoutY="178.0" prefHeight="365.0" prefWidth="597.0" styleClass="gameWonPane" visible="false">
+        <Pane fx:id="buyBulletPane" layoutX="406.0" layoutY="278.0" prefHeight="200.0" prefWidth="436.0" styleClass="chooseBulletPane" visible="false">
             <children>
-                <Text fx:id="buyBullet" layoutX="48.0" layoutY="74.0" strokeWidth="0.0" text="Do you want to buy this bullet?">
+                <Button fx:id="exitBulletBuyPane" onAction="#bulletPurchase" prefHeight="32.0" prefWidth="32.0" layoutX="380" layoutY="10" mnemonicParsing="false" style="-fx-graphic: url('Resources/buttons/exitPane.png');" styleClass="button" visible="true"/>
+                <Text fx:id="buyBullet" layoutX="86.0" layoutY="74.0" strokeWidth="0.0" text="Do you want to buy this bullet?">
                     <font>
-                        <Font name="Tahoma" size="35.0" />
+                        <Font name="Tahoma" size="20.0" />
                     </font>
                 </Text>
-                    <Button fx:id="confirm" onAction="#bulletPurchase" layoutX="48.0" layoutY="262.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/retry.png');" styleClass="button" />
-                    <Button fx:id="decline"  layoutX="148.0" layoutY="262.0" mnemonicParsing="false"  prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/retry.png');" styleClass="button" />
+                    <Button fx:id="confirm" onAction="#bulletPurchase" layoutX="69.0" layoutY="100.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/yes.png');" styleClass="decisionButton" />
+                    <Button fx:id="decline" onAction="#bulletPurchase" layoutX="233.0" layoutY="100.0" mnemonicParsing="false"  prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/no.png');" styleClass="decisionButton"/>
             </children>
         </Pane>
 

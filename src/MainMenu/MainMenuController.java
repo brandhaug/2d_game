@@ -5,6 +5,9 @@ import SceneChanger.SceneChanger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -38,7 +41,8 @@ public class MainMenuController {
     @FXML
     private Button infoButton, exitButton, highscoresButton, playButtonSurvival,
         playButtonLevel, soundButton, musicButton, BULLET_A, BULLET_B, BULLET_C,
-        createLevelButton, confirm,  decline, killCoin1, killCoin2, killCoin3;
+        createLevelButton, confirm,  decline, killCoin1, killCoin2, killCoin3,
+        exitBulletBuyPane, exitChooseBulletPane;
     @FXML
     private Text bullet1Price, bullet2Price;
     @FXML
@@ -160,6 +164,8 @@ public class MainMenuController {
                 bulletPrice = bullet3Price.getText();
             }
         }
+
+        if(exitChooseBulletPane.isFocused())chooseBulletPane.setVisible(false);
     }
 
     private int getKillCoins(){
@@ -174,7 +180,6 @@ public class MainMenuController {
 
     @FXML
     protected void bulletPurchase(){
-        buyBulletPane.setVisible(true);
         int points = getKillCoins();
 
         if(confirm.isFocused()) {
@@ -186,7 +191,9 @@ public class MainMenuController {
             }
             updateAvailableBullets();
             buyBulletPane.setVisible(false);
-        }else if(decline.isFocused()) buyBulletPane.setVisible(false);
+        }
+
+        if(exitBulletBuyPane.isFocused() || decline.isFocused()) buyBulletPane.setVisible(false);
     }
 
     private void updateAvailableBullets(){
