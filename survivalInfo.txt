@@ -1,4 +1,4 @@
-1010
-BULLET_A=false
-BULLET_B=false
-BULLET_C=false
+111111
+BULLET_A=true
+BULLET_B=true
+BULLET_C=true

@@ -4,3 +4,4 @@ time=207,kills=635
 time=191,kills=548
 map=game
 time=11,coins=13
+time=17,coins=13
