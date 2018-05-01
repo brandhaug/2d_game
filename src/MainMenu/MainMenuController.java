@@ -74,7 +74,7 @@ public class MainMenuController {
 
     private final static String FILE_PATH_SurvivalInfo = "survivalInfo.txt";
     Path survivalPath = Paths.get(FILE_PATH_SurvivalInfo);
-    List<String> fileContent = new ArrayList<>(Files.readAllLines(survivalPath, StandardCharsets.UTF_8));
+    List<String> fileContent = new ArrayList<>(Files.readAllLines(survivalPath, StandardCharsets.ISO_8859_1));
 
     public MainMenuController() throws IOException {
     }
@@ -185,7 +185,7 @@ public class MainMenuController {
         if(confirm.isFocused()) {
             try {
                 fileContent.set(0, Integer.toString(points - Integer.parseInt(bulletPrice)));
-                Files.write(survivalPath, fileContent, StandardCharsets.UTF_8);
+                Files.write(survivalPath, fileContent, StandardCharsets.ISO_8859_1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -204,7 +204,7 @@ public class MainMenuController {
             while(line != null){
                 if(line.contains(selectedBullet)) {
                     fileContent.set(position, selectedBullet + "=true");
-                    Files.write(survivalPath, fileContent, StandardCharsets.UTF_8);
+                    Files.write(survivalPath, fileContent, StandardCharsets.ISO_8859_1);
                 }
                     position++;
                     line = reader.readLine();

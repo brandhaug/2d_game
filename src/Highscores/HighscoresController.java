@@ -3,11 +3,10 @@ package Highscores;
 import SceneChanger.SceneChanger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
@@ -19,7 +18,7 @@ public class HighscoresController {
     private TreeView<String> treeView;
 
     private SceneChanger sceneChanger;
-    private HighscoreHandler highscoreHandler;
+    private HighScoreHandler highScoreHandler;
 
     private Image firstPlace = new Image("/Resources/buttons/gold.png");
     private Image secondPlace = new Image("/Resources/buttons/silver.png");
@@ -30,8 +29,14 @@ public class HighscoresController {
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
+    @FXML
+    private void reloadHighScoresScene() {
+        sceneChanger.changeScene((Stage) mainMenuButton.getScene().getWindow(), "../Highscores/Highscores.fxml", true);
+    }
+
     private void setTreeView() {
-        ArrayList<String> list = highscoreHandler.getArrayListFromFile();
+        highScoreHandler.decryptFile();
+        ArrayList<String> list = highScoreHandler.getArrayListFromFile();
 
         // Set root
         TreeItem<String> root = new TreeItem<>();
@@ -51,8 +56,8 @@ public class HighscoresController {
                 String info;
                 if (map != null) {
                     if(map.getValue().matches(".*survival.*")) survival = true;
-                    int time = highscoreHandler.getTimeFromLine(item);
-                    int objectAmount = highscoreHandler.getObjectAmountFromLine(item);
+                    int time = highScoreHandler.getTimeFromLine(item);
+                    int objectAmount = highScoreHandler.getObjectAmountFromLine(item);
                     if (survival) {
                         info = "Time: " + time + "\n" + "Kills: " + objectAmount;
                     }else {
@@ -65,24 +70,11 @@ public class HighscoresController {
             }
         }
 
-        // Map 1
-        /*TreeItem<String> map1 = makeBranch("map=Game", root);
-        makeBranch("time=10,coins=20", map1);
-        makeBranch("time=10,coins=20", map1);
-        makeBranch("time=10,coins=20", map1);
-
-        // Map 1
-        TreeItem<String> map2 = makeBranch("map=Game", root);
-        makeBranch("time=10,coins=20", map2);
-        makeBranch("time=10,coins=20", map2);
-        makeBranch("time=10,coins=20", map2);*/
-
-
         treeView.setRoot(root);
         treeView.setShowRoot(false);
-        treeView.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
-            System.out.println(newValue.getValue());
-        });
+        treeView.getSelectionModel().selectedItemProperty()
+                .addListener((v, oldValue, newValue) -> System.out.println(newValue.getValue()));
+        highScoreHandler.encryptFile();
     }
 
     private TreeItem<String> makeBranch(String name, TreeItem<String> parent) {
@@ -121,9 +113,22 @@ public class HighscoresController {
 
     @FXML
     public void initialize() {
-        highscoreHandler = new HighscoreHandler();
+        highScoreHandler = new HighScoreHandler();
         sceneChanger = new SceneChanger();
         setTreeView();
     }
 
+    @FXML
+    public void resetHighScores() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("High scores");
+        alert.setHeaderText("You are trying to reset all high scores.\nThis can not be undone!");
+        alert.setContentText("Are you sure?");
+
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.OK){
+            highScoreHandler.resetHighScores();
+            reloadHighScoresScene();
+        }
+    }
 }
