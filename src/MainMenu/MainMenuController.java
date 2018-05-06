@@ -1,6 +1,7 @@
 package MainMenu;
 
 import Game.GameController;
+import Highscores.HighScoreHandler;
 import SceneChanger.SceneChanger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -28,7 +29,7 @@ import java.util.prefs.Preferences;
 
 public class MainMenuController {
 
-//    @FXML
+    //    @FXML
 //    private Pane mapsPane;
 //    @FXML
 //    private ImageView map1;
@@ -40,9 +41,9 @@ public class MainMenuController {
 //    private ImageView map4;
     @FXML
     private Button infoButton, exitButton, highscoresButton, playButtonSurvival,
-        playButtonLevel, soundButton, musicButton, BULLET_A, BULLET_B, BULLET_C,
-        createLevelButton, confirm,  decline, killCoin1, killCoin2, killCoin3,
-        exitBulletBuyPane, exitChooseBulletPane;
+            playButtonLevel, soundButton, musicButton, BULLET_A, BULLET_B, BULLET_C,
+            createLevelButton, confirm, decline, killCoin1, killCoin2, killCoin3,
+            exitBulletBuyPane, exitChooseBulletPane;
     @FXML
     private Text bullet1Price, bullet2Price;
     @FXML
@@ -71,12 +72,14 @@ public class MainMenuController {
     private boolean bullet3Available;
     private String bulletPrice;
     public static String selectedBullet;
+    private HighScoreHandler highScoreHandler;
 
-    private final static String FILE_PATH_SurvivalInfo = "survivalInfo.txt";
-    Path survivalPath = Paths.get(FILE_PATH_SurvivalInfo);
-    List<String> fileContent = new ArrayList<>(Files.readAllLines(survivalPath, StandardCharsets.ISO_8859_1));
+//    private final static String FILE_PATH_SurvivalInfo = "survivalInfo.txt";
+//    Path survivalPath = Paths.get(FILE_PATH_SurvivalInfo);
+//    List<String> fileContent = new ArrayList<>(Files.readAllLines(survivalPath, StandardCharsets.ISO_8859_1));
 
     public MainMenuController() throws IOException {
+        highScoreHandler = new HighScoreHandler();
     }
 
     @FXML
@@ -137,7 +140,7 @@ public class MainMenuController {
     protected void bulletSelected(ActionEvent event) {
         int points = getKillCoins();
 
-        if(BULLET_A.isFocused()) {
+        if (BULLET_A.isFocused()) {
             selectedBullet = BULLET_A.getId();
             if (bullet1Available) {
                 openGameSurvival(event);
@@ -146,7 +149,7 @@ public class MainMenuController {
                 bulletPrice = bullet1Price.getText();
             }
         }
-        if(BULLET_B.isFocused()) {
+        if (BULLET_B.isFocused()) {
             selectedBullet = BULLET_B.getId();
             if (bullet2Available) {
                 openGameSurvival(event);
@@ -155,37 +158,44 @@ public class MainMenuController {
                 bulletPrice = bullet2Price.getText();
             }
         }
-        if(BULLET_C.isFocused()){
+        if (BULLET_C.isFocused()) {
             selectedBullet = BULLET_C.getId();
-            if(bullet3Available){
+            if (bullet3Available) {
                 openGameSurvival(event);
-            }else if(points >= Integer.parseInt(bullet3Price.getText())) {
+            } else if (points >= Integer.parseInt(bullet3Price.getText())) {
                 buyBulletPane.setVisible(true);
                 bulletPrice = bullet3Price.getText();
             }
         }
 
-        if(exitChooseBulletPane.isFocused())chooseBulletPane.setVisible(false);
+        if (exitChooseBulletPane.isFocused()) chooseBulletPane.setVisible(false);
     }
 
-    private int getKillCoins(){
+    private ArrayList<String> getSurvivalFileContent() {
+        highScoreHandler.decryptFile(highScoreHandler.getSurvivalPath());
+        ArrayList<String> arrayList = highScoreHandler.getArrayListFromFile(highScoreHandler.getSurvivalPath());
+        highScoreHandler.encryptFile(highScoreHandler.getSurvivalPath());
+        return arrayList;
+    }
+
+    private int getKillCoins() {
         int points = 0;
         try {
-            points = Integer.parseInt(fileContent.get(0));
-        }catch (Exception e){
+            points = Integer.parseInt(getSurvivalFileContent().get(0));
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return points;
     }
 
     @FXML
-    protected void bulletPurchase(){
+    protected void bulletPurchase() {
         int points = getKillCoins();
 
-        if(confirm.isFocused()) {
+        if (confirm.isFocused()) {
             try {
-                fileContent.set(0, Integer.toString(points - Integer.parseInt(bulletPrice)));
-                Files.write(survivalPath, fileContent, StandardCharsets.ISO_8859_1);
+                getSurvivalFileContent().set(0, Integer.toString(points - Integer.parseInt(bulletPrice)));
+                Files.write(highScoreHandler.getSurvivalPath(), getSurvivalFileContent(), StandardCharsets.ISO_8859_1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -193,23 +203,23 @@ public class MainMenuController {
             buyBulletPane.setVisible(false);
         }
 
-        if(exitBulletBuyPane.isFocused() || decline.isFocused()) buyBulletPane.setVisible(false);
+        if (exitBulletBuyPane.isFocused() || decline.isFocused()) buyBulletPane.setVisible(false);
     }
 
-    private void updateAvailableBullets(){
+    private void updateAvailableBullets() {
         int position = 0;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH_SurvivalInfo));
+            BufferedReader reader = new BufferedReader(new FileReader("survivalInfo.txt"));
             String line = reader.readLine();
-            while(line != null){
-                if(line.contains(selectedBullet)) {
-                    fileContent.set(position, selectedBullet + "=true");
-                    Files.write(survivalPath, fileContent, StandardCharsets.ISO_8859_1);
+            while (line != null) {
+                if (line.contains(selectedBullet)) {
+                    getSurvivalFileContent().set(position, selectedBullet + "=true");
+                    Files.write(highScoreHandler.getSurvivalPath(), getSurvivalFileContent(), StandardCharsets.ISO_8859_1);
                 }
-                    position++;
-                    line = reader.readLine();
+                position++;
+                line = reader.readLine();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         chooseBullet();
@@ -218,11 +228,12 @@ public class MainMenuController {
     @FXML
     protected void chooseBullet() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH_SurvivalInfo));
+            highScoreHandler.decryptFile(highScoreHandler.getSurvivalPath());
+            BufferedReader reader = new BufferedReader(new FileReader("survivalInfo.txt"));
             String line = reader.readLine();
 
             line = reader.readLine();
-            if(line.contains("true")){
+            if (line.contains("true")) {
                 BULLET_A.setStyle("-fx-graphic: 'Resources/buttons/bullet_A_Available.png'");
                 bullet1Available = true;
                 bullet1Price.setVisible(false);
@@ -231,7 +242,7 @@ public class MainMenuController {
             }
 
             line = reader.readLine();
-            if(line.contains("true")) {
+            if (line.contains("true")) {
                 BULLET_B.setStyle("-fx-graphic: 'Resources/buttons/bullet_B_Available.png'");
                 bullet2Available = true;
                 bullet2Price.setVisible(false);
@@ -240,15 +251,16 @@ public class MainMenuController {
             }
 
             line = reader.readLine();
-            if(line.contains("true")){
+            if (line.contains("true")) {
                 BULLET_C.setStyle("-fx-graphic: 'Resources/buttons/bullet_C_Available.png'");
                 bullet3Available = true;
                 bullet3Price.setVisible(false);
                 killCoin3.setVisible(false);
                 bullet3Owned.setVisible(true);
             }
+            highScoreHandler.encryptFile(highScoreHandler.getSurvivalPath());
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         chooseBulletPane.setVisible(true);

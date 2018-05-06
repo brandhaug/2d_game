@@ -35,8 +35,8 @@ public class HighscoresController {
     }
 
     private void setTreeView() {
-        highScoreHandler.decryptFile();
-        ArrayList<String> list = highScoreHandler.getArrayListFromFile();
+        highScoreHandler.decryptFile(highScoreHandler.getFilePath());
+        ArrayList<String> list = highScoreHandler.getArrayListFromFile(highScoreHandler.getFilePath());
 
         // Set root
         TreeItem<String> root = new TreeItem<>();
@@ -52,17 +52,17 @@ public class HighscoresController {
                 int position = item.indexOf("=");
                 String mapName = item.substring(position + 1, item.length());
                 map = makeBranch(mapName, root);
-                } else {
+            } else {
                 String info;
                 if (map != null) {
-                    if(map.getValue().matches(".*survival.*")) survival = true;
+                    if (map.getValue().matches(".*survival.*")) survival = true;
                     int time = highScoreHandler.getTimeFromLine(item);
                     int objectAmount = highScoreHandler.getObjectAmountFromLine(item);
                     if (survival) {
                         info = "Time: " + time + "\n" + "Kills: " + objectAmount;
-                    }else {
-                    info = "Time: " + time + "\n" + "Coins: " + objectAmount;
-                }
+                    } else {
+                        info = "Time: " + time + "\n" + "Coins: " + objectAmount;
+                    }
                     survival = false;
                     makeBranch(info, map, placement);
                     placement++;
@@ -74,7 +74,7 @@ public class HighscoresController {
         treeView.setShowRoot(false);
         treeView.getSelectionModel().selectedItemProperty()
                 .addListener((v, oldValue, newValue) -> System.out.println(newValue.getValue()));
-        highScoreHandler.encryptFile();
+        highScoreHandler.encryptFile(highScoreHandler.getFilePath());
     }
 
     private TreeItem<String> makeBranch(String name, TreeItem<String> parent) {
@@ -126,7 +126,7 @@ public class HighscoresController {
         alert.setContentText("Are you sure?");
 
         alert.showAndWait();
-        if (alert.getResult() == ButtonType.OK){
+        if (alert.getResult() == ButtonType.OK) {
             highScoreHandler.resetHighScores();
             reloadHighScoresScene();
         }
