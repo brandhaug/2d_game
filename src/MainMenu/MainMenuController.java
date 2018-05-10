@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
@@ -122,14 +123,14 @@ public class MainMenuController {
     @FXML
     protected void openGameLevel(ActionEvent event) {
         musicClip.stop();
-        GameController.setMapName("game");
-        sceneChanger.changeScene(event, "../Game/Game.fxml", true);
+//        GameController.setMapName("game");
+        sceneChanger.changeScene(event, "../ClassicLevels/ClassicLevels.fxml", true);
     }
 
     @FXML
     protected void openGameSurvival(ActionEvent event) {
         musicClip.stop();
-        GameController.setMapName("survival");
+        GameController.setMapName("survivalfolder/survival");
         sceneChanger.changeScene(event, "../Game/Game.fxml", true);
     }
 

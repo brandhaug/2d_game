@@ -1,6 +1,5 @@
 package CreateLevel;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -192,7 +191,7 @@ public class CreateLevelController {
     private FileChooser createMapFileChooser(String title) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
-        fileChooser.setInitialDirectory(new File("src/Resources/maps"));
+        fileChooser.setInitialDirectory(new File("src/Resources/maps/classic/custom"));
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser;

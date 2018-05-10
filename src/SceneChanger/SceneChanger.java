@@ -36,21 +36,4 @@ public class SceneChanger {
     public void changeScene(Stage stage, String path, boolean loadStyleSheet) {
         changeScene(path, loadStyleSheet, stage);
     }
-
-    public void startNewStage(String path, boolean loadStyleSheet) {
-        Stage stage = new Stage();
-
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(path));
-
-            if (loadStyleSheet) {
-                root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
-            }
-
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
