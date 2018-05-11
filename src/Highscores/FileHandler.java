@@ -1,6 +1,10 @@
 package Highscores;
 
 
+import ClassicLevels.ClassicLevelsController;
+import CreateLevel.MapParser;
+import Game.GameController;
+
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
@@ -17,19 +21,33 @@ import java.util.stream.Stream;
 /**
  * Created by stgr99 on 07.03.2018.
  */
-public class HighScoreHandler {
+public class FileHandler {
 
-    private final static String FILE_PATH = "highscore.txt";
+    private final static String HIGH_SCORE_PATH = "highscore.txt";
     private final static String KEY_PATH = "key.txt";
-    private final static String FILE_PATH_SurvivalInfo = "survivalInfo.txt";
+    private final static String FILE_PATH_SURVIVAL = "survivalInfo.txt";
+    private final static String PROGRESS_PATH = "progress.txt";
     private final static short NUMBER_OF_PLACEMENTS = 3;
-    private Path filePath;
+    private Path highScorePath;
     private Path keyPath;
     private Path survivalPath;
+    private Path progressPath;
     private SecretKey secretKey;
     private Cipher cipher;
 
-    public HighScoreHandler() {
+    /**
+     * Singleton
+     */
+    private static FileHandler instance;
+
+    public static FileHandler getInstance() {
+        if (instance == null) {
+            instance = new FileHandler();
+        }
+        return instance;
+    }
+
+    private FileHandler() {
         try {
             secretKey = KeyGenerator.getInstance("DES").generateKey();
             cipher = Cipher.getInstance("DES");
@@ -37,14 +55,15 @@ public class HighScoreHandler {
             e.printStackTrace();
         }
 
-        filePath = Paths.get(FILE_PATH);
+        highScorePath = Paths.get(HIGH_SCORE_PATH);
         keyPath = Paths.get(KEY_PATH);
-        survivalPath = Paths.get(FILE_PATH_SurvivalInfo);
+        survivalPath = Paths.get(FILE_PATH_SURVIVAL);
+        progressPath = Paths.get(PROGRESS_PATH);
         createFilesIfNotExists();
     }
 
     public void addToHighScore(String mapName, int time, int coins) {
-        decryptFile(filePath);
+        decryptFile(highScorePath);
 
         if (!mapExistsInFile(mapName)) {
             addFirstPlacement(mapName, time, coins);
@@ -53,12 +72,12 @@ public class HighScoreHandler {
             deleteOverload();
         }
 
-        encryptFile(filePath);
+        encryptFile(highScorePath);
     }
 
     private void deleteOverload() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
+            BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_PATH));
             int position = 0;
             String line = reader.readLine();
 
@@ -72,9 +91,9 @@ public class HighScoreHandler {
                     line = reader.readLine();
                     position++;
                     if (line != null && !line.contains("map=")) {
-                        List<String> lines = Files.readAllLines(filePath, StandardCharsets.ISO_8859_1);
+                        List<String> lines = Files.readAllLines(highScorePath, StandardCharsets.ISO_8859_1);
                         lines.remove(position);
-                        Files.write(filePath, lines, StandardCharsets.ISO_8859_1);
+                        Files.write(highScorePath, lines, StandardCharsets.ISO_8859_1);
                         break;
                     }
                 } else {
@@ -102,14 +121,14 @@ public class HighScoreHandler {
 
     private void addNewPlacement(String mapName, int time, int objectAmount) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
+            BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_PATH));
             int position = 0;
             String line = reader.readLine();
 
             while (line != null) {
                 if (line.replaceAll("map=", "").equals(mapName)) {
 
-                    List<String> lines = Files.readAllLines(filePath, StandardCharsets.ISO_8859_1);
+                    List<String> lines = Files.readAllLines(highScorePath, StandardCharsets.ISO_8859_1);
 
                     for (int i = 0; i < NUMBER_OF_PLACEMENTS; i++) {
                         line = reader.readLine();
@@ -121,7 +140,7 @@ public class HighScoreHandler {
                             } else {
                                 lines.add(position, "time=" + time + ",coins=" + objectAmount);
                             }
-                            Files.write(filePath, lines, StandardCharsets.ISO_8859_1);
+                            Files.write(highScorePath, lines, StandardCharsets.ISO_8859_1);
                             break;
                         } else {
                             int placementObjects = getObjectAmountFromLine(line);
@@ -129,24 +148,24 @@ public class HighScoreHandler {
                             if (mapName.matches(".*survival.*")) {
                                 if (objectAmount > placementObjects) {
                                     lines.add(position, "time=" + time + ",kills=" + objectAmount);
-                                    Files.write(filePath, lines, StandardCharsets.ISO_8859_1);
+                                    Files.write(highScorePath, lines, StandardCharsets.ISO_8859_1);
                                     break;
                                 } else if (objectAmount == placementObjects) {
                                     if (time < placementTime) {
                                         lines.add(position, "time=" + time + ",kills=" + objectAmount);
-                                        Files.write(filePath, lines, StandardCharsets.ISO_8859_1);
+                                        Files.write(highScorePath, lines, StandardCharsets.ISO_8859_1);
                                         break;
                                     }
                                 }
                             } else {
                                 if (time < placementTime) {
                                     lines.add(position, "time=" + time + ",coins=" + objectAmount);
-                                    Files.write(filePath, lines, StandardCharsets.ISO_8859_1);
+                                    Files.write(highScorePath, lines, StandardCharsets.ISO_8859_1);
                                     break;
                                 } else if (time == placementTime) {
                                     if (objectAmount > placementObjects) {
                                         lines.add(position - 1, "time=" + time + ",coins=" + objectAmount);
-                                        Files.write(filePath, lines, StandardCharsets.ISO_8859_1);
+                                        Files.write(highScorePath, lines, StandardCharsets.ISO_8859_1);
                                         break;
                                     }
                                 }
@@ -165,7 +184,7 @@ public class HighScoreHandler {
 
     private void addFirstPlacement(String mapName, int time, int objects) {
         try {
-            List<String> lines = Files.readAllLines(filePath, StandardCharsets.ISO_8859_1);
+            List<String> lines = Files.readAllLines(highScorePath, StandardCharsets.ISO_8859_1);
             lines.add(lines.size(), "map=" + mapName);
 
             if (mapName.matches(".*survival.*")) {
@@ -174,24 +193,24 @@ public class HighScoreHandler {
                 lines.add(lines.size(), "time=" + time + ",coins=" + objects);
             }
 
-            Files.write(filePath, lines, StandardCharsets.ISO_8859_1);
+            Files.write(highScorePath, lines, StandardCharsets.ISO_8859_1);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public boolean isNewHighScore(String mapName, int time, int coins) {
-        decryptFile(filePath);
+        decryptFile(highScorePath);
         if (!mapExistsInFile(mapName) || isBetterPlacement(mapName, time, coins)) {
             return true;
         }
-        encryptFile(filePath);
+        encryptFile(highScorePath);
         return false;
     }
 
     private boolean isBetterPlacement(String mapName, int time, int objects) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH));
+            BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_PATH));
             String line = reader.readLine();
 
             while (line != null) {
@@ -234,7 +253,7 @@ public class HighScoreHandler {
     }
 
     private boolean mapExistsInFile(String mapName) {
-        try (Stream<String> lines = Files.lines(filePath, StandardCharsets.ISO_8859_1)) {
+        try (Stream<String> lines = Files.lines(highScorePath, StandardCharsets.ISO_8859_1)) {
             return lines.anyMatch(l -> l.replaceAll("map=", "").equals(mapName));
         } catch (IOException e) {
             e.printStackTrace();
@@ -244,14 +263,25 @@ public class HighScoreHandler {
 
     private void createFilesIfNotExists() {
         try {
-            File file = new File(FILE_PATH);
+            File file = new File(HIGH_SCORE_PATH);
             boolean fileCreated = file.createNewFile();
 
             File keyFile = new File(KEY_PATH);
             boolean keyFileCreated = keyFile.createNewFile();
 
-            File fileSurvivalScore = new File(FILE_PATH_SurvivalInfo);
+            File fileSurvivalScore = new File(FILE_PATH_SURVIVAL);
             boolean survivalFileCreated = fileSurvivalScore.createNewFile();
+
+            File progressFile = new File(PROGRESS_PATH);
+            boolean progressFileCreated = progressFile.createNewFile();
+
+            if (progressFileCreated) {
+                setProgressFileContent();
+                if (!keyFileCreated) {
+                    getSecretKeyFromFile();
+                }
+                encryptFile(progressPath);
+            }
 
             if (keyFileCreated) {
                 writeBytesToFile(keyPath.toFile(), secretKey.getEncoded());
@@ -263,7 +293,7 @@ public class HighScoreHandler {
                 if (!keyFileCreated) {
                     getSecretKeyFromFile();
                 }
-                encryptFile(filePath);
+                encryptFile(highScorePath);
             }
 
             if (survivalFileCreated) {
@@ -345,10 +375,12 @@ public class HighScoreHandler {
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             byte[] textDecrypted = cipher.doFinal(readBytesFromFile(filePath.toFile()));
 
-            if (filePath == this.filePath) {
-                writeDecryptedTextToFile(FILE_PATH, new String(textDecrypted));
+            if (filePath == this.highScorePath) {
+                writeDecryptedTextToFile(HIGH_SCORE_PATH, new String(textDecrypted));
             } else if (filePath == this.survivalPath) {
-                writeDecryptedTextToFile(FILE_PATH_SurvivalInfo, new String(textDecrypted));
+                writeDecryptedTextToFile(FILE_PATH_SURVIVAL, new String(textDecrypted));
+            } else if (filePath == this.progressPath) {
+                writeDecryptedTextToFile(PROGRESS_PATH, new String(textDecrypted));
             }
 
         } catch (InvalidKeyException | IOException e) {
@@ -419,7 +451,7 @@ public class HighScoreHandler {
 
     void resetHighScores() {
         try {
-            Files.delete(filePath);
+            Files.delete(highScorePath);
             Files.delete(keyPath);
             createFilesIfNotExists();
         } catch (IOException e) {
@@ -427,8 +459,50 @@ public class HighScoreHandler {
         }
     }
 
-    Path getFilePath() {
-        return filePath;
+    public void setProgress() {
+        try {
+            decryptFile(progressPath);
+            List<String> lines = Files.readAllLines(progressPath, StandardCharsets.ISO_8859_1);
+            int progress = Integer.parseInt(lines.get(0));
+
+            File map = new File("src/Resources/maps/" + GameController.mapName);
+            int levelProgress = MapParser.getValueFromFile(map, "level");
+
+            if (levelProgress == progress) {
+                lines.add(0, Integer.toString(progress + 1));
+                Files.write(progressPath, lines, StandardCharsets.ISO_8859_1);
+            }
+            encryptFile(progressPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getProgress() {
+        try {
+            decryptFile(progressPath);
+            List<String> lines = Files.readAllLines(progressPath, StandardCharsets.ISO_8859_1);
+            encryptFile(progressPath);
+            return Integer.parseInt(lines.get(0));
+        } catch (Exception e) {
+            ClassicLevelsController.setErrorLabel("Invalid progress file - Progress set to 1");
+            return 1;
+        }
+    }
+
+
+    private void setProgressFileContent() {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get("progress.txt"), StandardCharsets.ISO_8859_1);
+            lines.add(lines.size(), "1");
+            Files.write(Paths.get("progress.txt"), lines, StandardCharsets.ISO_8859_1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    Path getHighScorePath() {
+        return highScorePath;
     }
 
     public Path getSurvivalPath() {

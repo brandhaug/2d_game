@@ -6,7 +6,7 @@ import Game.GameObjects.BulletType;
 import Game.GameObjects.Player;
 import MainMenu.MainMenuController;
 import Game.Levels.Level;
-import Highscores.HighScoreHandler;
+import Highscores.FileHandler;
 import Resources.soundEffects.SoundEffects;
 import SceneChanger.SceneChanger;
 import javafx.animation.AnimationTimer;
@@ -30,8 +30,11 @@ import org.apache.commons.lang3.time.StopWatch;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import static Resources.soundEffects.SoundEffects.mute;
@@ -111,7 +114,7 @@ public class GameController {
     private Player player;
     private CollisionHandler collisionHandler;
     private SceneChanger sceneChanger;
-    private HighScoreHandler highScoreHandler;
+    private FileHandler fileHandler;
     private Preferences preferences = Preferences.userRoot();
 
     /**
@@ -294,7 +297,7 @@ public class GameController {
         player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY(), "A");
         coinAmount = level.getCoins().size();
         collisionHandler = new CollisionHandler(player, level);
-        highScoreHandler = new HighScoreHandler();
+        fileHandler = FileHandler.getInstance();
 
         if (mapName.contains("survival")) {
             level.setSurvival(true);
@@ -400,11 +403,11 @@ public class GameController {
                 killAmount.setVisible(true);
                 killAmount.setText(killAmount.getText() + String.valueOf(level.getKillCounter()));
                 gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
-                highScoreHandler.addSurvivalInfo(CollisionHandler.killcoins);
+                fileHandler.addSurvivalInfo(CollisionHandler.killcoins);
 
-                if (highScoreHandler.isNewHighScore(mapName, timeSeconds, level.getKillCounter())) {
+                if (fileHandler.isNewHighScore(mapName, timeSeconds, level.getKillCounter())) {
                     gameWonHighScore.setText("Congratulations, it's a new high score!");
-                    highScoreHandler.addToHighScore(mapName, timeSeconds, level.getKillCounter());
+                    fileHandler.addToHighScore(mapName, timeSeconds, level.getKillCounter());
                 }
                 canvas.setOpacity(0.7f);
             }
@@ -416,43 +419,11 @@ public class GameController {
             gameWonCoinImage.setVisible(true);
             gameWonCoins.setText(gameWonCoins.getText() + String.valueOf(level.getCoinCounter()));
             gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
+            fileHandler.setProgress();
 
-            BufferedReader br = null;
-            int progress = 1;
-
-            try {
-                br = new BufferedReader(new FileReader("progress.txt"));
-
-                try {
-                    progress = Integer.parseInt(br.readLine());
-                } catch (Exception e) {
-
-                }
-
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            File map = new File("src/Resources/maps/" + mapName);
-            int levelProgress = MapParser.getValueFromFile(map, "level");
-
-            if (levelProgress == progress) {
-                File progressFile = new File("progress.txt");
-                FileOutputStream fileStream = null;
-                try {
-                    fileStream = new FileOutputStream(progressFile, false);
-                    byte[] myBytes = BigInteger.valueOf(levelProgress + 1).toByteArray();
-                    fileStream.write(myBytes);
-                    fileStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (highScoreHandler.isNewHighScore(mapName, timeSeconds, level.getCoinCounter())) {
+            if (fileHandler.isNewHighScore(mapName, timeSeconds, level.getCoinCounter())) {
                 gameWonHighScore.setText("Congratulations, it's a new high score!");
-                highScoreHandler.addToHighScore(mapName, timeSeconds, level.getCoinCounter());
+                fileHandler.addToHighScore(mapName, timeSeconds, level.getCoinCounter());
             }
             canvas.setOpacity(0.7f);
         }

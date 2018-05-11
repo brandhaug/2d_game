@@ -2,6 +2,7 @@ package ClassicLevels;
 
 import CreateLevel.MapParser;
 import Game.GameController;
+import Highscores.FileHandler;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import SceneChanger.SceneChanger;
@@ -13,6 +14,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class ClassicLevelsController {
 
@@ -20,9 +26,10 @@ public class ClassicLevelsController {
     private TableView<LevelColumn> standardLevelList, customLevelList;
 
     @FXML
-    private Label errorLabel;
+    private static Label errorLabel;
 
     private SceneChanger sceneChanger;
+    private FileHandler fileHandler;
     private int progress;
 
 
@@ -34,18 +41,18 @@ public class ClassicLevelsController {
 
     private void openGameLevel(String mapName) {
         GameController.setMapName(mapName);
-        sceneChanger.changeScene((Stage) errorLabel.getScene().getWindow(), "../Game/Game.fxml", true);
+        sceneChanger.changeScene((Stage) standardLevelList.getScene().getWindow(), "../Game/Game.fxml", true);
+    }
+
+    public static void setErrorLabel(String error) {
+        errorLabel.setText(error);
     }
 
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();
-
-        try {
-            progress = getProgress();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        fileHandler = FileHandler.getInstance();
+        progress = fileHandler.getProgress();
 
         addLevelsToList(standardLevelList, "standard");
         addLevelsToList(customLevelList, "custom");
@@ -90,22 +97,15 @@ public class ClassicLevelsController {
     }
 
     private int getProgress() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("progress.txt"));
-        String progressString = br.readLine();
-        br.close();
-
-        if (progressString.length() == 0) {
-            System.out.println("No progress found in file");
-        }
-
-        int progressInt = 1;
+        Path path = Paths.get("progress.txt");
+        List<String> lines = Files.readAllLines(path, StandardCharsets.ISO_8859_1);
 
         try {
-            progressInt = Integer.parseInt(progressString);
+            return Integer.parseInt(lines.get(0));
         } catch (Exception e){
             errorLabel.setText("Invalid progress file - Progress set to 1");
         }
-        return progressInt;
+        return 1;
     }
 
     public void standardTableClicked(MouseEvent event) {

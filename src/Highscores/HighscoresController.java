@@ -18,7 +18,7 @@ public class HighscoresController {
     private TreeView<String> treeView;
 
     private SceneChanger sceneChanger;
-    private HighScoreHandler highScoreHandler;
+    private FileHandler fileHandler;
 
     private Image firstPlace = new Image("/Resources/buttons/gold.png");
     private Image secondPlace = new Image("/Resources/buttons/silver.png");
@@ -35,8 +35,8 @@ public class HighscoresController {
     }
 
     private void setTreeView() {
-        highScoreHandler.decryptFile(highScoreHandler.getFilePath());
-        ArrayList<String> list = highScoreHandler.getArrayListFromFile(highScoreHandler.getFilePath());
+        fileHandler.decryptFile(fileHandler.getHighScorePath());
+        ArrayList<String> list = fileHandler.getArrayListFromFile(fileHandler.getHighScorePath());
 
         // Set root
         TreeItem<String> root = new TreeItem<>();
@@ -56,8 +56,8 @@ public class HighscoresController {
                 String info;
                 if (map != null) {
                     if (map.getValue().matches(".*survival.*")) survival = true;
-                    int time = highScoreHandler.getTimeFromLine(item);
-                    int objectAmount = highScoreHandler.getObjectAmountFromLine(item);
+                    int time = fileHandler.getTimeFromLine(item);
+                    int objectAmount = fileHandler.getObjectAmountFromLine(item);
                     if (survival) {
                         info = "Time: " + time + "\n" + "Kills: " + objectAmount;
                     } else {
@@ -74,7 +74,7 @@ public class HighscoresController {
         treeView.setShowRoot(false);
         treeView.getSelectionModel().selectedItemProperty()
                 .addListener((v, oldValue, newValue) -> System.out.println(newValue.getValue()));
-        highScoreHandler.encryptFile(highScoreHandler.getFilePath());
+        fileHandler.encryptFile(fileHandler.getHighScorePath());
     }
 
     private TreeItem<String> makeBranch(String name, TreeItem<String> parent) {
@@ -113,7 +113,7 @@ public class HighscoresController {
 
     @FXML
     public void initialize() {
-        highScoreHandler = new HighScoreHandler();
+        fileHandler = FileHandler.getInstance();
         sceneChanger = new SceneChanger();
         setTreeView();
     }
@@ -127,7 +127,7 @@ public class HighscoresController {
 
         alert.showAndWait();
         if (alert.getResult() == ButtonType.OK) {
-            highScoreHandler.resetHighScores();
+            fileHandler.resetHighScores();
             reloadHighScoresScene();
         }
     }

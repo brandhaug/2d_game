@@ -1,17 +1,13 @@
 package MainMenu;
 
 import Game.GameController;
-import Highscores.HighScoreHandler;
+import Highscores.FileHandler;
 import SceneChanger.SceneChanger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
@@ -22,10 +18,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.prefs.Preferences;
 
 public class MainMenuController {
@@ -73,10 +66,10 @@ public class MainMenuController {
     private boolean bullet3Available;
     private String bulletPrice;
     public static String selectedBullet;
-    private HighScoreHandler highScoreHandler;
+    private FileHandler fileHandler;
 
     public MainMenuController() throws IOException {
-        highScoreHandler = new HighScoreHandler();
+        fileHandler = FileHandler.getInstance();
     }
 
     @FXML
@@ -168,9 +161,9 @@ public class MainMenuController {
     }
 
     private ArrayList<String> getSurvivalFileContent() {
-        highScoreHandler.decryptFile(highScoreHandler.getSurvivalPath());
-        ArrayList<String> arrayList = highScoreHandler.getArrayListFromFile(highScoreHandler.getSurvivalPath());
-        highScoreHandler.encryptFile(highScoreHandler.getSurvivalPath());
+        fileHandler.decryptFile(fileHandler.getSurvivalPath());
+        ArrayList<String> arrayList = fileHandler.getArrayListFromFile(fileHandler.getSurvivalPath());
+        fileHandler.encryptFile(fileHandler.getSurvivalPath());
         return arrayList;
     }
 
@@ -192,7 +185,7 @@ public class MainMenuController {
             try {
                 ArrayList<String> survivalFileContent = getSurvivalFileContent();
                 survivalFileContent.set(0, Integer.toString(points - Integer.parseInt(bulletPrice)));
-                Files.write(highScoreHandler.getSurvivalPath(), survivalFileContent, StandardCharsets.ISO_8859_1);
+                Files.write(fileHandler.getSurvivalPath(), survivalFileContent, StandardCharsets.ISO_8859_1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -213,7 +206,7 @@ public class MainMenuController {
                 if (line.contains(selectedBullet)) {
                     ArrayList<String> survivalFileContent = getSurvivalFileContent();
                     survivalFileContent.set(position, selectedBullet + "=true");
-                    Files.write(highScoreHandler.getSurvivalPath(), survivalFileContent, StandardCharsets.ISO_8859_1);
+                    Files.write(fileHandler.getSurvivalPath(), survivalFileContent, StandardCharsets.ISO_8859_1);
                     break;
                 }
                 position++;
@@ -229,7 +222,7 @@ public class MainMenuController {
     @FXML
     protected void chooseBullet() {
         try {
-            highScoreHandler.decryptFile(highScoreHandler.getSurvivalPath());
+            fileHandler.decryptFile(fileHandler.getSurvivalPath());
             BufferedReader reader = new BufferedReader(new FileReader("survivalInfo.txt"));
             String line = reader.readLine();
 
@@ -259,7 +252,7 @@ public class MainMenuController {
                 killCoin3.setVisible(false);
                 bullet3Owned.setVisible(true);
             }
-            highScoreHandler.encryptFile(highScoreHandler.getSurvivalPath());
+            fileHandler.encryptFile(fileHandler.getSurvivalPath());
 
         } catch (Exception e) {
             e.printStackTrace();
