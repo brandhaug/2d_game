@@ -24,8 +24,6 @@ public class InfoController {
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();
-
-        //TODO: Sett styles i FXML eller stylesheet
         infoPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.7);");
         infoPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
     }

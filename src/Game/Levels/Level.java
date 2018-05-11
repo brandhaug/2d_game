@@ -388,7 +388,7 @@ public class Level implements Runnable {
         while (iterator.hasNext()) {
             Bullet bullet = iterator.next();
             bullet.setY(bullet.getY() + cameraVelocityY);
-            if (bullet.getFacing() > 0) {
+            if (bullet.getFacingRight()) {
                 bullet.setVelocityX(BulletType.valueOf(MainMenuController.selectedBullet).getSpeed(), true);
                 bullet.setX(bullet.getX() - player.getVelocityX());
                 if (player.getVelocityX() >= 0) {

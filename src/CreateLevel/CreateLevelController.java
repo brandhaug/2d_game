@@ -106,46 +106,76 @@ public class CreateLevelController {
     private int stepDiff = 0;
 
 
+    /**
+     * Enable tile as tool
+     */
     @FXML
     protected void chooseTile() {
         enableTool(TILE_ENABLED);
     }
 
+    /**
+     * Enable coin as tool
+     */
     @FXML
     protected void chooseCoin() {
         enableTool(COIN_ENABLED);
     }
 
+    /**
+     * Enable enemy1 as tool
+     */
     @FXML
     protected void chooseEnemy1() {
         enableTool(ENEMY1_ENABLED);
     }
 
+    /**
+     * Enable enemy2 as tool
+     */
     @FXML
     protected void chooseEnemy2() {
         enableTool(ENEMY2_ENABLED);
     }
 
+    /**
+     * Enable starting point as tool
+     */
     @FXML
     protected void chooseStartingPoint() {
         enableTool(STARTING_POINT_ENABLED);
     }
 
+    /**
+     * Enable end point as tool
+     */
     @FXML
     protected void chooseEndPoint() {
         enableTool(END_POINT_ENABLED);
     }
 
+    /**
+     * Enable eraser as tool
+     */
     @FXML
     protected void chooseEraser() {
         enableTool(ERASER_ENABLED);
     }
 
+    /**
+     * Enable tool, update GUI1
+     * @param tool
+     */
     private void enableTool(char tool) {
         toolEnabled = tool;
         updateGui(tool);
     }
 
+    /**
+     * Undo/Step backward
+     * Removes the last action
+     * Opens alert if nothing to undo
+     */
     @FXML
     protected void stepBackward() {
         if (steps.size() <= stepDiff) {
@@ -159,6 +189,11 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Redo/Step forward
+     * Redos the last erased step
+     * Opens alert if nothing to redo
+     */
     @FXML
     protected void stepForward() {
         if (stepDiff == 0) {
@@ -172,6 +207,10 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Open load file dialog
+     * Parse map if file chosen
+     */
     @FXML
     protected void openLoadFile() {
         FileChooser fileChooser = createMapFileChooser("Load map");
@@ -185,6 +224,10 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Validates map
+     * Open save file dialog if map validated
+     */
     @FXML
     protected void openSaveFile() {
         try {
@@ -202,11 +245,20 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Change scene to main menu
+     * @param event
+     */
     @FXML
     protected void openMainMenu(ActionEvent event) {
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
+    /**
+     * Creates file chooser - used for save map and load map
+     * @param title
+     * @return
+     */
     private FileChooser createMapFileChooser(String title) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
@@ -216,6 +268,11 @@ public class CreateLevelController {
         return fileChooser;
     }
 
+    /**
+     * Validates map - checks if necessary points exists
+     * Opens alert if something is missing
+     * @throws InvalidMapException if map invalid
+     */
     private void validateMap() throws InvalidMapException {
         if (!startingPointExists || !endPointExists) {
             StringBuilder errors = new StringBuilder();
@@ -237,6 +294,10 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Parse drawn grid/map to file content
+     * @return
+     */
     private String getMapContent() {
         StringBuilder content = new StringBuilder();
 
@@ -256,6 +317,11 @@ public class CreateLevelController {
         return content.toString();
     }
 
+    /**
+     * Saves file
+     * @param content
+     * @param file
+     */
     private void saveFile(String content, File file) {
         try {
             FileWriter fileWriter = new FileWriter(file);
@@ -266,6 +332,12 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Updates GUI
+     * Updates buttons
+     * Updates toolEnabled
+     * @param tool
+     */
     public void updateGui(char tool) {
         playerButton.setBorder(null);
         tileButton.setBorder(null);
@@ -298,6 +370,12 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Detects which cell in grid is clicked
+     * Returns message in console if click is outside grid
+     * Edits the cell with current toolEnabled
+     * @param mouseEvent
+     */
     public void mouseClicked(MouseEvent mouseEvent) {
         if (dragging) {
             dragging = false;
@@ -315,6 +393,11 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Drags grid if shift is down
+     * Works as regular mouse clicks if shift is up
+     * @param mouseEvent
+     */
     public void mouseDragged(MouseEvent mouseEvent) {
         if (mouseEvent.isShiftDown()) {
             dragging = true;
@@ -326,6 +409,10 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Detects coordinates and offsetcoordinates on press
+     * @param mouseEvent
+     */
     public void mousePressed(MouseEvent mouseEvent) {
         pressedX = (int) mouseEvent.getX();
         pressedY = (int) mouseEvent.getY();
@@ -333,6 +420,12 @@ public class CreateLevelController {
         lastOffsetY = currentOffsetY;
     }
 
+    /**
+     * Initialies CreateLevel
+     * Draws grid
+     * Creates map
+     * Initializes sprites
+     */
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();
@@ -351,6 +444,9 @@ public class CreateLevelController {
         render(true);
     }
 
+    /**
+     * Initialize images used to draw in grid
+     */
     private void initializeSprites() {
         enemy1Image = new Image("/Resources/buttons/monster_A.png");
         enemy2Image = new Image("/Resources/buttons/monster_C.png");
@@ -360,6 +456,14 @@ public class CreateLevelController {
         endPointImage = new Image("/Resources/buttons/chest.png");
     }
 
+    /**
+     * Clears cell
+     * Add/erase content to cell based on tool enabled
+     * @param x
+     * @param y
+     * @param tool
+     * @param addStep
+     */
     private void editCell(int x, int y, char tool, boolean addStep) {
         try {
             handleEditCellErrors(tool);
@@ -383,6 +487,12 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Error handling for editCell
+     * Opens alert if user tries to do invalid actions
+     * @param tool
+     * @throws Exception
+     */
     private void handleEditCellErrors(char tool) throws Exception {
         if (tool == STARTING_POINT_ENABLED && startingPointExists) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Starting point already placed", ButtonType.OK);
@@ -399,6 +509,11 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Updates variables used for error handling, to prevent user from doing invalid actions
+     * @param currentCellValue
+     * @param tool
+     */
     private void updateToolMonitoring(char currentCellValue, char tool) {
         if (currentCellValue == STARTING_POINT_ENABLED) {
             startingPointExists = false;
@@ -413,6 +528,12 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Adds step, used for undoing and redoing
+     * @param x
+     * @param y
+     * @param tool
+     */
     private void addStep(int x, int y, char tool) {
         while (stepDiff > 0) {
             stepDiff--;
@@ -426,6 +547,11 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Renders canvas
+     * Updates grid based on offsetX and offsetY
+     * @param initialize
+     */
     private void render(boolean initialize) {
         gc.clearRect(0, 0, canvasWidth, canvasHeight);
 
@@ -442,10 +568,19 @@ public class CreateLevelController {
         }
     }
 
+    /**
+     * Render cell based on toolEnabled and currentImage
+     * @param x
+     * @param y
+     */
     private void renderCell(int x, int y) {
         gc.drawImage(currentImage, (x * GRID_SIZE) - currentOffsetX, (canvasHeight - ((map.length - y) * GRID_SIZE) - currentOffsetY));
     }
 
+
+    /**
+     * Open help alert to get control help
+     */
     @FXML
     public void openHelp() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "- Choose a tool\n- Click in cell to draw enabled tool by clicking a button\n- Move mouse while holding shift to drag through map\n- All maps need one starting point (Player) and one finish point (Chest)", ButtonType.OK);

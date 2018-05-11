@@ -6,12 +6,9 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//TODO: Lag egne exceptions
-//TODO: Make not static
 public class MapParser {
 
     static char[][] map;
-    static int bulletAmount;
 
     public static char[][] getArrayFromFile(File file) {
 
@@ -41,7 +38,6 @@ public class MapParser {
         return map;
     }
 
-    //TODO: Find a way to get bullet amount and return it in loadMap function.
     public static int getValueFromFile(File file, String name) {
         Scanner scanner;
         int value = 0;

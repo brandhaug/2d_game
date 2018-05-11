@@ -38,27 +38,47 @@ public class ClassicLevelsController {
     private int progress;
 
 
+    /**
+     * Closes application
+     */
     @FXML
     protected void exit() {
         Platform.exit();
         System.exit(0);
     }
 
+    /**
+     * Set map name and change scene to Game
+     * @param mapName
+     */
     @FXML
     private void openGameLevel(String mapName) {
         GameController.setMapName(mapName);
         sceneChanger.changeScene((Stage) standardLevelList.getScene().getWindow(), "../Game/Game.fxml", true);
     }
 
+    /**
+     * Sets errorLabel text
+     * @param error
+     */
     public static void setErrorLabel(String error) {
         errorLabel.setText(error);
     }
 
+    /**
+     * Change scene to Main Menu
+     * @param event
+     */
     @FXML
     protected void openMainMenu(ActionEvent event) {
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
+    /**
+     * Initializes ClassicLevels
+     * Get progress
+     * Add standard and custom levels to list
+     */
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();
@@ -69,6 +89,13 @@ public class ClassicLevelsController {
         addLevelsToList(customLevelList, "custom");
     }
 
+    /**
+     * Add levels from list to tables
+     * Set locked/unlocked on levels, based on progress
+     * Add columns to table
+     * @param levelList
+     * @param folderName
+     */
     private void addLevelsToList(TableView<LevelColumn> levelList, String folderName) {
         File levelFolder = new File("src/Resources/maps/classic/" + folderName);
         File[] levelFiles = levelFolder.listFiles();
@@ -107,6 +134,11 @@ public class ClassicLevelsController {
         levelList.getColumns().addAll(firstCol, secondCol);
     }
 
+    /**
+     * Get progress from file, sets error message if file is corrupt/invalid
+     * @return
+     * @throws IOException
+     */
     private int getProgress() throws IOException {
         Path path = Paths.get("progress.txt");
         List<String> lines = Files.readAllLines(path, StandardCharsets.ISO_8859_1);
@@ -119,6 +151,11 @@ public class ClassicLevelsController {
         return 1;
     }
 
+    /**
+     * Opens game with selected map
+     * If selected map is not unlocked - Sends error message to user
+     * @param event
+     */
     public void standardTableClicked(MouseEvent event) {
         if (standardLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
             errorLabel.setText("Level is not unlocked");
@@ -127,6 +164,12 @@ public class ClassicLevelsController {
         }
     }
 
+
+    /**
+     * Opens game with selected map
+     * If selected map is not unlocked - Sends error message to user
+     * @param event
+     */
     public void customTableClicked(MouseEvent event) {
         if (customLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
             errorLabel.setText("Level is not unlocked");
