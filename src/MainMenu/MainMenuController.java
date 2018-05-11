@@ -195,8 +195,9 @@ public class MainMenuController {
 
         if (confirm.isFocused()) {
             try {
-                getSurvivalFileContent().set(0, Integer.toString(points - Integer.parseInt(bulletPrice)));
-                Files.write(highScoreHandler.getSurvivalPath(), getSurvivalFileContent(), StandardCharsets.ISO_8859_1);
+                ArrayList<String> survivalFileContent = getSurvivalFileContent();
+                survivalFileContent.set(0, Integer.toString(points - Integer.parseInt(bulletPrice)));
+                Files.write(highScoreHandler.getSurvivalPath(), survivalFileContent, StandardCharsets.ISO_8859_1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -208,22 +209,26 @@ public class MainMenuController {
     }
 
     private void updateAvailableBullets() {
-        int position = 0;
         try {
+            int position = 0;
+
             BufferedReader reader = new BufferedReader(new FileReader("survivalInfo.txt"));
             String line = reader.readLine();
             while (line != null) {
                 if (line.contains(selectedBullet)) {
-                    getSurvivalFileContent().set(position, selectedBullet + "=true");
-                    Files.write(highScoreHandler.getSurvivalPath(), getSurvivalFileContent(), StandardCharsets.ISO_8859_1);
+                    ArrayList<String> survivalFileContent = getSurvivalFileContent();
+                    survivalFileContent.set(position, selectedBullet + "=true");
+                    Files.write(highScoreHandler.getSurvivalPath(), survivalFileContent, StandardCharsets.ISO_8859_1);
+                    break;
                 }
                 position++;
                 line = reader.readLine();
             }
+
+            chooseBullet();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        chooseBullet();
     }
 
     @FXML

@@ -282,10 +282,10 @@ public class HighScoreHandler {
     private void setSurvivalFileContent() {
         try {
             List<String> lines = Files.readAllLines(survivalPath, StandardCharsets.ISO_8859_1);
-            lines.add(lines.size(), "100");
+            lines.add(lines.size(), "10000");
             lines.add(lines.size(), "BULLET_A=true");
-            lines.add(lines.size(), "BULLET_B=true");
-            lines.add(lines.size(), "BULLET_C=true");
+            lines.add(lines.size(), "BULLET_B=false");
+            lines.add(lines.size(), "BULLET_C=false");
 
             Files.write(survivalPath, lines, StandardCharsets.ISO_8859_1);
         } catch (IOException e) {
