@@ -9,16 +9,15 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyReleased" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Game.GameController">
+<AnchorPane onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyReleased" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Game.GameController">
     <children>
       <Canvas fx:id="canvas" height="720.0" layoutX="-1.0" width="1280.0" />
         <Button fx:id="pauseButton" layoutX="1188.0" layoutY="12.0" mnemonicParsing="false" onAction="#togglePause" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/pause.png');" />
         <Button fx:id="coinCounter" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" opacity="0.7" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/coin/singleCoinSmall.png');" />
       <Pane fx:id="pauseSettingsPane" layoutY="620.0" prefHeight="100.0" prefWidth="1280.0" visible="false">
          <children>
-              <Button fx:id="mainMenuButton" layoutX="1016.0" layoutY="12.0" mnemonicParsing="false" onAction="#openMainMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/home.png');" styleClass="button" visible="false" />
-              <Button fx:id="musicButton" layoutX="1188.0" layoutY="12.0" mnemonicParsing="false" onAction="#toggleMusic" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/music_on.png');" visible="false" />
-              <Button fx:id="soundButton" layoutX="1106.0" layoutY="12.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/sound_on.png');" visible="false" />
+              <Button fx:id="soundButton" layoutX="1184.0" layoutY="12.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/sound_on.png');" visible="false" />
+              <Button fx:id="mainMenuButton" layoutX="1099.0" layoutY="12.0" mnemonicParsing="false" onAction="#openMainMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/home.png');" styleClass="button" visible="false" />
          </children>
       </Pane>
       <Pane fx:id="pauseInfoPane" layoutX="425.0" layoutY="269.0" prefHeight="182.0" prefWidth="431.0" styleClass="pauseInfoPane" visible="false">

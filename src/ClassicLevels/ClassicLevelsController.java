@@ -3,8 +3,10 @@ package ClassicLevels;
 import CreateLevel.MapParser;
 import Game.GameController;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import SceneChanger.SceneChanger;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -22,6 +24,9 @@ public class ClassicLevelsController {
     @FXML
     private Label errorLabel;
 
+    @FXML
+    private Button mainMenuButton;
+
     private SceneChanger sceneChanger;
     private int progress;
 
@@ -32,9 +37,15 @@ public class ClassicLevelsController {
         System.exit(0);
     }
 
+    @FXML
     private void openGameLevel(String mapName) {
         GameController.setMapName(mapName);
         sceneChanger.changeScene((Stage) errorLabel.getScene().getWindow(), "../Game/Game.fxml", true);
+    }
+
+    @FXML
+    protected void openMainMenu(ActionEvent event) {
+        sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
     @FXML

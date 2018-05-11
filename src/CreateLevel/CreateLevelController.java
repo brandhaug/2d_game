@@ -1,5 +1,7 @@
 package CreateLevel;
 
+import SceneChanger.SceneChanger;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -38,8 +40,12 @@ public class CreateLevelController {
     Button loadButton;
     @FXML
     private Button eraseButton;
+    @FXML
+    private Button mainMenuButton;
 
     private char[][] map;
+
+    private SceneChanger sceneChanger;
 
     /**
      * Tools
@@ -196,6 +202,11 @@ public class CreateLevelController {
         }
     }
 
+    @FXML
+    protected void openMainMenu(ActionEvent event) {
+        sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
+    }
+
     private FileChooser createMapFileChooser(String title) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
@@ -324,6 +335,7 @@ public class CreateLevelController {
 
     @FXML
     public void initialize() {
+        sceneChanger = new SceneChanger();
         canvasHeight = (int) canvas.getHeight();
         canvasWidth = (int) canvas.getWidth();
         steps = new ArrayList<>();

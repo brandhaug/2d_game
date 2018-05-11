@@ -28,6 +28,8 @@ import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.time.StopWatch;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.math.BigInteger;
@@ -53,8 +55,6 @@ public class GameController {
     private Button pauseButton;
     @FXML
     private Button soundButton;
-    @FXML
-    private Button musicButton;
     @FXML
     private Button mainMenuButton;
     @FXML
@@ -194,25 +194,6 @@ public class GameController {
     }
 
     /**
-     * Sets music on/off when toggled and changes the icon. Also initiates music according to the users previous preferences.
-     */
-    @FXML
-    protected void toggleMusic() {
-        boolean musicOn = preferences.getBoolean("music", true);
-
-        if (initialized) {
-            preferences.putBoolean("music", !musicOn);
-            musicOn = !musicOn;
-        }
-
-        if (musicOn) {
-            musicButton.setStyle("-fx-graphic: 'Resources/buttons/music_on.png'");
-        } else {
-            musicButton.setStyle("-fx-graphic: 'Resources/buttons/music_off.png'");
-        }
-    }
-
-    /**
      * Handles different keys on press, if game is running.
      * Moves player right on RIGHT or D.
      * Moves player left on LEFT or A.
@@ -295,6 +276,7 @@ public class GameController {
         coinAmount = level.getCoins().size();
         collisionHandler = new CollisionHandler(player, level);
         highScoreHandler = new HighScoreHandler();
+        toggleSound();
 
         if (mapName.contains("survival")) {
             level.setSurvival(true);
@@ -511,7 +493,6 @@ public class GameController {
             stopWatch.suspend();
         }
         soundButton.setVisible(!gamePaused);
-        musicButton.setVisible(!gamePaused);
         mainMenuButton.setVisible(!gamePaused);
         pauseInfoPane.setVisible(!gamePaused);
         pauseSettingsPane.setVisible(!gamePaused);
