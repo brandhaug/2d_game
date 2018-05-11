@@ -186,6 +186,8 @@ public class MainMenuController {
             buyBulletPane.setVisible(false);
         }
 
+        killCoinInfo.setText("KillCoins: " + getKillCoins());
+
         if (exitBulletBuyPane.isFocused() || decline.isFocused()) buyBulletPane.setVisible(false);
     }
 
