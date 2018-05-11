@@ -5,8 +5,6 @@ import MainMenu.MainMenuController;
 
 public class Ammunition extends GameObject {
 
-    private SpriteSheet spriteSheet;
-
     /**
      * Constructor
      * @param x
@@ -23,7 +21,7 @@ public class Ammunition extends GameObject {
      */
     @Override
     public void initializeSpriteSheets() {
-        spriteSheet = new SpriteSheet("/Resources/bullets/ammo_"+ MainMenuController.selectedBullet+".png", 1, 76, 76);
+        SpriteSheet spriteSheet = new SpriteSheet("/Resources/bullets/ammo_" + MainMenuController.selectedBullet + ".png", 1, 76, 76);
         setCurrentSpriteSheet(spriteSheet);
     }
 }

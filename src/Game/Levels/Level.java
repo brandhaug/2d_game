@@ -426,7 +426,7 @@ public class Level implements Runnable {
     }
 
 
-    public void renderBullets(GraphicsContext gc, Player player) {
+    private void renderBullets(GraphicsContext gc, Player player) {
         Iterator<Bullet> iterator = getBullets().iterator();
 
         while (iterator.hasNext()) {
@@ -456,7 +456,7 @@ public class Level implements Runnable {
         bullets.add(b);
     }
 
-    public int getNumberOfType(char c, String pathName) {
+    private int getNumberOfType(char c, String pathName) {
         Scanner scanner = null;
         int numberOfType = 0;
         try {
@@ -585,7 +585,7 @@ public class Level implements Runnable {
         }
     }
 
-    public char[][] loadMap(String fileName) {
+    private char[][] loadMap(String fileName) {
         File file = new File(getClass().getResource("/Resources/maps/" + fileName).getPath());
         return MapParser.getArrayFromFile(file);
     }

@@ -15,13 +15,13 @@ public class Player extends GameObject implements Runnable{
      * States
      */
     public final static int PLAYER_IDLING_RIGHT = 0;
-    public final static int PLAYER_IDLING_LEFT = 1;
+    final static int PLAYER_IDLING_LEFT = 1;
     public final static int PLAYER_RUNNING_RIGHT = 2;
-    public final static int PLAYER_RUNNING_LEFT = 3;
+    final static int PLAYER_RUNNING_LEFT = 3;
     public final static int PLAYER_JUMPING_RIGHT = 4;
-    public final static int PLAYER_JUMPING_LEFT = 5;
+    final static int PLAYER_JUMPING_LEFT = 5;
     public final static int PLAYER_FALLING_RIGHT = 6;
-    public final static int PLAYER_FALLING_LEFT = 7;
+    final static int PLAYER_FALLING_LEFT = 7;
 
     /**
      * State monitors
@@ -163,13 +163,6 @@ public class Player extends GameObject implements Runnable{
     @Override
     public void render(GraphicsContext gc) {
         getCurrentSpriteSheet().render(gc, GameController.PLAYER_X_MARGIN, getY(), getCurrentSpriteState(), getLastSpriteState());
-
-        // Draw bounds
-//        gc.setFill(Color.BLACK);
-//        gc.strokeRect(GameController.PLAYER_X_MARGIN + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 20, WIDTH - 40, 20);
-//        gc.strokeRect(GameController.PLAYER_X_MARGIN + 20, getY(), WIDTH - 40, 20);
-//        gc.strokeRect(GameController.PLAYER_X_MARGIN + WIDTH - 20, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
-//        gc.strokeRect(GameController.PLAYER_X_MARGIN, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     @Override
