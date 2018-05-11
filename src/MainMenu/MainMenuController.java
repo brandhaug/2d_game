@@ -18,6 +18,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
 
@@ -56,6 +57,8 @@ public class MainMenuController {
     private Pane buyBulletPane;
     @FXML
     private Pane buyBulletPaneConfirm;
+    @FXML
+    private Label errorLabel;
 
     private SceneChanger sceneChanger;
     private Preferences preferences = Preferences.userRoot();
@@ -125,36 +128,28 @@ public class MainMenuController {
         sceneChanger.changeScene(event, "../Game/Game.fxml", true);
     }
 
+    private void setBullet(String selectedBulletType, boolean bulletAvailable, Text bulletPrice, ActionEvent event, int points) {
+        selectedBullet = selectedBulletType;
+        if (bulletAvailable) {
+            openGameSurvival(event);
+        } else if (points >= Integer.parseInt(bullet1Price.getText())) {
+            buyBulletPane.setVisible(true);
+            this.bulletPrice = bulletPrice.getText();
+        }
+    }
+
     @FXML
     protected void bulletSelected(ActionEvent event) {
         int points = getKillCoins();
 
         if (BULLET_A.isFocused()) {
-            selectedBullet = BULLET_A.getId();
-            if (bullet1Available) {
-                openGameSurvival(event);
-            } else if (points >= Integer.parseInt(bullet1Price.getText())) {
-                buyBulletPane.setVisible(true);
-                bulletPrice = bullet1Price.getText();
-            }
+            setBullet(BULLET_A.getId(), bullet1Available, bullet1Price, event, points);
         }
         if (BULLET_B.isFocused()) {
-            selectedBullet = BULLET_B.getId();
-            if (bullet2Available) {
-                openGameSurvival(event);
-            } else if (points >= Integer.parseInt(bullet2Price.getText())) {
-                buyBulletPane.setVisible(true);
-                bulletPrice = bullet2Price.getText();
-            }
+            setBullet(BULLET_B.getId(), bullet2Available, bullet2Price, event, points);
         }
         if (BULLET_C.isFocused()) {
-            selectedBullet = BULLET_C.getId();
-            if (bullet3Available) {
-                openGameSurvival(event);
-            } else if (points >= Integer.parseInt(bullet3Price.getText())) {
-                buyBulletPane.setVisible(true);
-                bulletPrice = bullet3Price.getText();
-            }
+            setBullet(BULLET_C.getId(), bullet3Available, bullet3Price, event, points);
         }
 
         if (exitChooseBulletPane.isFocused()) chooseBulletPane.setVisible(false);
@@ -172,7 +167,15 @@ public class MainMenuController {
         try {
             points = Integer.parseInt(getSurvivalFileContent().get(0));
         } catch (Exception e) {
-            e.printStackTrace();
+            if (!fileHandler.getErrorLabel().equals("")) {
+                errorLabel.setText(fileHandler.getErrorLabel());
+                playButtonLevel.setDisable(true);
+                playButtonSurvival.setDisable(true);
+                highscoresButton.setDisable(true);
+            } else {
+                errorLabel.setText("Survival file seems to be corrupt. Deletion of 'survival_info.txt' may help, but all your survival progress will be lost");
+                playButtonSurvival.setDisable(true);
+            }
         }
         return points;
     }
