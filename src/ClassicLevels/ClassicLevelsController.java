@@ -34,7 +34,6 @@ public class ClassicLevelsController {
     private Button mainMenuButton;
 
     private SceneChanger sceneChanger;
-    private FileHandler fileHandler;
     private int progress;
 
 
@@ -74,7 +73,7 @@ public class ClassicLevelsController {
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();
-        fileHandler = FileHandler.getInstance();
+        FileHandler fileHandler = FileHandler.getInstance();
         progress = fileHandler.getProgress();
         if (progress == -1) {
             errorLabel.setText("Invalid progress file. Deleting 'progress.txt' may help, but all your progress will be lost");
@@ -96,15 +95,13 @@ public class ClassicLevelsController {
         File levelFolder = new File("src/Resources/maps/classic/" + folderName);
         File[] levelFiles = levelFolder.listFiles();
 
-        if (levelFiles == null || levelFiles.length == 0) {
-
-        } else {
+        if (levelFiles != null && levelFiles.length != 0) {
             String status;
             int level;
 
-            for (int i = 0; i < levelFiles.length; i++) {
+            for (File levelFile : levelFiles) {
                 if (folderName.equals("standard")) {
-                    level = MapParser.getValueFromFile(levelFiles[i], "level");
+                    level = MapParser.getValueFromFile(levelFile, "level");
                 } else {
                     level = 0;
                 }
@@ -115,7 +112,7 @@ public class ClassicLevelsController {
                     status = "Unlocked";
                 }
 
-                LevelColumn levelColumn = new LevelColumn(levelFiles[i].getName(), status);
+                LevelColumn levelColumn = new LevelColumn(levelFile.getName(), status);
                 levelList.getItems().add(levelColumn);
             }
 

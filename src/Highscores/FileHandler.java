@@ -1,11 +1,8 @@
 package Highscores;
 
 
-import ClassicLevels.ClassicLevelsController;
 import CreateLevel.MapParser;
 import Game.GameController;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.Pane;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;

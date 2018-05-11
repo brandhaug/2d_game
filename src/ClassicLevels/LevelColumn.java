@@ -11,7 +11,7 @@ public class LevelColumn {
      * @param name
      * @param status
      */
-    public LevelColumn(String name, String status) {
+    LevelColumn(String name, String status) {
         this.name = new SimpleStringProperty(name);
         this.status = new SimpleStringProperty(status);
     }
@@ -20,7 +20,7 @@ public class LevelColumn {
      * Get name
      * @return name
      */
-    public String getName() {
+    String getName() {
         return name.get();
     }
 
@@ -44,7 +44,7 @@ public class LevelColumn {
      * Get status
      * @return status
      */
-    public String getStatus() {
+    String getStatus() {
         return status.get();
     }
 

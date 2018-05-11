@@ -24,16 +24,6 @@ import java.util.prefs.Preferences;
 
 public class MainMenuController {
 
-    //    @FXML
-//    private Pane mapsPane;
-//    @FXML
-//    private ImageView map1;
-//    @FXML
-//    private ImageView map2;
-//    @FXML
-//    private ImageView map3;
-//    @FXML
-//    private ImageView map4;
     @FXML
     private Button infoButton, exitButton, highscoresButton, playButtonSurvival,
             playButtonLevel, soundButton, musicButton, BULLET_A, BULLET_B, BULLET_C,
@@ -122,7 +112,7 @@ public class MainMenuController {
     }
 
     @FXML
-    protected void openGameSurvival(ActionEvent event) {
+    private void openGameSurvival(ActionEvent event) {
         musicClip.stop();
         GameController.setMapName("survivalfolder/survival");
         sceneChanger.changeScene(event, "../Game/Game.fxml", true);
@@ -286,10 +276,6 @@ public class MainMenuController {
         sceneChanger = new SceneChanger();
         killCoinInfo.setText("KillCoins: " + getKillCoins());
 
-        // TODO: Sett styles i FXML eller i stylesheet
-//        mapsPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.3);");
-//        mapsPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-
         try {
             initializeMusic();
             toggleMusic();
@@ -298,14 +284,6 @@ public class MainMenuController {
             e.printStackTrace();
         }
 
-//        map1.setOnMouseEntered(event -> map1.setImage(new Image("Resources/background/map1.gif")));
-//        map1.setOnMouseExited(event -> map1.setImage(new Image("Resources/background/map1_still_image.png")));
-//        map2.setOnMouseEntered(event -> map2.setImage(new Image("Resources/background/map1.gif")));
-//        map2.setOnMouseExited(event -> map2.setImage(new Image("Resources/background/map1_still_image.png")));
-//        map3.setOnMouseEntered(event -> map3.setImage(new Image("Resources/background/map1.gif")));
-//        map3.setOnMouseExited(event -> map3.setImage(new Image("Resources/background/map1_still_image.png")));
-//        map4.setOnMouseEntered(event -> map4.setImage(new Image("Resources/background/map1.gif")));
-//        map4.setOnMouseExited(event -> map4.setImage(new Image("Resources/background/map1_still_image.png")));
         initialized = true;
     }
 
@@ -320,7 +298,7 @@ public class MainMenuController {
      * @throws UnsupportedAudioFileException
      * @throws LineUnavailableException
      */
-    public void initializeMusic() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+    private void initializeMusic() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         AudioInputStream musicStream = AudioSystem.getAudioInputStream(new File(getClass().getResource("/Resources/music/main_song.wav").getPath()));
         musicClip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, musicStream.getFormat()));
         musicClip.open(musicStream);

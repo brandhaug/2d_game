@@ -242,13 +242,13 @@ public class CollisionHandler {
     }
 
     private void enemyIsHit(Enemy enemy){
-        enemy.setEnemyhit(true);
+        enemy.setEnemyHit(true);
         enemy.setY(enemy.getY() - (enemy.getHeightHit()-enemy.getHeight()));
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                enemy.setEnemyhit(false);
+                enemy.setEnemyHit(false);
                 timer.cancel();
             }
         }, 700);

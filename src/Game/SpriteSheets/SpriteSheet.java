@@ -51,20 +51,6 @@ public class SpriteSheet {
         gc.drawImage(sprites[getNextColumnIndex(currentSpriteState, lastSpriteState)], x, y);
     }
 
-    public void drawBounds(GraphicsContext gc, int x, int y) {
-        gc.setStroke(Color.BLUE);
-        gc.strokeRect(x, y + spriteHeight - 10, spriteWidth, 10); //Bottom
-
-        gc.setStroke(Color.RED);
-        gc.strokeRect(x, y, spriteWidth, 10); //Top
-
-        gc.setStroke(Color.GREEN);
-        gc.strokeRect(x + spriteWidth - 10, y + 10, 10, spriteHeight - 20); //Right
-
-        gc.setStroke(Color.YELLOW);
-        gc.strokeRect(x, y + 10, 10, spriteHeight - 20); //Left
-    }
-
     private int getNextColumnIndex(int currentSpriteState, int lastSpriteState) {
         if (currentSpriteState != lastSpriteState || currentColumnIndex == cols - 1) {
             currentColumnIndex = 0;

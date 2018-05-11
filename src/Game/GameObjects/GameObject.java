@@ -85,11 +85,11 @@ public abstract class GameObject {
         this.velocityY = velocityY;
     }
 
-    public SpriteSheet getCurrentSpriteSheet() {
+    SpriteSheet getCurrentSpriteSheet() {
         return currentSpriteSheet;
     }
 
-    public void setCurrentSpriteSheet(SpriteSheet currentSpriteSheet) {
+    void setCurrentSpriteSheet(SpriteSheet currentSpriteSheet) {
         this.currentSpriteSheet = currentSpriteSheet;
     }
 
@@ -97,15 +97,15 @@ public abstract class GameObject {
         return currentSpriteState;
     }
 
-    public void setCurrentSpriteState(int currentSpriteState) {
+    void setCurrentSpriteState(int currentSpriteState) {
         this.currentSpriteState = currentSpriteState;
     }
 
-    public int getLastSpriteState() {
+    int getLastSpriteState() {
         return lastSpriteState;
     }
 
-    public void setLastSpriteState(int lastSpriteState) {
+    void setLastSpriteState(int lastSpriteState) {
         this.lastSpriteState = lastSpriteState;
     }
 
