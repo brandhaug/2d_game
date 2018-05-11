@@ -19,6 +19,10 @@ public class Tile extends GameObject {
         setCurrentSpriteSheet(spriteSheet);
     }
 
+    public TileType getTileType() {
+        return this.tileType;
+    }
+
     public int getSize(){
         return SIZE;
     }

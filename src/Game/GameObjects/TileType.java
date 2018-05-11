@@ -12,7 +12,8 @@ public enum TileType {
     DIRT_RIGHT("DirtRight", 1),
     DIRT_RIGHT_CORNER("DirtRightCorner", 1),
     DIRT_LEFT_CORNER("DirtLeftCorner", 1),
-    DIRT_COLUMN("DirtColumn", 1);
+    DIRT_COLUMN("DirtColumn", 1),
+    SPIKE_UP("SpikeUp", 1);
 
     private String fileName;
     private int cols;

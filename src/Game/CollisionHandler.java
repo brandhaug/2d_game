@@ -89,6 +89,10 @@ public class CollisionHandler {
             if (player.getBoundsRight().intersects(tile.getBoundsLeft()) && player.getLastSpriteRight()) {
                 handleTileLeftCollision(player);
             }
+
+            if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && tile.getTileType() == TileType.SPIKE_UP) {
+                player.setAlive(false);
+            }
         }
     }
 

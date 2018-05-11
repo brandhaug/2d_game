@@ -374,7 +374,7 @@ public class GameController {
      * Sets game over to true if players y-coordinate is below the lowest tile or if player is dead.
      */
     private void checkGameOver() {
-        if (player.getY() >= level.getLowestTileY() || !player.getAlive()) {
+        if (!player.getAlive()) {
             gameOver = true;
             gameOverPane.setVisible(true);
             canvas.setOpacity(0.7f);
