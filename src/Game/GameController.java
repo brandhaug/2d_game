@@ -228,9 +228,9 @@ public class GameController {
                 if (level.getBulletCounter() > 0 && fireRate == 100) {
                     if (player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT ||
                             player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
-                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, true, bulletType));
+                        level.addBullet(new Bullet((short) (PLAYER_X_MARGIN + 20), (short) (player.getY() + 20), true, bulletType));
                     } else {
-                        level.addBullet(new Bullet(PLAYER_X_MARGIN + 20, player.getY() + 20, false, bulletType));
+                        level.addBullet(new Bullet((short) (PLAYER_X_MARGIN + 20), (short) (player.getY() + 20), false, bulletType));
                     }
                     level.decreaseBulletCounter();
                     fireRate = 0;
