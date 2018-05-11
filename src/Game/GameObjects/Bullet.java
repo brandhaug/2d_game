@@ -3,16 +3,13 @@ package Game.GameObjects;
 import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
 
-import java.awt.*;
-
 public class Bullet extends GameObject {
 
-    private int damage;
+    private short damage;
     private boolean facingRight;
-    private int height;
-    private int width;
-    private SpriteSheet spriteSheet;
-    BulletType bulletType;
+    private short width;
+    private short height;
+    private BulletType bulletType;
 
     /**
      * Constructor
@@ -22,7 +19,7 @@ public class Bullet extends GameObject {
      * @param facingRight
      * @param bulletType
      */
-    public Bullet(int x, int y, boolean facingRight, BulletType bulletType) {
+    public Bullet(short x, short y, boolean facingRight, BulletType bulletType) {
         super(x, y);
         this.facingRight = facingRight;
         this.bulletType = bulletType;
@@ -44,15 +41,28 @@ public class Bullet extends GameObject {
         render(gc);
     }
 
+    /**
+     * Get facing right
+     * @return facingRight
+     */
     public boolean getFacingRight() {
         return facingRight;
     }
 
-    public int getDamage() {
+    /**
+     * Get damage
+     * @return damage
+     */
+    public short getDamage() {
         return damage;
     }
 
+    /**
+     * Initialize spritesheets depending on facingRight
+     */
     public void initializeSpriteSheets() {
+        SpriteSheet spriteSheet;
+        
         if (facingRight) {
             spriteSheet = new SpriteSheet("/Resources/bullets/bullet_" + bulletType.getFileName() + "_Right.png", 1, bulletType.getWidth(), bulletType.getHeight());
         } else {
@@ -61,10 +71,16 @@ public class Bullet extends GameObject {
         setCurrentSpriteSheet(spriteSheet);
     }
 
+    /**
+     * Add velocityX to X
+     */
     private void handleVelocityX() {
         setX(getX() + getVelocityX());
     }
 
+    /**
+     * Add velocityY to Y
+     */
     private void handleVelocityY() {
         setY(getY() + getVelocityY());
     }
