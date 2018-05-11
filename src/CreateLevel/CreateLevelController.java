@@ -25,7 +25,9 @@ public class CreateLevelController {
     @FXML
     Button tileButton;
     @FXML
-    Button enemyButton;
+    Button enemy1Button;
+    @FXML
+    Button enemy2Button;
     @FXML
     Button coinButton;
     @FXML
@@ -43,8 +45,9 @@ public class CreateLevelController {
      * Tools
      */
     private final char TILE_ENABLED = '-';
-    private final char COIN_ENABLED = 'c';
-    private final char ENEMY_ENABLED = 'e';
+    private final char COIN_ENABLED = 'C';
+    private final char ENEMY1_ENABLED = 'a';
+    private final char ENEMY2_ENABLED = 'c';
     private final char STARTING_POINT_ENABLED = 's';
     private final char END_POINT_ENABLED = 'f';
     private final char ERASER_ENABLED = '0';
@@ -60,12 +63,12 @@ public class CreateLevelController {
     /**
      * Tool images
      */
-    private Image maceImage;
+    private Image enemy1Image;
+    private Image enemy2Image;
     private Image tileImage;
     private Image coinImage;
     private Image startingPointImage;
     private Image endPointImage;
-
     private Image currentImage;
 
     /**
@@ -108,8 +111,13 @@ public class CreateLevelController {
     }
 
     @FXML
-    protected void chooseEnemy() {
-        enableTool(ENEMY_ENABLED);
+    protected void chooseEnemy1() {
+        enableTool(ENEMY1_ENABLED);
+    }
+
+    @FXML
+    protected void chooseEnemy2() {
+        enableTool(ENEMY2_ENABLED);
     }
 
     @FXML
@@ -251,7 +259,8 @@ public class CreateLevelController {
         playerButton.setBorder(null);
         tileButton.setBorder(null);
         coinButton.setBorder(null);
-        enemyButton.setBorder(null);
+        enemy1Button.setBorder(null);
+        enemy2Button.setBorder(null);
         chestButton.setBorder(null);
         eraseButton.setBorder(null);
 
@@ -259,9 +268,13 @@ public class CreateLevelController {
             currentImage = tileImage;
             tileButton.setBorder(new Border(new BorderStroke(Color.GREEN,
                     BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        } else if (tool == ENEMY_ENABLED) {
-            currentImage = maceImage;
-            enemyButton.setBorder(new Border(new BorderStroke(Color.GREEN,
+        } else if (tool == ENEMY1_ENABLED) {
+            currentImage = enemy1Image;
+            enemy1Button.setBorder(new Border(new BorderStroke(Color.GREEN,
+                    BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        } else if (tool == ENEMY2_ENABLED) {
+            currentImage = enemy2Image;
+            enemy2Button.setBorder(new Border(new BorderStroke(Color.GREEN,
                     BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         } else if (tool == COIN_ENABLED) {
             currentImage = coinImage;
@@ -327,7 +340,8 @@ public class CreateLevelController {
     }
 
     private void initializeSprites() {
-        maceImage = new Image("/Resources/buttons/mace.png");
+        enemy1Image = new Image("/Resources/buttons/monster_A.png");
+        enemy2Image = new Image("/Resources/buttons/monster_C.png");
         coinImage = new Image("/Resources/buttons/coin.png");
         tileImage = new Image("/Resources/buttons/tile.png");
         startingPointImage = new Image("/Resources/buttons/player.png");
