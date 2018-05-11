@@ -289,7 +289,7 @@ public class GameController {
         spawningThread.setDaemon(true);
         spawningThread.start();
         gc = canvas.getGraphicsContext2D();
-        player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY());
+        player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY(),"A");
         coinAmount = level.getCoins().size();
         collisionHandler = new CollisionHandler(player, level);
         highScoreHandler = new HighScoreHandler();

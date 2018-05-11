@@ -19,7 +19,8 @@ public class Level implements Runnable{
 
     private int coinCounter;
     private int currentTileY;
-    private int lowestTileY;
+    //private int lowestTileY;
+    public static int lowestTileY;
     private int cameraVelocityY;
     private int playerStartPositionX;
     private int playerStartPositionY;
@@ -274,8 +275,7 @@ public class Level implements Runnable{
                 enemy.setRightCollision(false);
             }
 
-
-                enemy.setY(enemy.getY() + cameraVelocityY);
+            enemy.setY(enemy.getY() + cameraVelocityY);
 
             enemy.handleSpriteState();
             enemy.tick(gc);
@@ -343,7 +343,7 @@ public class Level implements Runnable{
             } else {
                 return;
             }
-        } else if (cameraVelocityY == 0) {
+        } else if (cameraVelocityY == 0 && (player.isRunning() || player.isIdling())) {
             int random = randomSpawn(player);
             spawnX = spawnSpots[0][random];
             spawnY = spawnSpots[1][random];

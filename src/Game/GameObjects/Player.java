@@ -30,6 +30,7 @@ public class Player extends GameObject implements Runnable{
     private boolean rightCollision = false;
     private boolean leftCollision = false;
     private boolean isAlive = true;
+    private String playerType;
 
     /**
      * Spritesheets
@@ -43,8 +44,9 @@ public class Player extends GameObject implements Runnable{
     private SpriteSheet jumpRightSpriteSheet;
     private SpriteSheet fallRightSpriteSheet;
 
-    public Player(int x, int y) {
+    public Player(int x, int y, String playerType) {
         super(x, y);
+        this.playerType = playerType;
         setVelocityX(x - GameController.PLAYER_X_MARGIN, true);
         setVelocityY(1);
         initializeSpriteSheets();
@@ -148,14 +150,14 @@ public class Player extends GameObject implements Runnable{
     }
 
     public void initializeSpriteSheets() {
-        idleRightSpriteSheet = new SpriteSheet("/Resources/player/idle_right.png", 12, 72, 76);
-        idleLeftSpriteSheet = new SpriteSheet("/Resources/player/idle_left.png", 12, 72, 76);
-        runRightSpriteSheet = new SpriteSheet("/Resources/player/run_right.png", 18, 99, 77);
-        runLeftSpriteSheet = new SpriteSheet("/Resources/player/run_left.png", 18, 99, 77);
-        jumpRightSpriteSheet = new SpriteSheet("/Resources/player/jump_right.png", 1, 76, 77);
-        jumpLeftSpriteSheet = new SpriteSheet("/Resources/player/jump_left.png", 1, 76, 77);
-        fallRightSpriteSheet = new SpriteSheet("/Resources/player/fall_right.png", 1, 67, 77);
-        fallLeftSpriteSheet = new SpriteSheet("/Resources/player/fall_left.png", 1, 67, 77);
+        idleRightSpriteSheet = new SpriteSheet("/Resources/player/" + playerType + "/player_" + playerType +"_idleRight.png", 12, 72, 76);
+        idleLeftSpriteSheet = new SpriteSheet("/Resources/player/" + playerType + "/player_" + playerType +"_idleLeft.png", 12, 72, 76);
+        runRightSpriteSheet = new SpriteSheet("/Resources/player/" + playerType + "/player_" + playerType +"_runRight.png", 18, 99, 77);
+        runLeftSpriteSheet = new SpriteSheet("/Resources/player/" + playerType + "/player_" + playerType +"_runLeft.png", 18, 99, 77);
+        jumpRightSpriteSheet = new SpriteSheet("/Resources/player/" + playerType + "/player_" + playerType +"_jumpRight.png", 1, 76, 77);
+        jumpLeftSpriteSheet = new SpriteSheet("/Resources/player/" + playerType + "/player_" + playerType +"_jumpLeft.png", 1, 76, 77);
+        fallRightSpriteSheet = new SpriteSheet("/Resources/player/" + playerType + "/player_" + playerType +"_fallRight.png", 1, 67, 77);
+        fallLeftSpriteSheet = new SpriteSheet("/Resources/player/" + playerType + "/player_" + playerType +"_fallLeft.png", 1, 67, 77);
     }
 
     @Override

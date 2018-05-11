@@ -75,10 +75,6 @@ public class MainMenuController {
     public static String selectedBullet;
     private HighScoreHandler highScoreHandler;
 
-//    private final static String FILE_PATH_SurvivalInfo = "survivalInfo.txt";
-//    Path survivalPath = Paths.get(FILE_PATH_SurvivalInfo);
-//    List<String> fileContent = new ArrayList<>(Files.readAllLines(survivalPath, StandardCharsets.ISO_8859_1));
-
     public MainMenuController() throws IOException {
         highScoreHandler = new HighScoreHandler();
     }
