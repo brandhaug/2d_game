@@ -270,7 +270,6 @@ public class Level implements Runnable {
                 enemy.setRightCollision(false);
             }
 
-
             enemy.setY(enemy.getY() + cameraVelocityY);
 
             enemy.handleSpriteState();
@@ -340,7 +339,7 @@ public class Level implements Runnable {
             } else {
                 return;
             }
-        } else if (cameraVelocityY == 0) {
+        } else if (cameraVelocityY == 0 && (player.isRunning() || player.isIdling())) {
             int random = randomSpawn(player);
             spawnX = spawnSpots[0][random];
             spawnY = spawnSpots[1][random];
