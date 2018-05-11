@@ -13,14 +13,16 @@
     <children>
       <Canvas fx:id="canvas" height="720.0" layoutX="-1.0" width="1280.0" />
         <Button fx:id="pauseButton" layoutX="1188.0" layoutY="12.0" mnemonicParsing="false" onAction="#togglePause" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/pause.png');" />
-        <Button fx:id="coinCounter" layoutX="5.0" layoutY="5.0" mnemonicParsing="false" opacity="0.7" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/coin/singleCoinSmall.png');" />
-      <Pane fx:id="pauseSettingsPane" layoutY="620.0" prefHeight="100.0" prefWidth="1280.0" visible="false">
+        <Button fx:id="coinCounter" layoutX="0.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/coin/singleCoinSmall.png');" visible="false" />
+        <Button fx:id="killCoinCounter" layoutX="0.0" layoutY="-1.0" mnemonicParsing="false" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/coin/killCoin.png');" visible="false" />
+
+        <Pane fx:id="pauseSettingsPane" layoutY="620.0" prefHeight="100.0" prefWidth="1280.0" visible="false">
          <children>
               <Button fx:id="soundButton" layoutX="1184.0" layoutY="12.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/sound_on.png');" visible="false" />
               <Button fx:id="mainMenuButton" layoutX="1099.0" layoutY="12.0" mnemonicParsing="false" onAction="#openMainMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/home.png');" styleClass="button" visible="false" />
          </children>
       </Pane>
-      <Pane fx:id="pauseInfoPane" layoutX="425.0" layoutY="269.0" prefHeight="182.0" prefWidth="431.0" styleClass="pauseInfoPane" visible="false">
+      <Pane fx:id="pauseInfoPane" layoutX="425.0" layoutY="269.0" prefHeight="182.0" prefWidth="431.0" styleClass="chooseBulletPane" visible="false">
          <children>
             <Text fx:id="pauseText" layoutX="53.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Paused">
                <font>
@@ -29,9 +31,9 @@
             </Text>
          </children>
       </Pane>
-      <Pane fx:id="gameOverPane" layoutX="405.0" layoutY="219.0" prefHeight="282.0" prefWidth="468.0" styleClass="gameOverPane" visible="false">
+      <Pane fx:id="gameOverPane" layoutX="405.0" layoutY="219.0" prefHeight="282.0" prefWidth="468.0" styleClass="chooseBulletPane" visible="false">
          <children>
-            <Text fx:id="gameOverText" fill="WHITE" layoutX="102.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Over">
+            <Text fx:id="gameOverText" fill="BLACK" layoutX="102.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Over">
                <font>
                   <Font size="50.0" />
                </font>
@@ -40,19 +42,19 @@
             <Button fx:id="gameOverRetryButton" layoutX="307.0" layoutY="174.0" mnemonicParsing="false" onAction="#restartLevel" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/retry.png');" styleClass="button" />
          </children>
       </Pane>
-      <Pane fx:id="gameWonPane" layoutX="341.0" layoutY="178.0" prefHeight="365.0" prefWidth="597.0" styleClass="gameWonPane" visible="false">
+      <Pane fx:id="gameWonPane" layoutX="341.0" layoutY="178.0" prefHeight="365.0" prefWidth="597.0" styleClass="chooseBulletPane" visible="false">
          <children>
-            <Text fx:id="gameWonCoins" fill="WHITE" layoutX="111.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Coins collected: " visible="false">
+            <Text fx:id="gameWonCoins" fill="BLACK" layoutX="111.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Coins collected: " visible="false">
                <font>
                   <Font size="30.0" />
                </font>
             </Text>
-             <Text fx:id="killAmount" fill="WHITE" layoutX="111.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enemy kills: " visible="false">
+             <Text fx:id="killAmount" fill="BLACK" layoutX="111.0" layoutY="147.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enemy kills: " visible="false">
                <font>
                   <Font size="30.0" />
                </font>
             </Text>
-            <Text fx:id="gameWonTime" fill="WHITE" layoutX="111.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time: ">
+            <Text fx:id="gameWonTime" fill="BLACK" layoutX="111.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time: ">
                <font>
                   <Font size="30.0" />
                </font>
@@ -72,7 +74,7 @@
                   <Image url="@../Resources/buttons/timer.png" />
                </image>
             </ImageView>
-            <Text fx:id="gameWonHighScore" fill="WHITE" layoutX="37.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="No new high score..">
+            <Text fx:id="gameWonHighScore" fill="BLACK" layoutX="37.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="No new high score..">
                <font>
                   <Font size="29.0" />
                </font>

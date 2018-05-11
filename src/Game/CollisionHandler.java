@@ -264,7 +264,7 @@ public class CollisionHandler {
                 playerEnemyCollision = true;
                 timer.cancel();
             }
-        }, 700);
+        }, 300);
     }
 
     public void handleEnemyTopCollision(int enemyDamage, Enemy enemy, Iterator<Enemy> enemyIterator) {

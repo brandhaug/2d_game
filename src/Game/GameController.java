@@ -71,6 +71,10 @@ public class GameController {
     @FXML
     private Button gameWonHighScoresButton;
     @FXML
+    private Button coinCounter;
+    @FXML
+    private Button killCoinCounter;
+    @FXML
     private Pane gameOverPane;
     @FXML
     private Pane pauseInfoPane;
@@ -152,6 +156,7 @@ public class GameController {
      */
     @FXML
     protected void openMainMenu(ActionEvent event) {
+        fileHandler.addSurvivalInfo(CollisionHandler.killcoins);
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
@@ -344,14 +349,16 @@ public class GameController {
         gc.setFill(Color.BLACK);
 
         if (!level.getSurvival()) {
-            gc.fillText(level.getCoinCounter() + "/" + coinAmount, 60, 40);
+            coinCounter.setVisible(true);
+            gc.fillText(level.getCoinCounter() + "/" + coinAmount, 60, 35);
         }
 
         if (level.getSurvival()) {
-            gc.fillText("Bullets: " + level.getBulletCounter(), 250, 40);
-            gc.fillText("Wave: " + level.getWaveNr(), 350, 40);
-            gc.fillText("Enemies killed: " + level.getKillCounter(), 450, 40);
-            gc.fillText("KillCoins earned: " + CollisionHandler.killcoins, 600, 40);
+            killCoinCounter.setVisible(true);
+            gc.fillText(CollisionHandler.killcoins + "", 60, 35);
+            gc.fillText("Bullets: " + level.getBulletCounter(), 270, 35);
+            gc.fillText("Wave: " + level.getWaveNr(), 370, 35);
+            gc.fillText("Enemies killed: " + level.getKillCounter(), 470, 35);
         }
         renderTime();
         drawHealthBar();
@@ -364,6 +371,7 @@ public class GameController {
         if (!player.getAlive()) {
             gameOver = true;
             gameOverPane.setVisible(true);
+            fileHandler.addSurvivalInfo(CollisionHandler.killcoins);
             canvas.setOpacity(0.7f);
             SoundEffects.GAMEOVER.play();
         }
@@ -415,8 +423,8 @@ public class GameController {
      * Draws the health bar.
      */
     private void drawHealthBar() {
-        short healthX = 100;
-        short healthY = 24;
+        short healthX = 120;
+        short healthY = 18;
         short healthWidth = 80;
         short healthHeight = 25;
         short healthArc = 10;
@@ -448,7 +456,7 @@ public class GameController {
         gc.setGlobalAlpha(1);
         gc.setFill(Color.BLACK);
         String formattedHp = String.valueOf((double) player.getHp() / 100 * 100);
-        gc.fillText(formattedHp.substring(0, formattedHp.length() - 2) + "%", 187, 40);
+        gc.fillText(formattedHp.substring(0, formattedHp.length() - 2) + "%", 207, 35);
     }
 
     /**
