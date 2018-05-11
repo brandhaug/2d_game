@@ -122,7 +122,6 @@ public class MainMenuController {
     @FXML
     protected void openGameLevel(ActionEvent event) {
         musicClip.stop();
-//        GameController.setMapName("game");
         sceneChanger.changeScene(event, "../ClassicLevels/ClassicLevels.fxml", true);
     }
 

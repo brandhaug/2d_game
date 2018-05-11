@@ -42,18 +42,18 @@ public class MapParser {
     }
 
     //TODO: Find a way to get bullet amount and return it in loadMap function.
-    public static int getBulletAmount(File file) {
+    public static int getValueFromFile(File file, String name) {
         Scanner scanner;
+        int value = 0;
+
         try {
             scanner = new Scanner(file);
-
             String line = scanner.nextLine();
-            int bullets = getValueFromMapHeader(line, "bullets");
-            bulletAmount = bullets;
+            value = getValueFromMapHeader(line, name);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return bulletAmount;
+        return value;
     }
 
     public static int getValueFromMapHeader(String header, String name) {

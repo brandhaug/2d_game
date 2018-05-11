@@ -1,5 +1,6 @@
 package ClassicLevels;
 
+import CreateLevel.MapParser;
 import Game.GameController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -58,9 +59,16 @@ public class ClassicLevelsController {
 
         } else {
             String status;
+            int level;
 
             for (int i = 0; i < levelFiles.length; i++) {
-                if (i > progress && folderName.equals("standard")) {
+                if (folderName.equals("standard")) {
+                    level = MapParser.getValueFromFile(levelFiles[i], "level");
+                } else {
+                    level = 0;
+                }
+
+                if (level > progress) {
                     status = "Locked";
                 } else {
                     status = "Unlocked";
@@ -82,8 +90,22 @@ public class ClassicLevelsController {
     }
 
     private int getProgress() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("progress"));
-        return Integer.parseInt(br.readLine());
+        BufferedReader br = new BufferedReader(new FileReader("progress.txt"));
+        String progressString = br.readLine();
+        br.close();
+
+        if (progressString.length() == 0) {
+            System.out.println("No progress found in file");
+        }
+
+        int progressInt = 1;
+
+        try {
+            progressInt = Integer.parseInt(progressString);
+        } catch (Exception e){
+            errorLabel.setText("Invalid progress file - Progress set to 1");
+        }
+        return progressInt;
     }
 
     public void standardTableClicked(MouseEvent event) {
@@ -95,7 +117,7 @@ public class ClassicLevelsController {
     }
 
     public void customTableClicked(MouseEvent event) {
-        if (!customLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
+        if (customLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
             errorLabel.setText("Level is not unlocked");
         } else {
             openGameLevel("classic/custom/" + customLevelList.getSelectionModel().getSelectedItem().getName());

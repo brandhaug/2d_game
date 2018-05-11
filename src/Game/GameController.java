@@ -1,5 +1,6 @@
 package Game;
 
+import CreateLevel.MapParser;
 import Game.GameObjects.Bullet;
 import Game.GameObjects.BulletType;
 import Game.GameObjects.Player;
@@ -28,8 +29,9 @@ import org.apache.commons.lang3.time.StopWatch;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.prefs.Preferences;
 
 import static Resources.soundEffects.SoundEffects.mute;
@@ -289,7 +291,7 @@ public class GameController {
         spawningThread.setDaemon(true);
         spawningThread.start();
         gc = canvas.getGraphicsContext2D();
-        player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY(),"A");
+        player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY(), "A");
         coinAmount = level.getCoins().size();
         collisionHandler = new CollisionHandler(player, level);
         highScoreHandler = new HighScoreHandler();
@@ -414,6 +416,39 @@ public class GameController {
             gameWonCoinImage.setVisible(true);
             gameWonCoins.setText(gameWonCoins.getText() + String.valueOf(level.getCoinCounter()));
             gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
+
+            BufferedReader br = null;
+            int progress = 1;
+
+            try {
+                br = new BufferedReader(new FileReader("progress.txt"));
+
+                try {
+                    progress = Integer.parseInt(br.readLine());
+                } catch (Exception e) {
+
+                }
+
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            File map = new File("src/Resources/maps/" + mapName);
+            int levelProgress = MapParser.getValueFromFile(map, "level");
+
+            if (levelProgress == progress) {
+                File progressFile = new File("progress.txt");
+                FileOutputStream fileStream = null;
+                try {
+                    fileStream = new FileOutputStream(progressFile, false);
+                    byte[] myBytes = BigInteger.valueOf(levelProgress + 1).toByteArray();
+                    fileStream.write(myBytes);
+                    fileStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
             if (highScoreHandler.isNewHighScore(mapName, timeSeconds, level.getCoinCounter())) {
                 gameWonHighScore.setText("Congratulations, it's a new high score!");
