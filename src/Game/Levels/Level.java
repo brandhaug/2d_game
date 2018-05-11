@@ -7,6 +7,7 @@ import MainMenu.MainMenuController;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -44,12 +45,16 @@ public class Level implements Runnable {
     boolean playerIsAlive = true;
     private int enemyAmount = 0;
     private boolean survival = false;
-    private int[][] spawnSpots = new int[2][75];
+    private int[][] spawnSpots;
     private List<Bullet> bullets;
     private List<Bullet> disposeBullets;
     private List<Ammunition> ammunition;
 
-
+    /**
+     * Parses the map of specified filename.
+     *
+     * @param fileName the filename for the selected map
+     */
     public Level(String fileName) {
         tiles = new ArrayList<>();
         coins = new ArrayList<>();
@@ -58,61 +63,108 @@ public class Level implements Runnable {
         disposeBullets = new ArrayList<>();
         disposeEnemies = new ArrayList<>();
         ammunition = new ArrayList<>();
+        spawnSpots = new int[2][getNumberOfType('x',fileName)];
         char[][] map = loadMap(fileName);
         parseMap(map);
         playerChangeY = getPlayerStartPositionY();
         bulletCounter = 0;
     }
 
+    /**
+     * Keeps the game running by drawing canvas according to state of the game.
+     *
+     * @param currentNanoTime the nano time of the current game loop.
+     */
+
+    /**
+     * Initializes the cameraVelocityY
+     */
     private void initializeCameraVelocityY() {
         cameraVelocityY = GameController.PLAYER_Y_MARGIN - playerStartPositionY;
     }
 
+    /**
+     * Returns a list of Tiles for the selected map
+     */
     public List<Tile> getTiles() {
         return tiles;
     }
 
+    /**
+     * Returns a list of Coins for the selected map
+     */
     public List<Coin> getCoins() {
         return coins;
     }
 
+    /**
+     * Returns a list of Enemies for the selected map
+     */
     public List<Enemy> getEnemies() {
         return enemies;
     }
 
+    /**
+     * Returns a list of Enemies that needs to be safely removed from the game session
+     */
     public List<Enemy> getDisposeEnemies() {
         return disposeEnemies;
     }
 
+    /**
+     * Returns a list of Bullets for the selected map
+     */
     public List<Bullet> getBullets() {
         return bullets;
     }
 
+    /**
+     * Returns a list of Bullets that needs to be safely removed from the game session
+     */
     public List<Bullet> getDisposeBullets() {
         return disposeBullets;
     }
 
+    /**
+     * Returns a list of Bullets for the selected map
+     */
     public List<Ammunition> getAmmunition() {
         return ammunition;
     }
 
 
+    /**
+     * Increases the variable coinCounter by one
+     */
     public void addCoinCounter() {
         this.coinCounter++;
     }
 
+    /**
+     * Returns variable coinCounter
+     */
     public int getCoinCounter() {
         return coinCounter;
     }
 
+
+    /**
+     * Increases the variable killCounter by one
+     */
     public void addKillCounter() {
         this.killCounter++;
     }
 
+    /**
+     * Returns variable killCounter
+     */
     public int getKillCounter() {
         return killCounter;
     }
 
+    /**
+     * Returns variable cameraStable
+     */
     public boolean getCameraStable() {
         return cameraStable;
     }
@@ -162,12 +214,6 @@ public class Level implements Runnable {
         handleCameraVelocity(player);
         render(gc, player, time);
         if (survival) spawnEnemies(player);
-
-        /*
-        System.out.println("Kills required: " + killsRequired);
-        System.out.println("Enemies killed: " + killCounter);
-        System.out.println("Enemy Amount: " + enemyAmount);
-        */
     }
 
 
@@ -281,8 +327,8 @@ public class Level implements Runnable {
 
     private void checkOutOfBounds(Enemy enemy) {
         if (enemy.getY() < -GameController.CANVAS_HEIGHT - GameController.PLAYER_Y_MARGIN
-                || enemy.getY() > GameController.CANVAS_HEIGHT + GameController.PLAYER_Y_MARGIN) {
-            System.err.println("SPAWN-FAIL: Enemy DELETED!: ENM X: " + enemy.getX() + " " + "ENM Y: " + enemy.getY());
+                || enemy.getY() > GameController.CANVAS_HEIGHT + GameController.PLAYER_Y_MARGIN * 2) {
+            //System.err.println("SPAWN-FAIL: Enemy DELETED!: ENM X: " + enemy.getX() + " " + "ENM Y: " + enemy.getY());
             enemyAmount++;
             disposeEnemies.add(enemy);
         }
@@ -349,10 +395,8 @@ public class Level implements Runnable {
             }
 
             if (enemyAmount <= 20 && enemyAmount > 0) {
-                if (spawnY - EnemyType.ENEMY_A.getRunH() > GameController.TILE_SIZE) {
                     enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_A.getIdleH(), EnemyType.ENEMY_A));
                     enemyAmount--;
-                }
             } else if (enemyAmount <= 40 && enemyAmount > 20 && cameraVelocityY == 0) {
                 enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_B.getIdleH(), EnemyType.ENEMY_B));
                 enemyAmount--;
@@ -410,6 +454,30 @@ public class Level implements Runnable {
 
     public void addBullet(Bullet b) {
         bullets.add(b);
+    }
+
+    public int getNumberOfType(char c, String pathName) {
+        Scanner scanner = null;
+        int numberOfType = 0;
+        try {
+            scanner = new Scanner(new File("src/Resources/maps/"+pathName), "utf-8");
+
+            while (scanner.hasNext()) {
+                char[] line = scanner.nextLine().toLowerCase().toCharArray();
+
+                for (Character character : line) {
+                    if (character.equals(c)) {
+                        numberOfType++;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (scanner != null) scanner.close();
+        }
+
+        return numberOfType;
     }
 
 

@@ -156,6 +156,7 @@ public class GameController {
      */
     @FXML
     protected void openMainMenu(ActionEvent event) {
+        fileHandler.addSurvivalInfo(CollisionHandler.killcoins);
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
