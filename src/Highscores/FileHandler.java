@@ -4,6 +4,8 @@ package Highscores;
 import ClassicLevels.ClassicLevelsController;
 import CreateLevel.MapParser;
 import Game.GameController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.Pane;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
@@ -34,6 +36,7 @@ public class FileHandler {
     private Path progressPath;
     private SecretKey secretKey;
     private Cipher cipher;
+    private String errorLabel = "";
 
     /**
      * Singleton
@@ -366,7 +369,7 @@ public class FileHandler {
 
             writeBytesToFile(filePath.toFile(), cipher.doFinal(text));
         } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | IOException e) {
-            e.printStackTrace();
+            errorLabel = "There seems to be something wrong. Please delete 'key.txt', 'progress.txt' and 'survivalInfo.txt'. All progress will be lost.";
         }
     }
 
@@ -384,7 +387,7 @@ public class FileHandler {
             }
 
         } catch (InvalidKeyException | IOException e) {
-            e.printStackTrace();
+            errorLabel = "There seems to be something wrong. Please delete 'key.txt', 'progress.txt' and 'survivalInfo.txt'. All progress will be lost.";
         } catch (BadPaddingException | IllegalBlockSizeException ignored) {
 
         }
@@ -485,8 +488,7 @@ public class FileHandler {
             encryptFile(progressPath);
             return Integer.parseInt(lines.get(0));
         } catch (Exception e) {
-            ClassicLevelsController.setErrorLabel("Invalid progress file - Progress set to 1");
-            return 1;
+            return -1;
         }
     }
 
@@ -507,5 +509,9 @@ public class FileHandler {
 
     public Path getSurvivalPath() {
         return survivalPath;
+    }
+
+    public String getErrorLabel() {
+        return errorLabel;
     }
 }
