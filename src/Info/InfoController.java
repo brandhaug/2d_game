@@ -16,11 +16,23 @@ public class InfoController {
 
     private SceneChanger sceneChanger;
 
+    /**
+     * Opens the main menu
+     *
+     * @param event the ActionEvent
+     * @see ActionEvent
+     */
     @FXML
     protected void openMainMenu(ActionEvent event) {
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
+    /**
+     * Sets a new SceneChanger class.
+     * Sets style of the info pane.
+     *
+     * @see SceneChanger
+     */
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();

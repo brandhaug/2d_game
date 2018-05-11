@@ -24,6 +24,21 @@ public enum  EnemyType {
     private int hitH;
     private int hitW;
 
+    /**
+     * Initializes all variables in class
+     *
+     * @param fileName the file name
+     * @param hp       the hp
+     * @param speed    the speed
+     * @param damage   the damage
+     * @param points   the points
+     * @param idleW    the idle width
+     * @param idleH    the idle height
+     * @param runW     the run width
+     * @param runH     the run height
+     * @param hitW     the hit width
+     * @param hitH     the hit height
+     */
     EnemyType(String fileName, int hp, int speed, int damage, int points, int idleW, int idleH, int runW, int runH, int hitW, int hitH) {
         this.fileName = fileName;
         this.hp = hp;
@@ -38,50 +53,110 @@ public enum  EnemyType {
         this.hitH = hitH;
     }
 
+    /**
+     * Gets the file name
+     *
+     * @return file name
+     */
     public String getFileName() {
         return fileName;
     }
 
-    public int getIdleW(){
+    /**
+     * Gets the idle width
+     *
+     * @return idleW
+     */
+    public int getIdleW() {
         return idleW;
     }
 
-    public int getIdleH(){
+    /**
+     * Gets the idle height
+     *
+     * @return idleH
+     */
+    public int getIdleH() {
         return idleH;
     }
 
-    public int getRunW(){
+    /**
+     * Gets the run width
+     *
+     * @return runW
+     */
+    public int getRunW() {
         return runW;
     }
 
-    public int getRunH(){
+    /**
+     * Gets the run height
+     *
+     * @return runH
+     */
+    public int getRunH() {
         return runH;
     }
 
-    public int getHitW(){
+    /**
+     * Gets the hit width
+     *
+     * @return hitW
+     */
+    public int getHitW() {
         return hitW;
     }
 
-    public int getHitH(){
+    /**
+     * Gets the hit height
+     *
+     * @return hitH
+     */
+    public int getHitH() {
         return hitH;
     }
 
+    /**
+     * Sets the hp by subtracting the damage
+     *
+     * @param damage done to enemy
+     */
     public void setHp(int damage) {
         this.hp -= damage;
     }
 
-    public int getHp(){
+    /**
+     * Gets the hp
+     *
+     * @return hp
+     */
+    public int getHp() {
         return hp;
     }
 
-    public int getSpeed(){
+    /**
+     * Gets the speed
+     *
+     * @return speed
+     */
+    public int getSpeed() {
         return speed;
     }
 
-    public int getDamage(){
+    /**
+     * Gets the damage
+     *
+     * @return damage
+     */
+    public int getDamage() {
         return damage;
     }
 
+    /**
+     * Gets the points
+     *
+     * @return points
+     */
     public int getPoints(){
         return points;
     }

@@ -4,7 +4,10 @@ import Game.GameObjects.*;
 import Game.Levels.Level;
 import Resources.soundEffects.SoundEffects;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class CollisionHandler {
@@ -17,8 +20,9 @@ public class CollisionHandler {
 
     /**
      * Sets the variables in class from parameters.
+     *
      * @param player the Player object
-     * @param level the Level object
+     * @param level  the Level object
      */
     CollisionHandler(Player player, Level level) {
         this.player = player;
@@ -98,6 +102,7 @@ public class CollisionHandler {
 
     /**
      * Handles enemy collision with tile by calling on sub methods top, bottom, right and left collision.
+     *
      * @param tile the Tile object
      * @see Tile
      */
@@ -145,6 +150,7 @@ public class CollisionHandler {
 
     /**
      * Handles the collision when a GameObject collides with the top of a tile.
+     *
      * @param gameObject the GameObject object.
      * @see GameObject
      */
@@ -163,6 +169,7 @@ public class CollisionHandler {
 
     /**
      * Handles the collision when a GameObject collides with the bottom of a tile.
+     *
      * @param gameObject the GameObject object.
      * @see GameObject
      */
@@ -173,6 +180,7 @@ public class CollisionHandler {
 
     /**
      * Handles the collision when a GameObject collides with the right side of a tile.
+     *
      * @param gameObject the GameObject object.
      * @see GameObject
      */
@@ -185,6 +193,7 @@ public class CollisionHandler {
 
     /**
      * Handles the collision when a GameObject collides with the left side of a tile.
+     *
      * @param gameObject the GameObject object.
      * @see GameObject
      */
@@ -197,53 +206,53 @@ public class CollisionHandler {
 
     public void handleEnemyCollision() {
         Iterator<Enemy> iterator = level.getEnemies().iterator();
-            while (iterator.hasNext()) {
-                Enemy e = iterator.next();
+        while (iterator.hasNext()) {
+            Enemy e = iterator.next();
 
-                handleEnemyBulletCollision(e, iterator);
+            handleEnemyBulletCollision(e, iterator);
 
-                if (playerEnemyCollision) {
-                    if (e.getBoundsTop().intersects(player.getBoundsBottom())) {
-                        handleEnemyTopCollision(e.getDamage(), e, iterator);
-                    }
+            if (playerEnemyCollision) {
+                if (e.getBoundsTop().intersects(player.getBoundsBottom())) {
+                    handleEnemyTopCollision(e.getDamage(), e, iterator);
+                }
 
-                    if (e.getBoundsRight().intersects(player.getBoundsLeft())) {
-                        handleEnemyRightCollision(e.getDamage());
-                    }
+                if (e.getBoundsRight().intersects(player.getBoundsLeft())) {
+                    handleEnemyRightCollision(e.getDamage());
+                }
 
-                    if (e.getBoundsBottom().intersects(player.getBoundsTop())) {
-                        handleEnemyBottomCollision(e.getDamage());
-                    }
+                if (e.getBoundsBottom().intersects(player.getBoundsTop())) {
+                    handleEnemyBottomCollision(e.getDamage());
+                }
 
-                    if (e.getBoundsLeft().intersects(player.getBoundsRight())) {
-                        handleEnemyLeftCollision(e.getDamage());
-                    }
+                if (e.getBoundsLeft().intersects(player.getBoundsRight())) {
+                    handleEnemyLeftCollision(e.getDamage());
                 }
             }
         }
+    }
 
     private void handleEnemyBulletCollision(Enemy enemy, Iterator<Enemy> enemyIterator) {
         for (Bullet bullet : level.getBullets()) {
             if (bullet.getBoundsTop().intersects(enemy.getBoundsLeft()) || bullet.getBoundsTop().intersects(enemy.getBoundsRight())
                     || bullet.getBoundsBottom().intersects(enemy.getBoundsLeft()) || bullet.getBoundsBottom().intersects(enemy.getBoundsRight())) {
                 disposeBullets.add(bullet);
-                if(enemy.getHp() <= bullet.getDamage()) {
+                if (enemy.getHp() <= bullet.getDamage()) {
                     enemy.setAlive(false);
                     killcoins += enemy.getPoints();
                     level.addKillCounter();
                     SoundEffects.ENEMY_DEATH.play();
                     disposeEnemies.add(enemy);
-                }else {
-                    enemy.setHp(enemy.getHp()-bullet.getDamage());
+                } else {
+                    enemy.setHp(enemy.getHp() - bullet.getDamage());
                     enemyIsHit(enemy);
                 }
             }
         }
     }
 
-    private void enemyIsHit(Enemy enemy){
+    private void enemyIsHit(Enemy enemy) {
         enemy.setEnemyHit(true);
-        enemy.setY(enemy.getY() - (enemy.getHeightHit()-enemy.getHeight()));
+        enemy.setY(enemy.getY() - (enemy.getHeightHit() - enemy.getHeight()));
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -255,7 +264,7 @@ public class CollisionHandler {
     }
 
 
-    private void playerHitTimeOut(){
+    private void playerHitTimeOut() {
         playerEnemyCollision = false;
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -268,30 +277,31 @@ public class CollisionHandler {
     }
 
     public void handleEnemyTopCollision(int enemyDamage, Enemy enemy, Iterator<Enemy> enemyIterator) {
-        playerHit(enemyDamage,false);
-        if(enemy.getHp() == 1) {
+        playerHit(enemyDamage, false);
+        if (enemy.getHp() == 1) {
             level.addKillCounter();
             killcoins += enemy.getPoints();
             SoundEffects.ENEMY_DEATH.play();
             enemyIterator.remove();
-        }else{
-            enemy.setHp(enemy.getHp()-1);
+        } else {
+            enemy.setHp(enemy.getHp() - 1);
             enemyIsHit(enemy);
         }
     }
 
     private void handleEnemyBottomCollision(int enemyDamage) {
-        playerHit(enemyDamage,true);
+        playerHit(enemyDamage, true);
         playerHitTimeOut();
     }
 
     private void handleEnemyRightCollision(int enemyDamage) {
         playerHitTimeOut();
-        playerHit(enemyDamage,true);
+        playerHit(enemyDamage, true);
     }
+
     private void handleEnemyLeftCollision(int enemyDamage) {
         playerHitTimeOut();
-        playerHit(enemyDamage,true);
+        playerHit(enemyDamage, true);
     }
 
     private void playerHit(int enemyDamage, boolean damage) {

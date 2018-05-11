@@ -34,12 +34,11 @@ public class FileHandler {
     private SecretKey secretKey;
     private Cipher cipher;
     private String errorLabel = "";
-
-    /**
-     * Singleton
-     */
     private static FileHandler instance;
 
+    /**
+     * Gets the instance of the class using Singleton.
+     */
     public static FileHandler getInstance() {
         if (instance == null) {
             instance = new FileHandler();
@@ -47,6 +46,11 @@ public class FileHandler {
         return instance;
     }
 
+    /**
+     * Sets secret key and cipher.
+     * Sets all path variables.
+     * Creates all necessary files that don't exists
+     */
     private FileHandler() {
         try {
             secretKey = KeyGenerator.getInstance("DES").generateKey();
@@ -62,6 +66,14 @@ public class FileHandler {
         createFilesIfNotExists();
     }
 
+    /**
+     * Adds a new score to the high score file. If the map does not exist, adds automatically new first place.
+     * If not, place new high score accordingly.
+     *
+     * @param mapName the name of the map
+     * @param time    the time spent
+     * @param coins   the coins collected
+     */
     public void addToHighScore(String mapName, int time, int coins) {
         decryptFile(highScorePath);
 
@@ -75,6 +87,9 @@ public class FileHandler {
         encryptFile(highScorePath);
     }
 
+    /**
+     * Deletes every score in the high score files that is not top 3.
+     */
     private void deleteOverload() {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_PATH));
@@ -105,6 +120,11 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Adds game points to the survival file
+     *
+     * @param gamePoints game points collected from session
+     */
     public void addSurvivalInfo(int gamePoints) {
         try {
             decryptFile(survivalPath);
@@ -119,6 +139,14 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Adds a new placement to the high score file, depending on time and object amount.
+     * Finds correct placement between other placements.
+     *
+     * @param mapName      the name of the map
+     * @param time         the time spent
+     * @param objectAmount the object amount collected. Could be coins or enemies killed.
+     */
     private void addNewPlacement(String mapName, int time, int objectAmount) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_PATH));
@@ -182,6 +210,13 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Adds a new first placement to the high score file, if map is succeeded for the first time.
+     *
+     * @param mapName the name of the map
+     * @param time    the time spent
+     * @param objects the object amount collected
+     */
     private void addFirstPlacement(String mapName, int time, int objects) {
         try {
             List<String> lines = Files.readAllLines(highScorePath, StandardCharsets.ISO_8859_1);
@@ -199,6 +234,14 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Checks if the current score is a new high score, and returns true or false accordingly.
+     *
+     * @param mapName the name of the map
+     * @param time    the time spent
+     * @param coins   the coins collected
+     * @return true if it's a new high score, false if not.
+     */
     public boolean isNewHighScore(String mapName, int time, int coins) {
         decryptFile(highScorePath);
         if (!mapExistsInFile(mapName) || isBetterPlacement(mapName, time, coins)) {
@@ -208,6 +251,14 @@ public class FileHandler {
         return false;
     }
 
+    /**
+     * Given that the current map exists in the high score file, checks if it's a better placement than earlier.
+     *
+     * @param mapName the name of the map
+     * @param time    the time spent
+     * @param objects the object amount collected
+     * @return true if it's a better placement, false if not.
+     */
     private boolean isBetterPlacement(String mapName, int time, int objects) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_PATH));
@@ -252,6 +303,11 @@ public class FileHandler {
         return false;
     }
 
+    /**
+     * Checks if current map played exists in high score file or not
+     * @param mapName the name of the map
+     * @return true if map exists in high score file, false if not
+     */
     private boolean mapExistsInFile(String mapName) {
         try (Stream<String> lines = Files.lines(highScorePath, StandardCharsets.ISO_8859_1)) {
             return lines.anyMatch(l -> l.replaceAll("map=", "").equals(mapName));
@@ -261,6 +317,9 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Creates all necessary files, if they don't exist. Encrypts created files.
+     */
     private void createFilesIfNotExists() {
         try {
             File file = new File(HIGH_SCORE_PATH);
@@ -309,6 +368,9 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Sets the standard content of the survival file. User starts with 10 kill points, and no bullets available.
+     */
     private void setSurvivalFileContent() {
         try {
             List<String> lines = Files.readAllLines(survivalPath, StandardCharsets.ISO_8859_1);
@@ -323,6 +385,9 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Gets the secret key from file by reading its bytes.
+     */
     private void getSecretKeyFromFile() {
         try {
             byte[] keyFromFile = readBytesFromFile(keyPath.toFile());
@@ -332,6 +397,11 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Gets the time from a line in high score
+     * @param line the line from high score file
+     * @return time in int
+     */
     int getTimeFromLine(String line) {
         String timeString = line.replaceAll("time=", "");
         StringBuilder sb = new StringBuilder(timeString);
@@ -341,6 +411,11 @@ public class FileHandler {
         return Integer.parseInt(timeString);
     }
 
+    /**
+     * Gets the object amount from a line in high score
+     * @param line the line from high score file
+     * @return object amount in int
+     */
     int getObjectAmountFromLine(String line) {
         StringBuilder sb = new StringBuilder(line);
         int index = sb.lastIndexOf("=");
@@ -348,6 +423,13 @@ public class FileHandler {
         return Integer.parseInt(amountString);
     }
 
+    /**
+     * Gets the array list from file given by path
+     * @param filePath the file path
+     * @return ArrayList of Strings
+     * @see ArrayList
+     * @see Path
+     */
     public ArrayList<String> getArrayListFromFile(Path filePath) {
         ArrayList<String> list = new ArrayList<>();
         try (Stream<String> lines = Files.lines(filePath, StandardCharsets.ISO_8859_1)) {
@@ -358,6 +440,10 @@ public class FileHandler {
         return list;
     }
 
+    /**
+     * Encrypt the file given by the path, using the secret key stored in key.txt
+     * @param filePath the file path
+     */
     public void encryptFile(Path filePath) {
         try {
             ArrayList<String> list = getArrayListFromFile(filePath);
@@ -370,6 +456,10 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Decrypts the file given by the path, using the secret key stored in key.txt
+     * @param filePath the file path
+     */
     public void decryptFile(Path filePath) {
         try {
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
@@ -390,6 +480,11 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Writes the decrypted text to file in a readable format
+     * @param filePath the path of the file
+     * @param s the decrypted string
+     */
     private void writeDecryptedTextToFile(String filePath, String s) {
         try {
             PrintWriter printWriter = new PrintWriter(filePath, "ISO-8859-1");
@@ -417,6 +512,12 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Reads and returns bytes from a file
+     * @param file the file
+     * @return a byte array read from the file
+     * @throws IOException
+     */
     private byte[] readBytesFromFile(File file) throws IOException {
         InputStream is = new FileInputStream(file);
         long length = file.length();
@@ -442,6 +543,12 @@ public class FileHandler {
         return bytes;
     }
 
+    /**
+     * Writes bytes to file
+     * @param theFile the file
+     * @param bytes byte array to be written to file
+     * @throws IOException
+     */
     private void writeBytesToFile(File theFile, byte[] bytes) throws IOException {
         FileOutputStream fos = new FileOutputStream(theFile);
         try (BufferedOutputStream bos = new BufferedOutputStream(fos)) {
@@ -449,6 +556,9 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Resets all high scores
+     */
     void resetHighScores() {
         try {
             Files.delete(highScorePath);
@@ -459,6 +569,9 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Sets the level progress by writing to file. Opens a new level if making the hardest map available.
+     */
     public void setProgress() {
         try {
             decryptFile(progressPath);
@@ -478,6 +591,10 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Gets the progress from file.
+     * @return int which represents the level progress
+     */
     public int getProgress() {
         try {
             decryptFile(progressPath);
@@ -490,6 +607,9 @@ public class FileHandler {
     }
 
 
+    /**
+     * Sets the progress file content, if it's being created
+     */
     private void setProgressFileContent() {
         try {
             List<String> lines = Files.readAllLines(Paths.get("progress.txt"), StandardCharsets.ISO_8859_1);
@@ -500,14 +620,26 @@ public class FileHandler {
         }
     }
 
+    /**
+     * Gets the high score path
+     * @return highScorePath
+     */
     Path getHighScorePath() {
         return highScorePath;
     }
 
+    /**
+     * Gets the survival path
+     * @return survivalPath
+     */
     public Path getSurvivalPath() {
         return survivalPath;
     }
 
+    /**
+     * Gets the error label
+     * @return errorLabel
+     */
     public String getErrorLabel() {
         return errorLabel;
     }
