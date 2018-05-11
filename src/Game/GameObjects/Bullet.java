@@ -8,15 +8,23 @@ import java.awt.*;
 public class Bullet extends GameObject {
 
     private int damage;
-    private int facing;
+    private boolean facingRight;
     private int height;
     private int width;
     private SpriteSheet spriteSheet;
     BulletType bulletType;
 
-    public Bullet(int x, int y, int facing, BulletType bulletType) {
-        super(x,y);
-        this.facing = facing;
+    /**
+     * Constructor
+     *
+     * @param x
+     * @param y
+     * @param facingRight
+     * @param bulletType
+     */
+    public Bullet(int x, int y, boolean facingRight, BulletType bulletType) {
+        super(x, y);
+        this.facingRight = facingRight;
         this.bulletType = bulletType;
         this.damage = bulletType.getDamage();
         this.width = bulletType.getWidth();
@@ -24,31 +32,33 @@ public class Bullet extends GameObject {
         initializeSpriteSheets();
     }
 
-    int test = 0;
+    /**
+     * Handles velocity x and y
+     * Renders bullet
+     *
+     * @param gc
+     */
     public void tick(GraphicsContext gc) {
         handleVelocityX();
         handleVelocityY();
-        //spriteSheet.drawBounds(gc,getX(),getY());
         render(gc);
-        System.out.println(test++);
     }
 
-    public int getFacing (){
-        return facing;
+    public boolean getFacingRight() {
+        return facingRight;
     }
 
-    public void setFacing(int facing) {
-        this.facing = facing;
-    }
-
-    public int getDamage(){
+    public int getDamage() {
         return damage;
     }
 
     public void initializeSpriteSheets() {
-            if(facing > 0) spriteSheet = new SpriteSheet("/Resources/bullets/bullet_" + bulletType.getFileName() + "_Right.png", 1, bulletType.getWidth(), bulletType.getHeight());
-            if(facing < 0) spriteSheet = new SpriteSheet("/Resources/bullets/bullet_" + bulletType.getFileName() + "_Left.png", 1, bulletType.getWidth(), bulletType.getHeight());
-            setCurrentSpriteSheet(spriteSheet);
+        if (facingRight) {
+            spriteSheet = new SpriteSheet("/Resources/bullets/bullet_" + bulletType.getFileName() + "_Right.png", 1, bulletType.getWidth(), bulletType.getHeight());
+        } else {
+            spriteSheet = new SpriteSheet("/Resources/bullets/bullet_" + bulletType.getFileName() + "_Left.png", 1, bulletType.getWidth(), bulletType.getHeight());
+        }
+        setCurrentSpriteSheet(spriteSheet);
     }
 
     private void handleVelocityX() {

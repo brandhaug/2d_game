@@ -28,7 +28,7 @@ public class ClassicLevelsController {
     private TableView<LevelColumn> standardLevelList, customLevelList;
 
     @FXML
-    private static Label errorLabel;
+    private Label errorLabel;
 
     @FXML
     private Button mainMenuButton;
@@ -38,37 +38,60 @@ public class ClassicLevelsController {
     private int progress;
 
 
+    /**
+     * Closes application
+     */
     @FXML
     protected void exit() {
         Platform.exit();
         System.exit(0);
     }
 
+    /**
+     * Set map name and change scene to Game
+     * @param mapName
+     */
     @FXML
     private void openGameLevel(String mapName) {
         GameController.setMapName(mapName);
         sceneChanger.changeScene((Stage) standardLevelList.getScene().getWindow(), "../Game/Game.fxml", true);
     }
 
-    public static void setErrorLabel(String error) {
-        errorLabel.setText(error);
-    }
-
+    /**
+     * Change scene to Main Menu
+     * @param event
+     */
     @FXML
     protected void openMainMenu(ActionEvent event) {
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
+    /**
+     * Initializes ClassicLevels
+     * Get progress
+     * Add standard and custom levels to list
+     */
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();
         fileHandler = FileHandler.getInstance();
         progress = fileHandler.getProgress();
+        if (progress == -1) {
+            errorLabel.setText("Invalid progress file. Deleting 'progress.txt' may help, but all your progress will be lost");
+            progress = 1;
+        }
 
         addLevelsToList(standardLevelList, "standard");
         addLevelsToList(customLevelList, "custom");
     }
 
+    /**
+     * Add levels from list to tables
+     * Set locked/unlocked on levels, based on progress
+     * Add columns to table
+     * @param levelList
+     * @param folderName
+     */
     private void addLevelsToList(TableView<LevelColumn> levelList, String folderName) {
         File levelFolder = new File("src/Resources/maps/classic/" + folderName);
         File[] levelFiles = levelFolder.listFiles();
@@ -107,30 +130,31 @@ public class ClassicLevelsController {
         levelList.getColumns().addAll(firstCol, secondCol);
     }
 
-    private int getProgress() throws IOException {
-        Path path = Paths.get("progress.txt");
-        List<String> lines = Files.readAllLines(path, StandardCharsets.ISO_8859_1);
-
-        try {
-            return Integer.parseInt(lines.get(0));
-        } catch (Exception e){
-            errorLabel.setText("Invalid progress file - Progress set to 1");
-        }
-        return 1;
-    }
-
+    /**
+     * Opens game with selected map
+     * If selected map is not unlocked - Sends error message to user
+     * @param event
+     */
     public void standardTableClicked(MouseEvent event) {
-        if (standardLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
+        if (standardLevelList.getSelectionModel().getSelectedItem() != null &&
+                standardLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
             errorLabel.setText("Level is not unlocked");
-        } else {
+        } else if (standardLevelList.getSelectionModel().getSelectedItem() != null) {
             openGameLevel("classic/standard/" + standardLevelList.getSelectionModel().getSelectedItem().getName());
         }
     }
 
+
+    /**
+     * Opens game with selected map
+     * If selected map is not unlocked - Sends error message to user
+     * @param event
+     */
     public void customTableClicked(MouseEvent event) {
-        if (customLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
+        if (customLevelList.getSelectionModel().getSelectedItem() != null &&
+                customLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
             errorLabel.setText("Level is not unlocked");
-        } else {
+        } else if (customLevelList.getSelectionModel().getSelectedItem() != null) {
             openGameLevel("classic/custom/" + customLevelList.getSelectionModel().getSelectedItem().getName());
         }
     }

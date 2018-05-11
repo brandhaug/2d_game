@@ -7,6 +7,7 @@ public class Tile extends GameObject {
     private TileType tileType;
     private final int SIZE = 72;
 
+
     public Tile(int x, int y, TileType tileType) {
         super(x, y);
         this.tileType = tileType;
