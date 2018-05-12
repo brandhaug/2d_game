@@ -10,7 +10,7 @@
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url('Resources/background/background_main_menu.png');" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainMenu.MainMenuController">
     <children>
         <Button fx:id="infoButton" layoutX="186.0" layoutY="624.0" mnemonicParsing="false" onAction="#openInfo" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/info.png');" styleClass="button" />
-        <Button fx:id="highscoresButton" layoutX="102.0" layoutY="624.0" mnemonicParsing="false" onAction="#openHighscores" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/highscores.png');" styleClass="button" />
+        <Button fx:id="highscoresButton" layoutX="102.0" layoutY="624.0" mnemonicParsing="false" onAction="#openHighScores" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/highscores.png');" styleClass="button" />
         <Button fx:id="musicButton" layoutX="1184.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleMusic" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/music_on.png');" styleClass="button" />
         <Button fx:id="soundButton" layoutX="1099.0" layoutY="624.0" mnemonicParsing="false" onAction="#toggleSound" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/sound_on.png');" styleClass="button" />
         <Button fx:id="exitButton" layoutX="21.0" layoutY="624.0" mnemonicParsing="false" onAction="#exit" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/exit.png');" styleClass="button" />

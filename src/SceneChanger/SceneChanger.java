@@ -14,11 +14,23 @@ import java.io.IOException;
 
 public class SceneChanger {
 
+    /**
+     * Changes the scene to the given path
+     * @param event the ActionEvent
+     * @param path the scene path
+     * @param loadStyleSheet true if style sheet should be loaded, false if not
+     */
     public void changeScene(ActionEvent event, String path, boolean loadStyleSheet) {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         changeScene(path, loadStyleSheet, stage);
     }
 
+    /**
+     * Changes the scene to the given path
+     * @param path the scene path
+     * @param loadStyleSheet true if style sheet should be loaded, false if not
+     * @param stage the Stage used to set the scene
+     */
     private void changeScene(String path, boolean loadStyleSheet, Stage stage) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(path));
@@ -33,6 +45,12 @@ public class SceneChanger {
         }
     }
 
+    /**
+     * Changes the scene to the given path
+     * @param stage the stage
+     * @param path the scene path
+     * @param loadStyleSheet true if style sheet should be loaded, false if not
+     */
     public void changeScene(Stage stage, String path, boolean loadStyleSheet) {
         changeScene(path, loadStyleSheet, stage);
     }

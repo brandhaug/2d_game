@@ -11,12 +11,18 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Level implements Runnable {
+public class Level {
     private List<Tile> tiles;
     private List<Coin> coins;
     private List<Enemy> enemies;
     private List<Enemy> disposeEnemies;
+    private List<Bullet> bullets;
+    private List<Bullet> disposeBullets;
+    private List<Ammunition> ammunition;
+
     private Chest chest;
+
+    private int[][] spawnSpots;
 
     private int minX = 0;
     private int maxX = 0;
@@ -26,11 +32,6 @@ public class Level implements Runnable {
     private int cameraVelocityY;
     private int playerStartPositionX;
     private int playerStartPositionY;
-    private boolean cameraInitialized;
-    private boolean cameraStable;
-
-    //survival
-    //TODO: Splitte opp Level og survival i hver sin klasse?
     private int spawnX;
     private int spawnY;
     private int random;
@@ -39,16 +40,13 @@ public class Level implements Runnable {
     private int killCounter = 0;
     private int bulletCounter;
     private int playerChangeY;
-
-    boolean validSpawn = false;
-    boolean enemyAttack;
-    boolean playerIsAlive = true;
     private int enemyAmount = 0;
+
+    private boolean cameraInitialized;
+    private boolean cameraStable;
+    private boolean validSpawn = false;
+    private boolean enemyAttack;
     private boolean survival = false;
-    private int[][] spawnSpots;
-    private List<Bullet> bullets;
-    private List<Bullet> disposeBullets;
-    private List<Ammunition> ammunition;
 
     /**
      * Parses the map of specified filename.
@@ -169,54 +167,101 @@ public class Level implements Runnable {
         return cameraStable;
     }
 
+    /**
+     * Decreases the enemy counter by 1
+     */
     public void decreaseEnemyCounter() {
         this.enemyAmount--;
     }
 
+    /**
+     * Gets the bullet counter
+     * @return bulletCounter
+     */
     public int getBulletCounter() {
         return bulletCounter;
     }
 
+    /**
+     * Gets the wave number
+     * @return waveNr
+     */
     public int getWaveNr() {
         return waveNr;
     }
 
-
+    /**
+     * Adds bullets to the bullet counter
+     * @param bullets the amount of bullets
+     */
     public void addBulletCounter(int bullets) {
         bulletCounter += bullets;
     }
 
+    /**
+     * Decreases the bullet counter by 1
+     */
     public void decreaseBulletCounter() {
         bulletCounter -= 1;
     }
 
+    /**
+     * Gets the player start position x
+     * @return playerStartPositionX
+     */
     public int getPlayerStartPositionX() {
         return playerStartPositionX;
     }
 
+    /**
+     * Gets the player start position y
+     * @return playerStartPositionY
+     */
     public int getPlayerStartPositionY() {
         return playerStartPositionY;
     }
 
+    /**
+     * Sets survival to true or false
+     * @param survival true if survival mode, false if not
+     */
     public void setSurvival(boolean survival) {
         this.survival = survival;
     }
 
+    /**
+     * Sets the bullet counter
+     * @param bulletCounter the amount of bullets
+     */
     public void setBulletCounter(int bulletCounter) {
         this.bulletCounter = bulletCounter;
     }
 
+    /**
+     * Returns true if survival mode, false if not
+     * @return survival
+     */
     public boolean getSurvival() {
         return survival;
     }
 
+    /**
+     * Handles the camera velocity, renders the game. Spawns enemies if survival
+     * @param gc the GraphicsContext
+     * @param player the player object
+     * @param time the time
+     */
     public void tick(GraphicsContext gc, Player player, double time) {
         handleCameraVelocity(player);
         render(gc, player, time);
         if (survival) spawnEnemies(player);
     }
 
-
+    /**
+     * Handles the camera velocity.
+     * Makes sure player always has the same distance from the bottom of the application scene.
+     * @param player the player object
+     */
     private void handleCameraVelocity(Player player) {
         if (!cameraInitialized) {
             initializeCameraVelocityY();
@@ -239,10 +284,21 @@ public class Level implements Runnable {
         }
     }
 
+    /**
+     * Gets the change in player position Y
+     * @return the change in player position Y
+     */
     private int getPlayerChangeY() {
         return Math.abs(playerStartPositionY - playerChangeY + 190);
     }
 
+    /**
+     * Renders the GraphicsContext
+     * Renders all objects on maps according to player position.
+     * @param gc the GraphicsContext
+     * @param player the player object
+     * @param time the time
+     */
     private void render(GraphicsContext gc, Player player, double time) {
         player.setY(player.getY() + cameraVelocityY);
         renderTiles(gc, player);
@@ -259,6 +315,11 @@ public class Level implements Runnable {
         }
     }
 
+    /**
+     * Renders the tiles according to player position
+     * @param gc the GraphicsContext
+     * @param player the player objects
+     */
     private void renderTiles(GraphicsContext gc, Player player) {
         for (Tile tile : getTiles()) {
             tile.setX(tile.getX() - player.getVelocityX());
@@ -267,6 +328,11 @@ public class Level implements Runnable {
         }
     }
 
+    /**
+     * Renders the coins according to player position
+     * @param gc the GraphicsContext
+     * @param player the player objects
+     */
     private void renderCoins(GraphicsContext gc, Player player) {
         for (Coin coin : getCoins()) {
             coin.setX(coin.getX() - player.getVelocityX());
@@ -275,6 +341,11 @@ public class Level implements Runnable {
         }
     }
 
+    /**
+     * Renders the chest according to player position
+     * @param gc the GraphicsContext
+     * @param player the player objects
+     */
     private void renderChest(GraphicsContext gc, Player player) {
         if (chest != null) {
             chest.setX(chest.getX() - player.getVelocityX());
@@ -283,6 +354,11 @@ public class Level implements Runnable {
         }
     }
 
+    /**
+     * Renders the ammunition according to player position
+     * @param gc the GraphicsContext
+     * @param player the player objects
+     */
     private void renderAmmunition(GraphicsContext gc, Player player) {
         for (Ammunition ammunition : getAmmunition()) {
             ammunition.setX(ammunition.getX() - player.getVelocityX());
@@ -291,6 +367,11 @@ public class Level implements Runnable {
         }
     }
 
+    /**
+     * Renders the enemies according to player position
+     * @param gc the GraphicsContext
+     * @param player the player objects
+     */
     private void renderEnemies(GraphicsContext gc, Player player) {
         for (Enemy enemy : getEnemies()) {
             if (survival) checkOutOfBounds(enemy);
@@ -309,7 +390,7 @@ public class Level implements Runnable {
             }
             enemy.setX(enemy.getX() - player.getVelocityX());
 
-            //if enemy collides with tileSide while falling
+            // If enemy collides with tileSide while falling
             if (enemy.getVelocityY() > 0) {
                 enemy.setVelocityY(10);
                 enemy.setRightCollision(false);
@@ -318,30 +399,29 @@ public class Level implements Runnable {
 
             enemy.setY(enemy.getY() + cameraVelocityY);
 
-            enemy.handleSpriteState();
+            enemy.handleSpriteStates();
             enemy.tick(gc);
             enemyAttack = true;
         }
         enemies.removeAll(disposeEnemies);
     }
 
+    /**
+     * Checks if an enemy spawns in illegal map position. Removes enemy and adds a new if true.
+     * @param enemy the enemy object
+     */
     private void checkOutOfBounds(Enemy enemy) {
         if (enemy.getY() < -GameController.CANVAS_HEIGHT - GameController.PLAYER_Y_MARGIN
                 || enemy.getY() > GameController.CANVAS_HEIGHT + GameController.PLAYER_Y_MARGIN * 2) {
-            //System.err.println("SPAWN-FAIL: Enemy DELETED!: ENM X: " + enemy.getX() + " " + "ENM Y: " + enemy.getY());
             enemyAmount++;
             disposeEnemies.add(enemy);
         }
     }
 
-    private void renderEnemies(GraphicsContext gc, Player player, double time) {
-        for (Enemy enemy : getEnemies()) {
-            enemy.setX(enemy.getX() - player.getVelocityX());
-            enemy.setY((int) (300 + (128 * Math.sin(time))));
-            enemy.tick(gc);
-        }
-    }
-
+    /**
+     * Adds another wave of enemies in survival mode.
+     * @param player the player object
+     */
     private void wave(Player player) {
         int spawnX;
         int spawnY;
@@ -360,6 +440,11 @@ public class Level implements Runnable {
         }
     }
 
+    /**
+     * Spawns a enemy in a random place of the map.
+     * @param player the player object
+     * @return random spawn placement
+     */
     private int randomSpawn(Player player) {
         int spawnX;
         while (!validSpawn) {
@@ -372,18 +457,14 @@ public class Level implements Runnable {
         return random;
     }
 
-
-    @Override
-    public void run() {
-
-    }
-
+    /**
+     * Spawns enemies in survival mode.
+     * @param player the player object
+     */
     private void spawnEnemies(Player player) {
         if (enemyAmount == 0) {
             if (killCounter >= killsRequired) {
                 wave(player);
-            } else {
-                return;
             }
         } else if (cameraVelocityY == 0 && (player.isRunning() || player.isIdling())) {
             int random = randomSpawn(player);
@@ -426,6 +507,11 @@ public class Level implements Runnable {
     }
 
 
+    /**
+     * Renders the bullets according to player position
+     * @param gc the GraphicsContext
+     * @param player the player objects
+     */
     private void renderBullets(GraphicsContext gc, Player player) {
         Iterator<Bullet> iterator = getBullets().iterator();
 
@@ -452,10 +538,20 @@ public class Level implements Runnable {
     }
 
 
+    /**
+     * Adds a bullet to the bullet list
+     * @param b the bullet
+     */
     public void addBullet(Bullet b) {
         bullets.add(b);
     }
 
+    /**
+     * Returns the amount of the current type in map
+     * @param c the type
+     * @param pathName the map name
+     * @return amount of the current type
+     */
     private int getNumberOfType(char c, String pathName) {
         Scanner scanner = null;
         int numberOfType = 0;
@@ -480,7 +576,11 @@ public class Level implements Runnable {
         return numberOfType;
     }
 
-
+    /**
+     * Parses the map given from the char array.
+     * Loops through every element in the array, and adds objects to the different objects lists given by custom rules.
+     * @param map the map represented by as char array.
+     */
     private void parseMap(char[][] map) {
         final char TILE = '-';
         final char COIN = 'C';
@@ -566,6 +666,9 @@ public class Level implements Runnable {
         setSpikeTiles();
     }
 
+    /**
+     * Sets the spike tiles below the map which will kill you on intersection.
+     */
     private void setSpikeTiles() {
         int marginX = 30;
         for (int x = minX - marginX; x <= maxX + marginX; x++) {
@@ -573,6 +676,11 @@ public class Level implements Runnable {
         }
     }
 
+    /**
+     * Sets the variables needed to place the spike tiles.
+     * @param x the x position
+     * @param y the y position
+     */
     private void setSpikeTilesVariables(int x, int y) {
         if (x <= minX) {
             minX = x;
@@ -585,11 +693,20 @@ public class Level implements Runnable {
         }
     }
 
+    /**
+     * Loads a map given by the map name
+     * @param fileName the map name
+     * @return a char array represented as the map
+     */
     private char[][] loadMap(String fileName) {
         File file = new File(getClass().getResource("/Resources/maps/" + fileName).getPath());
         return MapParser.getArrayFromFile(file);
     }
 
+    /**
+     * Gets the chest object
+     * @return chest
+     */
     public Chest getChest() {
         return chest;
     }

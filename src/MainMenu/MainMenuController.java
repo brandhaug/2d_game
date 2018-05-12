@@ -61,16 +61,25 @@ public class MainMenuController {
     public static String selectedBullet;
     private FileHandler fileHandler;
 
-    public MainMenuController() throws IOException {
+    /**
+     * Initializes a new FileHandler instance
+     */
+    public MainMenuController() {
         fileHandler = FileHandler.getInstance();
     }
 
+    /**
+     * Exits the game
+     */
     @FXML
     protected void exit() {
         Platform.exit();
         System.exit(0);
     }
 
+    /**
+     * Sets sound to on if its off. Sets if to off if its on. Changes icon accordingly.
+     */
     @FXML
     protected void toggleSound() {
         boolean soundOn = preferences.getBoolean("sound", true);
@@ -87,6 +96,9 @@ public class MainMenuController {
         }
     }
 
+    /**
+     * Sets music to on if its off. Sets if to off if its on. Changes icon accordingly.
+     */
     @FXML
     protected void toggleMusic() {
         boolean musicOn = preferences.getBoolean("music", true);
@@ -105,12 +117,21 @@ public class MainMenuController {
         }
     }
 
+    /**
+     * Changes the scene to the classic level selection scene.
+     * Stops the music.
+     * @param event the ActionEvent
+     */
     @FXML
     protected void openGameLevel(ActionEvent event) {
         musicClip.stop();
         sceneChanger.changeScene(event, "../ClassicLevels/ClassicLevels.fxml", true);
     }
 
+    /**
+     * Changes the scene to the survival game scene. Stops the music.
+     * @param event the Action Event
+     */
     @FXML
     private void openGameSurvival(ActionEvent event) {
         musicClip.stop();
@@ -118,6 +139,14 @@ public class MainMenuController {
         sceneChanger.changeScene(event, "../Game/Game.fxml", true);
     }
 
+    /**
+     * Starts the game if the bullet is available. Forwards to bullet buy screen if user has enough money to buy.
+     * @param selectedBulletType the selected bullet type
+     * @param bulletAvailable true if bullet is available, false if not
+     * @param bulletPrice the price of the bullet
+     * @param event the ActionEvent
+     * @param points the kill coins
+     */
     private void setBullet(String selectedBulletType, boolean bulletAvailable, Text bulletPrice, ActionEvent event, int points) {
         selectedBullet = selectedBulletType;
         if (bulletAvailable) {
@@ -128,6 +157,10 @@ public class MainMenuController {
         }
     }
 
+    /**
+     * When selecting a bullet in Survival Mode, tries to either use it if its available or buy if its not.
+     * @param event the ActionEvent
+     */
     @FXML
     protected void bulletSelected(ActionEvent event) {
         int points = getKillCoins();
@@ -145,6 +178,10 @@ public class MainMenuController {
         if (exitChooseBulletPane.isFocused()) chooseBulletPane.setVisible(false);
     }
 
+    /**
+     * Get the content of the survival file by decrypting, reading and encrypting.
+     * @return ArrayList of Strings.
+     */
     private ArrayList<String> getSurvivalFileContent() {
         fileHandler.decryptFile(fileHandler.getSurvivalPath());
         ArrayList<String> arrayList = fileHandler.getArrayListFromFile(fileHandler.getSurvivalPath());
@@ -152,6 +189,10 @@ public class MainMenuController {
         return arrayList;
     }
 
+    /**
+     * Gets the kill coins by reading the survival file. Gives user an error message if something goes wrong.
+     * @return kill coins
+     */
     private int getKillCoins() {
         int points = 0;
         try {
@@ -170,6 +211,9 @@ public class MainMenuController {
         return points;
     }
 
+    /**
+     * Buys the selected bullet by reading and writing to file. Decreasing kill coins by bullet price.
+     */
     @FXML
     protected void bulletPurchase() {
         int points = getKillCoins();
@@ -191,6 +235,9 @@ public class MainMenuController {
         if (exitBulletBuyPane.isFocused() || decline.isFocused()) buyBulletPane.setVisible(false);
     }
 
+    /**
+     * Sets the selectedBullet of the class to available by reading and writing to survival file.
+     */
     private void updateAvailableBullets() {
         try {
             int position = 0;
@@ -214,6 +261,9 @@ public class MainMenuController {
         }
     }
 
+    /**
+     * Chooses bullet from available bullets, by reading the survival file. Decrypts and encrypts file after open.
+     */
     @FXML
     protected void chooseBullet() {
         try {
@@ -255,24 +305,42 @@ public class MainMenuController {
         chooseBulletPane.setVisible(true);
     }
 
+    /**
+     * Opens the info scene. Stops the music.
+     * @param event the ActionEvent
+     */
     @FXML
     protected void openInfo(ActionEvent event) {
         musicClip.stop();
         sceneChanger.changeScene(event, "../Info/Info.fxml", true);
     }
 
+    /**
+     * Opens the create level scene. Stops the music.
+     * @param event the ActionEvent
+     */
     @FXML
     protected void openCreateLevel(ActionEvent event) {
         musicClip.stop();
         sceneChanger.changeScene(event, "../CreateLevel/CreateLevel.fxml", false);
     }
 
+    /**
+     * Opens the high score scene. Stops the music.
+     * @param event the ActionEvent
+     */
     @FXML
-    protected void openHighscores(ActionEvent event) {
+    protected void openHighScores(ActionEvent event) {
         musicClip.stop();
         sceneChanger.changeScene(event, "../Highscores/Highscores.fxml", true);
     }
 
+    /**
+     * Initializes a new SceneChanger.
+     * Sets kill coin text.
+     * Initializes music and sounds.
+     * @see SceneChanger
+     */
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();

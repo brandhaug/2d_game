@@ -210,7 +210,7 @@ public class Enemy extends GameObject{
      * Sets sprite state and sprite sheet depending on x and y velocity.
      */
     @Override
-    public void handleSpriteState() {
+    public void handleSpriteStates() {
         setLastSpriteState(getCurrentSpriteState());
 
         if (getVelocityX() == 0 && getVelocityY() == 0) {

@@ -7,6 +7,11 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    /**
+     * Starts the application
+     * @param primaryStage the stage the application is being run on
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Red Runner");
@@ -22,6 +27,10 @@ public class Main extends Application {
     }
 
 
+    /**
+     * Starts the application
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }

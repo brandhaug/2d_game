@@ -24,16 +24,26 @@ public class HighscoresController {
     private Image secondPlace = new Image("/Resources/buttons/silver.png");
     private Image thirdPlace = new Image("/Resources/buttons/bronze.png");
 
+    /**
+     * Changes to the main menu scene
+     * @param event the Action Event
+     */
     @FXML
     protected void openMainMenu(ActionEvent event) {
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
+    /**
+     * Reload the high score scene, by changing the scene to itself.
+     */
     @FXML
     private void reloadHighScoresScene() {
         sceneChanger.changeScene((Stage) mainMenuButton.getScene().getWindow(), "../Highscores/Highscores.fxml", true);
     }
 
+    /**
+     * Sets the tree view used in the list representing the high scores.
+     */
     private void setTreeView() {
         fileHandler.decryptFile(fileHandler.getHighScorePath());
         ArrayList<String> list = fileHandler.getArrayListFromFile(fileHandler.getHighScorePath());
@@ -77,6 +87,12 @@ public class HighscoresController {
         fileHandler.encryptFile(fileHandler.getHighScorePath());
     }
 
+    /**
+     * Makes a new tre branch
+     * @param name the branch name
+     * @param parent the parent node
+     * @return TreeItem<String>
+     */
     private TreeItem<String> makeBranch(String name, TreeItem<String> parent) {
         TreeItem<String> item = new TreeItem<>(name);
         item.setExpanded(true);
@@ -84,6 +100,12 @@ public class HighscoresController {
         return item;
     }
 
+    /**
+     * Makes a new tree branch
+     * @param name the tree name
+     * @param parent the parent item
+     * @param placement placement in tree
+     */
     private void makeBranch(String name, TreeItem<String> parent, int placement) {
         ImageView imageView = null;
         switch (placement) {
@@ -111,6 +133,11 @@ public class HighscoresController {
         parent.getChildren().add(item);
     }
 
+    /**
+     * Initializes a FileHandler object.
+     * Initializes a new SceneChanger.
+     * Sets the tree view.
+     */
     @FXML
     public void initialize() {
         fileHandler = FileHandler.getInstance();
@@ -118,6 +145,9 @@ public class HighscoresController {
         setTreeView();
     }
 
+    /**
+     * Opens a alert dialog, and resets all high scores if user confirms.
+     */
     @FXML
     public void resetHighScores() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);

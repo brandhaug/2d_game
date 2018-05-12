@@ -10,13 +10,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class CollisionHandler {
+class CollisionHandler {
     private Player player;
     private Level level;
     private List<Bullet> disposeBullets;
     private List<Enemy> disposeEnemies;
-    public static boolean playerEnemyCollision = true;
-    static int killcoins;
+    static boolean playerEnemyCollision = true;
+    static int killCoins;
 
     /**
      * Sets the variables in class from parameters.
@@ -34,7 +34,7 @@ public class CollisionHandler {
     /**
      * Is called on in every tick from game loop. Handles all collisions.
      */
-    public void tick() {
+    void tick() {
         handleTileCollision();
         handleCoinCollision();
         handleEnemyCollision();
@@ -82,7 +82,6 @@ public class CollisionHandler {
 
             if (player.getBoundsBottom().intersects(tile.getBoundsTop()) && !player.isJumping()) {
                 handleTileTopCollision(player);
-                //System.out.println("TILE Y: " + tile.getY()/GameController.TILE_SIZE);
             }
             if (player.getBoundsTop().intersects(tile.getBoundsBottom()) && !player.isFalling()) {
                 handleTileBottomCollision(player);
@@ -127,6 +126,11 @@ public class CollisionHandler {
         }
     }
 
+    /**
+     * Handles the collision that happens when a bullet hits a tile.
+     * Adds bullet to a list of bullets to be removed on collision.
+     * @param tile the tile
+     */
     private void handleTileBulletCollision(Tile tile) {
         for (Bullet bullet : level.getBullets()) {
 
@@ -155,14 +159,6 @@ public class CollisionHandler {
      * @see GameObject
      */
     private void handleTileTopCollision(GameObject gameObject) {
-        //player.setY(tileY - player.getCurrentSpriteSheet().getSpriteHeight() + 10);
-
-        //Find better sound effect before using this method
-        /*
-        if(player.getCurrentSpriteState() == Player.PLAYER_FALLING_LEFT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT){
-            soundEffects.LANDING.play();
-        }
-        */
         gameObject.setVelocityY(0);
         gameObject.setFirstCollision();
     }
@@ -174,7 +170,6 @@ public class CollisionHandler {
      * @see GameObject
      */
     private void handleTileBottomCollision(GameObject gameObject) {
-        //player.setY(tileY + tileHeight);
         gameObject.setVelocityY(1);
     }
 
@@ -204,7 +199,10 @@ public class CollisionHandler {
         }
     }
 
-    public void handleEnemyCollision() {
+    /**
+     * Handles the collision that happens when a bullet or player hits an enemy, by calling on sub methods.
+     */
+    private void handleEnemyCollision() {
         Iterator<Enemy> iterator = level.getEnemies().iterator();
         while (iterator.hasNext()) {
             Enemy e = iterator.next();
@@ -216,21 +214,22 @@ public class CollisionHandler {
                     handleEnemyTopCollision(e.getDamage(), e, iterator);
                 }
 
-                if (e.getBoundsRight().intersects(player.getBoundsLeft())) {
-                    handleEnemyRightCollision(e.getDamage());
-                }
-
-                if (e.getBoundsBottom().intersects(player.getBoundsTop())) {
-                    handleEnemyBottomCollision(e.getDamage());
-                }
-
-                if (e.getBoundsLeft().intersects(player.getBoundsRight())) {
-                    handleEnemyLeftCollision(e.getDamage());
+                if (e.getBoundsRight().intersects(player.getBoundsLeft()) ||
+                        e.getBoundsBottom().intersects(player.getBoundsTop()) ||
+                        e.getBoundsLeft().intersects(player.getBoundsRight())) {
+                    handleEnemyCollision(e.getDamage());
                 }
             }
         }
     }
 
+    /**
+     * Handles the collision that happens when a bullet hits an enemy.
+     * Removes bullet from player inventory. Decreases HP on enemy.
+     * Increases kill coins if enemy dies, as well as removing enemy.
+     * @param enemy the enemy
+     * @param enemyIterator an iterator of the enemies on map
+     */
     private void handleEnemyBulletCollision(Enemy enemy, Iterator<Enemy> enemyIterator) {
         for (Bullet bullet : level.getBullets()) {
             if (bullet.getBoundsTop().intersects(enemy.getBoundsLeft()) || bullet.getBoundsTop().intersects(enemy.getBoundsRight())
@@ -238,7 +237,7 @@ public class CollisionHandler {
                 disposeBullets.add(bullet);
                 if (enemy.getHp() <= bullet.getDamage()) {
                     enemy.setAlive(false);
-                    killcoins += enemy.getPoints();
+                    killCoins += enemy.getPoints();
                     level.addKillCounter();
                     SoundEffects.ENEMY_DEATH.play();
                     disposeEnemies.add(enemy);
@@ -250,6 +249,10 @@ public class CollisionHandler {
         }
     }
 
+    /**
+     * Sets the enemy to hit. Moving it's y position.
+     * @param enemy the enemy that is hit
+     */
     private void enemyIsHit(Enemy enemy) {
         enemy.setEnemyHit(true);
         enemy.setY(enemy.getY() - (enemy.getHeightHit() - enemy.getHeight()));
@@ -263,7 +266,10 @@ public class CollisionHandler {
         }, 700);
     }
 
-
+    /**
+     * Sets player and enemy collision to true for 0.3 seconds using Timer. Will make player unavailable to jump for 0.3 seconds.
+     * @see Timer
+     */
     private void playerHitTimeOut() {
         playerEnemyCollision = false;
         Timer timer = new Timer();
@@ -276,11 +282,18 @@ public class CollisionHandler {
         }, 300);
     }
 
-    public void handleEnemyTopCollision(int enemyDamage, Enemy enemy, Iterator<Enemy> enemyIterator) {
+    /**
+     * Handles the collision that happens when a player hits the top of an enemy.
+     * Adds kill points and removes enemy if it dies, decreases its hp if not.
+     * @param enemyDamage the damage done to the enemy
+     * @param enemy the enemy that is hit
+     * @param enemyIterator an enemy iterator of all enemies on the map
+     */
+    private void handleEnemyTopCollision(int enemyDamage, Enemy enemy, Iterator<Enemy> enemyIterator) {
         playerHit(enemyDamage, false);
         if (enemy.getHp() == 1) {
             level.addKillCounter();
-            killcoins += enemy.getPoints();
+            killCoins += enemy.getPoints();
             SoundEffects.ENEMY_DEATH.play();
             enemyIterator.remove();
         } else {
@@ -289,21 +302,22 @@ public class CollisionHandler {
         }
     }
 
-    private void handleEnemyBottomCollision(int enemyDamage) {
+    /**
+     * Handles the collision that happens when player hits an enemy (not on top).
+     * Decreases the damage of the player, and makes player unavailable of jumping for a few milliseconds.
+     * @param enemyDamage the damage done by the enemy
+     */
+    private void handleEnemyCollision(int enemyDamage) {
         playerHit(enemyDamage, true);
         playerHitTimeOut();
     }
 
-    private void handleEnemyRightCollision(int enemyDamage) {
-        playerHitTimeOut();
-        playerHit(enemyDamage, true);
-    }
-
-    private void handleEnemyLeftCollision(int enemyDamage) {
-        playerHitTimeOut();
-        playerHit(enemyDamage, true);
-    }
-
+    /**
+     * Decreases players HP by the enemy damage done. Sets player to dead if HP is below 0.
+     * Sets velocityY to -10.
+     * @param enemyDamage the damage done by the enemy
+     * @param damage true if damage should be taken, will only set velocityY if false.
+     */
     private void playerHit(int enemyDamage, boolean damage) {
         player.setVelocityY(-10);
         if (damage) {
@@ -313,6 +327,10 @@ public class CollisionHandler {
         }
     }
 
+    /**
+     * Handles the collision that happens between a player and ammunition in survival mode.
+     * Adds bullets to players inventory on collision.
+     */
     private void handleAmmunitionCollision() {
         Iterator<Ammunition> ammunitionIterator = level.getAmmunition().iterator();
         while (ammunitionIterator.hasNext()) {
@@ -324,25 +342,50 @@ public class CollisionHandler {
         }
     }
 
+    /**
+     * Checks if a game object intersects with player.
+     * @param object the game object
+     * @return true if intersection is made, false if not.
+     */
     private boolean intersectsWithPlayer(GameObject object) {
         return topIntersectsWithPlayer(object) || bottomIntersectsWithPlayer(object) || rightIntersectsWithPlayer(object) || leftIntersectsWithPlayer(object);
     }
 
+    /**
+     * Checks if the top of a game object intersects with player.
+     * @param object the game object
+     * @return true if intersection is made, false if not.
+     */
     private boolean topIntersectsWithPlayer(GameObject object) {
         return object.getBoundsTop().intersects(player.getBoundsTop()) || object.getBoundsTop().intersects(player.getBoundsRight())
                 || object.getBoundsTop().intersects(player.getBoundsBottom()) || object.getBoundsTop().intersects(player.getBoundsLeft());
     }
 
+    /**
+     * Checks if the bottom of a game object intersects with player.
+     * @param object the game object
+     * @return true if intersection is made, false if not.
+     */
     private boolean bottomIntersectsWithPlayer(GameObject object) {
         return object.getBoundsBottom().intersects(player.getBoundsTop()) || object.getBoundsBottom().intersects(player.getBoundsRight())
                 || object.getBoundsBottom().intersects(player.getBoundsBottom()) || object.getBoundsBottom().intersects(player.getBoundsLeft());
     }
 
+    /**
+     * Checks if the right side of a game object intersects with player.
+     * @param object the game object
+     * @return true if intersection is made, false if not.
+     */
     private boolean rightIntersectsWithPlayer(GameObject object) {
         return object.getBoundsRight().intersects(player.getBoundsTop()) || object.getBoundsRight().intersects(player.getBoundsRight())
                 || object.getBoundsRight().intersects(player.getBoundsBottom()) || object.getBoundsRight().intersects(player.getBoundsLeft());
     }
 
+    /**
+     * Checks if the left side of a game object intersects with player.
+     * @param object the game object
+     * @return true if intersection is made, false if not.
+     */
     private boolean leftIntersectsWithPlayer(GameObject object) {
         return object.getBoundsLeft().intersects(player.getBoundsTop()) || object.getBoundsLeft().intersects(player.getBoundsRight())
                 || object.getBoundsLeft().intersects(player.getBoundsBottom()) || object.getBoundsLeft().intersects(player.getBoundsLeft());

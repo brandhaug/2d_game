@@ -1,6 +1,5 @@
 package Game;
 
-import CreateLevel.MapParser;
 import Game.GameObjects.Bullet;
 import Game.GameObjects.BulletType;
 import Game.GameObjects.Player;
@@ -28,15 +27,8 @@ import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.time.StopWatch;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 import java.util.prefs.Preferences;
 
 import static Resources.soundEffects.SoundEffects.mute;
@@ -156,7 +148,7 @@ public class GameController {
      */
     @FXML
     protected void openMainMenu(ActionEvent event) {
-        fileHandler.addSurvivalInfo(CollisionHandler.killcoins);
+        fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
         sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
     }
 
@@ -275,10 +267,7 @@ public class GameController {
     public void initialize() {
         sceneChanger = new SceneChanger();
         initializeBackground();
-        //level = new Level(mapName);
-        Thread spawningThread = new Thread(level = new Level(mapName));
-        spawningThread.setDaemon(true);
-        spawningThread.start();
+        level = new Level(mapName);
         gc = canvas.getGraphicsContext2D();
         player = new Player(level.getPlayerStartPositionX(), level.getPlayerStartPositionY(), "A");
         coinAmount = level.getCoins().size();
@@ -329,7 +318,7 @@ public class GameController {
 
         gc.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
         renderBackground();
-        player.handleSpriteState();
+        player.handleSpriteStates();
         collisionHandler.tick();
         level.tick(gc, player, time);
         player.tick(gc);
@@ -355,7 +344,7 @@ public class GameController {
 
         if (level.getSurvival()) {
             killCoinCounter.setVisible(true);
-            gc.fillText(CollisionHandler.killcoins + "", 60, 35);
+            gc.fillText(CollisionHandler.killCoins + "", 60, 35);
             gc.fillText("Bullets: " + level.getBulletCounter(), 270, 35);
             gc.fillText("Wave: " + level.getWaveNr(), 370, 35);
             gc.fillText("Enemies killed: " + level.getKillCounter(), 470, 35);
@@ -371,7 +360,7 @@ public class GameController {
         if (!player.getAlive()) {
             gameOver = true;
             gameOverPane.setVisible(true);
-            fileHandler.addSurvivalInfo(CollisionHandler.killcoins);
+            fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
             canvas.setOpacity(0.7f);
             SoundEffects.GAMEOVER.play();
         }
@@ -393,7 +382,7 @@ public class GameController {
                 killAmount.setVisible(true);
                 killAmount.setText(killAmount.getText() + String.valueOf(level.getKillCounter()));
                 gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
-                fileHandler.addSurvivalInfo(CollisionHandler.killcoins);
+                fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
 
                 if (fileHandler.isNewHighScore(mapName, timeSeconds, level.getKillCounter())) {
                     gameWonHighScore.setText("Congratulations, it's a new high score!");
