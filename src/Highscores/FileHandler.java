@@ -595,12 +595,12 @@ public class FileHandler {
      * Gets the progress from file.
      * @return int which represents the level progress
      */
-    public int getProgress() {
+    public short getProgress() {
         try {
             decryptFile(progressPath);
             List<String> lines = Files.readAllLines(progressPath, StandardCharsets.ISO_8859_1);
             encryptFile(progressPath);
-            return Integer.parseInt(lines.get(0));
+            return Short.parseShort(lines.get(0));
         } catch (Exception e) {
             return -1;
         }

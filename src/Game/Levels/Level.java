@@ -279,6 +279,8 @@ public class Level {
                     cameraVelocityY = 0;
                     cameraStable = true;
                 }
+            } else {
+                cameraVelocityY = 0;
             }
             playerChangeY += cameraVelocityY;
         }

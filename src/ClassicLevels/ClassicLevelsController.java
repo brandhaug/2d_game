@@ -34,7 +34,7 @@ public class ClassicLevelsController {
     private Button mainMenuButton;
 
     private SceneChanger sceneChanger;
-    private int progress;
+    private short progress;
 
 
     /**
@@ -130,9 +130,8 @@ public class ClassicLevelsController {
     /**
      * Opens game with selected map
      * If selected map is not unlocked - Sends error message to user
-     * @param event
      */
-    public void standardTableClicked(MouseEvent event) {
+    public void standardTableClicked() {
         if (standardLevelList.getSelectionModel().getSelectedItem() != null &&
                 standardLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
             errorLabel.setText("Level is not unlocked");
@@ -145,9 +144,8 @@ public class ClassicLevelsController {
     /**
      * Opens game with selected map
      * If selected map is not unlocked - Sends error message to user
-     * @param event
      */
-    public void customTableClicked(MouseEvent event) {
+    public void customTableClicked() {
         if (customLevelList.getSelectionModel().getSelectedItem() != null &&
                 customLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
             errorLabel.setText("Level is not unlocked");
