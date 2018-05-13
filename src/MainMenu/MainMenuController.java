@@ -371,7 +371,7 @@ public class MainMenuController {
         AudioInputStream musicStream = AudioSystem.getAudioInputStream(bufferedInputStream);
         musicClip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, musicStream.getFormat()));
         musicClip.open(musicStream);
-        musicClip.loop(10);
+        musicClip.loop(Clip.LOOP_CONTINUOUSLY);
         musicClip.start();
     }
 }
