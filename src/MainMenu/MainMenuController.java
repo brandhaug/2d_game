@@ -12,10 +12,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
 import javax.sound.sampled.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.InvalidKeyException;
@@ -125,7 +122,7 @@ public class MainMenuController {
     @FXML
     protected void openGameLevel(ActionEvent event) {
         musicClip.stop();
-        sceneChanger.changeScene(event, "../ClassicLevels/ClassicLevels.fxml", true);
+        sceneChanger.changeScene(event, "/ClassicLevels/ClassicLevels.fxml", true);
     }
 
     /**
@@ -136,7 +133,7 @@ public class MainMenuController {
     private void openGameSurvival(ActionEvent event) {
         musicClip.stop();
         GameController.setMapName("survivalfolder/survival");
-        sceneChanger.changeScene(event, "../Game/Game.fxml", true);
+        sceneChanger.changeScene(event, "/Game/Game.fxml", true);
     }
 
     /**
@@ -312,7 +309,7 @@ public class MainMenuController {
     @FXML
     protected void openInfo(ActionEvent event) {
         musicClip.stop();
-        sceneChanger.changeScene(event, "../Info/Info.fxml", true);
+        sceneChanger.changeScene(event, "/Info/Info.fxml", true);
     }
 
     /**
@@ -322,7 +319,7 @@ public class MainMenuController {
     @FXML
     protected void openCreateLevel(ActionEvent event) {
         musicClip.stop();
-        sceneChanger.changeScene(event, "../CreateLevel/CreateLevel.fxml", false);
+        sceneChanger.changeScene(event, "/CreateLevel/CreateLevel.fxml", false);
     }
 
     /**
@@ -332,7 +329,7 @@ public class MainMenuController {
     @FXML
     protected void openHighScores(ActionEvent event) {
         musicClip.stop();
-        sceneChanger.changeScene(event, "../Highscores/Highscores.fxml", true);
+        sceneChanger.changeScene(event, "/Highscores/Highscores.fxml", true);
     }
 
     /**
@@ -369,7 +366,9 @@ public class MainMenuController {
      * @throws LineUnavailableException
      */
     private void initializeMusic() throws IOException, UnsupportedAudioFileException, LineUnavailableException {
-        AudioInputStream musicStream = AudioSystem.getAudioInputStream(new File(getClass().getResource("/Resources/music/main_song.wav").getPath()));
+        InputStream inputStream = getClass().getResourceAsStream("/Resources/music/main_song.wav");
+        InputStream bufferedInputStream = new BufferedInputStream(inputStream);
+        AudioInputStream musicStream = AudioSystem.getAudioInputStream(bufferedInputStream);
         musicClip = (Clip) AudioSystem.getLine(new DataLine.Info(Clip.class, musicStream.getFormat()));
         musicClip.open(musicStream);
         musicClip.loop(10);

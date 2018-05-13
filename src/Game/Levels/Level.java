@@ -21,6 +21,7 @@ public class Level {
     private List<Ammunition> ammunition;
 
     private Chest chest;
+    private MapParser mapParser;
 
     private int[][] spawnSpots;
 
@@ -61,6 +62,7 @@ public class Level {
         disposeBullets = new ArrayList<>();
         disposeEnemies = new ArrayList<>();
         ammunition = new ArrayList<>();
+        mapParser = new MapParser();
         spawnSpots = new int[2][getNumberOfType('x',fileName)];
         char[][] map = loadMap(fileName);
         parseMap(map);
@@ -702,7 +704,7 @@ public class Level {
      */
     private char[][] loadMap(String fileName) {
         File file = new File(getClass().getResource("/Resources/maps/" + fileName).getPath());
-        return MapParser.getArrayFromFile(file);
+        return mapParser.getArrayFromFile(file);
     }
 
     /**

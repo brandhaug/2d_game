@@ -30,7 +30,7 @@ public class HighscoresController {
      */
     @FXML
     protected void openMainMenu(ActionEvent event) {
-        sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
+        sceneChanger.changeScene(event, "/MainMenu/MainMenu.fxml", true);
     }
 
     /**
@@ -38,7 +38,7 @@ public class HighscoresController {
      */
     @FXML
     private void reloadHighScoresScene() {
-        sceneChanger.changeScene((Stage) mainMenuButton.getScene().getWindow(), "../Highscores/Highscores.fxml", true);
+        sceneChanger.changeScene((Stage) mainMenuButton.getScene().getWindow(), "/Highscores/Highscores.fxml", true);
     }
 
     /**

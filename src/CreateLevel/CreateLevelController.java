@@ -14,9 +14,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,6 +102,8 @@ public class CreateLevelController {
      */
     private List<Step> steps;
     private int stepDiff = 0;
+
+    private MapParser mapParser;
 
 
     /**
@@ -217,7 +217,7 @@ public class CreateLevelController {
         File file = fileChooser.showOpenDialog(canvas.getScene().getWindow());
 
         if (file != null) {
-            map = MapParser.getArrayFromFile(file);
+            map = mapParser.getArrayFromFile(file);
             startingPointExists = true;
             endPointExists = true;
             render(false);
@@ -251,7 +251,7 @@ public class CreateLevelController {
      */
     @FXML
     protected void openMainMenu(ActionEvent event) {
-        sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
+        sceneChanger.changeScene(event, "/MainMenu/MainMenu.fxml", true);
     }
 
     /**
@@ -262,7 +262,7 @@ public class CreateLevelController {
     private FileChooser createMapFileChooser(String title) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
-        fileChooser.setInitialDirectory(new File("src/Resources/maps/classic/custom"));
+        fileChooser.setInitialDirectory(new File(getClass().getResource("/Resources/maps/classic/custom").getFile()));
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser;
@@ -429,6 +429,7 @@ public class CreateLevelController {
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();
+        mapParser = new MapParser();
         canvasHeight = (int) canvas.getHeight();
         canvasWidth = (int) canvas.getWidth();
         steps = new ArrayList<>();

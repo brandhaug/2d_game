@@ -35,6 +35,7 @@ public class FileHandler {
     private Cipher cipher;
     private String errorLabel = "";
     private static FileHandler instance;
+    private MapParser mapParser;
 
     /**
      * Gets the instance of the class using Singleton.
@@ -63,6 +64,7 @@ public class FileHandler {
         keyPath = Paths.get(KEY_PATH);
         survivalPath = Paths.get(FILE_PATH_SURVIVAL);
         progressPath = Paths.get(PROGRESS_PATH);
+        mapParser = new MapParser();
         createFilesIfNotExists();
     }
 
@@ -579,7 +581,7 @@ public class FileHandler {
             int progress = Integer.parseInt(lines.get(0));
 
             File map = new File("src/Resources/maps/" + GameController.mapName);
-            int levelProgress = MapParser.getValueFromFile(map, "level");
+            int levelProgress = mapParser.getValueFromFile(map, "level");
 
             if (levelProgress == progress) {
                 lines.add(0, Integer.toString(progress + 1));

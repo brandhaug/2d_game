@@ -35,6 +35,7 @@ public class ClassicLevelsController {
 
     private SceneChanger sceneChanger;
     private short progress;
+    private MapParser mapParser;
 
 
     /**
@@ -53,7 +54,7 @@ public class ClassicLevelsController {
     @FXML
     private void openGameLevel(String mapName) {
         GameController.setMapName(mapName);
-        sceneChanger.changeScene((Stage) standardLevelList.getScene().getWindow(), "../Game/Game.fxml", true);
+        sceneChanger.changeScene((Stage) standardLevelList.getScene().getWindow(), "/Game/Game.fxml", true);
     }
 
     /**
@@ -62,7 +63,7 @@ public class ClassicLevelsController {
      */
     @FXML
     protected void openMainMenu(ActionEvent event) {
-        sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
+        sceneChanger.changeScene(event, "/MainMenu/MainMenu.fxml", true);
     }
 
     /**
@@ -73,6 +74,7 @@ public class ClassicLevelsController {
     @FXML
     public void initialize() {
         sceneChanger = new SceneChanger();
+        mapParser = new MapParser();
         FileHandler fileHandler = FileHandler.getInstance();
         progress = fileHandler.getProgress();
         if (progress == -1) {
@@ -101,7 +103,7 @@ public class ClassicLevelsController {
 
             for (File levelFile : levelFiles) {
                 if (folderName.equals("standard")) {
-                    level = MapParser.getValueFromFile(levelFile, "level");
+                    level = mapParser.getValueFromFile(levelFile, "level");
                 } else {
                     level = 0;
                 }

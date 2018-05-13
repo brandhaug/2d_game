@@ -8,14 +8,14 @@ import java.util.regex.Pattern;
 
 public class MapParser {
 
-    private static char[][] map;
+    private char[][] map;
 
     /**
      * Gets the array from a map file, by collecting the height and the width of the map, as well as its content.
      * @param file the map
      * @return map
      */
-    public static char[][] getArrayFromFile(File file) {
+    public char[][] getArrayFromFile(File file) {
         try {
             Scanner scanner = new Scanner(file);
             int index = 0;
@@ -46,7 +46,7 @@ public class MapParser {
      * @param name the value name
      * @return value
      */
-    public static int getValueFromFile(File file, String name) {
+    public int getValueFromFile(File file, String name) {
         Scanner scanner;
         int value = 0;
 
@@ -67,7 +67,7 @@ public class MapParser {
      * @param name the value name
      * @return value, -1 if not found.
      */
-    private static int getValueFromMapHeader(String header, String name) {
+    private int getValueFromMapHeader(String header, String name) {
         String reg = "(?<=" + name + ": )[0-9]+";
 
         Pattern pattern = Pattern.compile(reg);

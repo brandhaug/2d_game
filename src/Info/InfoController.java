@@ -24,7 +24,7 @@ public class InfoController {
      */
     @FXML
     protected void openMainMenu(ActionEvent event) {
-        sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
+        sceneChanger.changeScene(event, "/MainMenu/MainMenu.fxml", true);
     }
 
     /**

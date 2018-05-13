@@ -157,7 +157,7 @@ public class Player extends GameObject {
     }
 
     /**
-     * Updates current and last sprite states according to x and y velocity.
+     * Updates current and last sprite states according to x and y velocity, collision and lastSprite.
      */
     @Override
     public void handleSpriteStates() {

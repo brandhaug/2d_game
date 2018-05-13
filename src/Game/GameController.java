@@ -149,7 +149,7 @@ public class GameController {
     @FXML
     protected void openMainMenu(ActionEvent event) {
         fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
-        sceneChanger.changeScene(event, "../MainMenu/MainMenu.fxml", true);
+        sceneChanger.changeScene(event, "/MainMenu/MainMenu.fxml", true);
     }
 
     /**
@@ -159,7 +159,7 @@ public class GameController {
      */
     @FXML
     protected void restartLevel(ActionEvent event) {
-        sceneChanger.changeScene(event, "../Game/Game.fxml", true);
+        sceneChanger.changeScene(event, "/Game/Game.fxml", true);
     }
 
     /**
@@ -169,7 +169,7 @@ public class GameController {
      */
     @FXML
     protected void openHighScores(ActionEvent event) {
-        sceneChanger.changeScene(event, "../Highscores/Highscores.fxml", true);
+        sceneChanger.changeScene(event, "/Highscores/Highscores.fxml", true);
     }
 
     /**
