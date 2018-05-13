@@ -376,7 +376,7 @@ public class CreateLevelController {
      * Edits the cell with current toolEnabled
      * @param mouseEvent
      */
-    protected void mouseClicked(MouseEvent mouseEvent) {
+    public void mouseClicked(MouseEvent mouseEvent) {
         if (dragging) {
             dragging = false;
         } else {
@@ -398,7 +398,7 @@ public class CreateLevelController {
      * Works as regular mouse clicks if shift is up
      * @param mouseEvent
      */
-    protected void mouseDragged(MouseEvent mouseEvent) {
+    public void mouseDragged(MouseEvent mouseEvent) {
         if (mouseEvent.isShiftDown()) {
             dragging = true;
             currentOffsetX = (int) (lastOffsetX + pressedX - mouseEvent.getX());
@@ -413,7 +413,7 @@ public class CreateLevelController {
      * Detects coordinates and offsetcoordinates on press
      * @param mouseEvent
      */
-    protected void mousePressed(MouseEvent mouseEvent) {
+    public void mousePressed(MouseEvent mouseEvent) {
         pressedX = (int) mouseEvent.getX();
         pressedY = (int) mouseEvent.getY();
         lastOffsetX = currentOffsetX;
