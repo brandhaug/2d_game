@@ -521,22 +521,11 @@ public class FileHandler {
     private byte[] readBytesFromFile(File file) throws IOException {
         InputStream is = new FileInputStream(file);
         long length = file.length();
-
-        if (length > Integer.MAX_VALUE) {
-            throw new IOException("Could not completely read file " + file.getName() + " as it is too long (" +
-                    length + " bytes, max supported " + Integer.MAX_VALUE + ")");
-        }
-
         byte[] bytes = new byte[(int) length];
-
         int offset = 0;
         int numRead;
         while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
             offset += numRead;
-        }
-
-        if (offset < bytes.length) {
-            throw new IOException("Could not completely read file " + file.getName());
         }
 
         is.close();
@@ -545,12 +534,12 @@ public class FileHandler {
 
     /**
      * Writes bytes to file
-     * @param theFile the file
+     * @param file the file
      * @param bytes byte array to be written to file
      * @throws IOException
      */
-    private void writeBytesToFile(File theFile, byte[] bytes) throws IOException {
-        FileOutputStream fos = new FileOutputStream(theFile);
+    private void writeBytesToFile(File file, byte[] bytes) throws IOException {
+        FileOutputStream fos = new FileOutputStream(file);
         try (BufferedOutputStream bos = new BufferedOutputStream(fos)) {
             bos.write(bytes);
         }
