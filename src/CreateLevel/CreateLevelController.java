@@ -338,7 +338,7 @@ public class CreateLevelController {
      * Updates toolEnabled
      * @param tool
      */
-    public void updateGui(char tool) {
+    private void updateGui(char tool) {
         playerButton.setBorder(null);
         tileButton.setBorder(null);
         coinButton.setBorder(null);
@@ -376,7 +376,7 @@ public class CreateLevelController {
      * Edits the cell with current toolEnabled
      * @param mouseEvent
      */
-    public void mouseClicked(MouseEvent mouseEvent) {
+    protected void mouseClicked(MouseEvent mouseEvent) {
         if (dragging) {
             dragging = false;
         } else {
@@ -398,7 +398,7 @@ public class CreateLevelController {
      * Works as regular mouse clicks if shift is up
      * @param mouseEvent
      */
-    public void mouseDragged(MouseEvent mouseEvent) {
+    protected void mouseDragged(MouseEvent mouseEvent) {
         if (mouseEvent.isShiftDown()) {
             dragging = true;
             currentOffsetX = (int) (lastOffsetX + pressedX - mouseEvent.getX());
@@ -413,7 +413,7 @@ public class CreateLevelController {
      * Detects coordinates and offsetcoordinates on press
      * @param mouseEvent
      */
-    public void mousePressed(MouseEvent mouseEvent) {
+    protected void mousePressed(MouseEvent mouseEvent) {
         pressedX = (int) mouseEvent.getX();
         pressedY = (int) mouseEvent.getY();
         lastOffsetX = currentOffsetX;
@@ -583,7 +583,7 @@ public class CreateLevelController {
      * Open help alert to get control help
      */
     @FXML
-    public void openHelp() {
+    protected void openHelp() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, "- Choose a tool\n- Click in cell to draw enabled tool by clicking a button\n- Move mouse while holding shift to drag through map\n- All maps need one starting point (Player) and one finish point (Chest)", ButtonType.OK);
         alert.setHeaderText(null);
         alert.show();

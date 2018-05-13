@@ -12,16 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
 public class ClassicLevelsController {
 
     @FXML
@@ -88,7 +81,6 @@ public class ClassicLevelsController {
 
     /**
      * Add levels from list to tables
-     * Set locked/unlocked on levels, based on progress
      * Add columns to table
      * @param levelList
      * @param folderName
@@ -98,28 +90,44 @@ public class ClassicLevelsController {
         File[] levelFiles = levelFolder.listFiles();
 
         if (levelFiles != null && levelFiles.length != 0) {
-            String status;
-            int level;
-
             for (File levelFile : levelFiles) {
-                if (folderName.equals("standard")) {
-                    level = mapParser.getValueFromFile(levelFile, "level");
-                } else {
-                    level = 0;
-                }
-
-                if (level > progress) {
-                    status = "Locked";
-                } else {
-                    status = "Unlocked";
-                }
+                String status = getStatusOnFile(levelFile, folderName);
 
                 LevelColumn levelColumn = new LevelColumn(levelFile.getName(), status);
                 levelList.getItems().add(levelColumn);
             }
-
         }
 
+        addColumnsToList(levelList);
+    }
+
+    /**
+     * Set locked/unlocked on levels, based on progress
+     * @param levelFile
+     * @param folderName
+     * @return
+     */
+    private String getStatusOnFile(File levelFile, String folderName) {
+        int level;
+
+        if (folderName.equals("standard")) {
+            level = mapParser.getValueFromFileHeader(levelFile, "level");
+        } else {
+            level = 0;
+        }
+
+        if (level > progress) {
+            return "Locked";
+        } else {
+            return "Unlocked";
+        }
+    }
+
+    /**
+     * Adds columns and sets width for list
+     * @param levelList
+     */
+    private void addColumnsToList(TableView<LevelColumn> levelList) {
         TableColumn<LevelColumn, String> firstCol = new TableColumn<>("Level");
         firstCol.setMinWidth(200);
         firstCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -154,5 +162,21 @@ public class ClassicLevelsController {
         } else if (customLevelList.getSelectionModel().getSelectedItem() != null) {
             openGameLevel("classic/custom/" + customLevelList.getSelectionModel().getSelectedItem().getName());
         }
+    }
+
+    /**
+     * Get progress
+     * @return progress
+     */
+    public short getProgress() {
+        return progress;
+    }
+
+    /**
+     * Get Standard level list
+     * @return standard level list
+     */
+    public TableView<LevelColumn> getStandardLevelList() {
+        return standardLevelList;
     }
 }

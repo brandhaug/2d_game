@@ -15,13 +15,13 @@ public class Player extends GameObject {
      * States
      */
     public final static int PLAYER_IDLING_RIGHT = 0;
-    private final static int PLAYER_IDLING_LEFT = 1;
+    public final static int PLAYER_IDLING_LEFT = 1;
     public final static int PLAYER_RUNNING_RIGHT = 2;
-    private final static int PLAYER_RUNNING_LEFT = 3;
+    public final static int PLAYER_RUNNING_LEFT = 3;
     public final static int PLAYER_JUMPING_RIGHT = 4;
-    private final static int PLAYER_JUMPING_LEFT = 5;
+    public final static int PLAYER_JUMPING_LEFT = 5;
     public final static int PLAYER_FALLING_RIGHT = 6;
-    private final static int PLAYER_FALLING_LEFT = 7;
+    public final static int PLAYER_FALLING_LEFT = 7;
     private int hp = 100; //Hit Points
 
     /**
@@ -132,7 +132,8 @@ public class Player extends GameObject {
      * Sets the y position of the player according to the velocity y of the player
      * The player will never fall get a higher velocity then 13 when falling and never lower then -35 when falling.
      */
-    private void handleVelocityY() {
+    private void handleVelocityY
+    () {
         int MAX_VELOCITY_FALLING = 13;
         int MAX_VELOCITY_JUMPING = -35;
 

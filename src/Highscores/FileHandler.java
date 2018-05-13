@@ -570,7 +570,7 @@ public class FileHandler {
             int progress = Integer.parseInt(lines.get(0));
 
             File map = new File("src/Resources/maps/" + GameController.mapName);
-            int levelProgress = mapParser.getValueFromFile(map, "level");
+            int levelProgress = mapParser.getValueFromFileHeader(map, "level");
 
             if (levelProgress == progress) {
                 lines.add(0, Integer.toString(progress + 1));

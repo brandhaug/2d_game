@@ -46,7 +46,7 @@ public class MapParser {
      * @param name the value name
      * @return value
      */
-    public int getValueFromFile(File file, String name) {
+    public int getValueFromFileHeader(File file, String name) {
         Scanner scanner;
         int value = 0;
 
