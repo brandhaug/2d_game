@@ -222,6 +222,13 @@ public class Player extends GameObject {
     @Override
     public void render(GraphicsContext gc) {
         getCurrentSpriteSheet().render(gc, GameController.PLAYER_X_MARGIN, getY(), getCurrentSpriteState(), getLastSpriteState());
+
+        // Draw bounds
+//        gc.setFill(Color.BLACK);
+//        gc.strokeRect(GameController.PLAYER_X_MARGIN + 20, getY() + getCurrentSpriteSheet().getSpriteHeight() - 20, WIDTH - 40, 20);
+//        gc.strokeRect(GameController.PLAYER_X_MARGIN + 20, getY(), WIDTH - 40, 20);
+//        gc.strokeRect(GameController.PLAYER_X_MARGIN + WIDTH - 20, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
+//        gc.strokeRect(GameController.PLAYER_X_MARGIN, getY() + 10, 20, getCurrentSpriteSheet().getSpriteHeight() - 20);
     }
 
     /**
