@@ -1,9 +1,12 @@
 package Game.GameObjects;
 
+import Game.GameController;
 import Game.SpriteSheets.SpriteSheet;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.awt.*;
+
+import static javafx.scene.paint.Color.RED;
 
 public class Enemy extends GameObject{
 
@@ -75,6 +78,10 @@ public class Enemy extends GameObject{
      */
     public void setHp(int hp) {
         this.hp = hp;
+    }
+
+    public void decreaseHp(){
+        this.hp--;
     }
 
     /**
@@ -310,6 +317,13 @@ public class Enemy extends GameObject{
     @Override
     public void render(GraphicsContext gc) {
         getCurrentSpriteSheet().render(gc, getX(), getY(), getCurrentSpriteState(), getLastSpriteState());
+
+        // Draw bounds
+        gc.strokeRect(getX(), getY() + enemyType.getRunH() - 20, enemyType.getRunW(), 20);
+        gc.strokeRect(getX(), getY(), enemyType.getIdleW(), 20);
+        gc.strokeRect(getX()+enemyType.getRunW()-30, getY() + 20, 20, enemyType.getRunH()-40);
+        gc.strokeRect(getX()+10, getY() + 20, 20,  enemyType.getRunH()-40);
+
     }
 
     /**
@@ -318,7 +332,7 @@ public class Enemy extends GameObject{
      */
     @Override
     public Rectangle getBoundsBottom() {
-        return new Rectangle(getX(), getY(), 40, 72);
+        return new Rectangle(getX(), getY() + enemyType.getRunH() - 20, enemyType.getRunW(), 20);
     }
 
     /**
@@ -327,7 +341,7 @@ public class Enemy extends GameObject{
      */
     @Override
     public Rectangle getBoundsTop() {
-        return new Rectangle(getX()+ 20, getY(), 40, 20);
+        return new Rectangle(getX(), getY(), enemyType.getIdleW(), 20);
     }
 
     /**
@@ -336,7 +350,7 @@ public class Enemy extends GameObject{
      */
     @Override
     public Rectangle getBoundsRight() {
-        return new Rectangle(getX()+WIDTH, getY() + 10, 20, 40);
+        return new Rectangle(getX()+enemyType.getRunW()-30, getY() + 20, 20, enemyType.getRunH()-40);
     }
 
     /**
@@ -345,6 +359,6 @@ public class Enemy extends GameObject{
      */
     @Override
     public Rectangle getBoundsLeft() {
-        return new Rectangle(getX(), getY() + 10, 20,  40);
+        return new Rectangle(getX()+10, getY() + 20, 20,  enemyType.getRunH()-40);
     }
 }

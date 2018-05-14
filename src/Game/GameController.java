@@ -277,7 +277,6 @@ public class GameController {
 
         if (mapName.contains("survival")) {
             level.setSurvival(true);
-            level.setBulletCounter(10);
             bulletType = BulletType.valueOf(MainMenuController.selectedBullet);
         }
 
@@ -320,7 +319,7 @@ public class GameController {
         renderBackground();
         player.handleSpriteStates();
         collisionHandler.tick();
-        level.tick(gc, player, time);
+        level.tick(gc, player);
         player.tick(gc);
         setPlayerRunningSound();
         renderGUI();
@@ -336,6 +335,7 @@ public class GameController {
      */
     private void renderGUI() {
         gc.setFill(Color.BLACK);
+        //gc.fillRect(10,10,10,20);
 
         if (!level.getSurvival()) {
             coinCounter.setVisible(true);
@@ -376,6 +376,7 @@ public class GameController {
     private void checkGameWon() {
         if (level.getSurvival()) {
             if (player.getHp() <= 0) {
+                player.setAlive(false);
                 gameWon = true;
                 gameWonPane.setVisible(true);
                 gameWonKillsImage.setVisible(true);
@@ -486,7 +487,7 @@ public class GameController {
      */
     private void initializeBackground() {
         try {
-            BufferedImage bufferedBackground = ImageIO.read(getClass().getResourceAsStream("/Resources/background/background.png"));
+            BufferedImage bufferedBackground = ImageIO.read(new File(getClass().getResource("/Resources/background/background.png").getPath()));
             background = SwingFXUtils.toFXImage(bufferedBackground, null);
         } catch (IOException e) {
             e.printStackTrace();

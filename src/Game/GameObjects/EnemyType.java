@@ -11,6 +11,7 @@ public enum  EnemyType {
     ENEMY_G("G",7, 3, 8, 50,69,76,69,76,69, 81),
     ENEMY_H("H",8, 3,10, 70,65,76,65,76,65, 90),
     ENEMY_I("I",10,4,15,100,99,77,99,77,99, 89);
+    //ENEMY_AVERAGE_DIMENSIONS(" ",0,0,0,0,77,79,77,79,78,91);
 
     private String fileName;
     private int hp;

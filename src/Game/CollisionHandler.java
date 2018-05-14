@@ -10,13 +10,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-class CollisionHandler {
+public class CollisionHandler {
     private Player player;
     private Level level;
     private List<Bullet> disposeBullets;
     private List<Enemy> disposeEnemies;
     static boolean playerEnemyCollision = true;
-    static int killCoins;
+    public static int killCoins;
 
     /**
      * Sets the variables in class from parameters.
@@ -112,6 +112,11 @@ class CollisionHandler {
                 handleTileTopCollision(enemy);
             }
 
+            if (enemy.getBoundsBottom().intersects(tile.getBoundsTop()) && tile.getTileType() == TileType.SPIKE_UP) {
+                level.increaseEnemyCounter();
+                disposeEnemies.add(enemy);
+            }
+
             if (enemy.getBoundsTop().intersects(tile.getBoundsBottom())) {
                 handleTileBottomCollision(enemy);
             }
@@ -160,7 +165,6 @@ class CollisionHandler {
      */
     private void handleTileTopCollision(GameObject gameObject) {
         gameObject.setVelocityY(0);
-        gameObject.setFirstCollision();
     }
 
     /**
@@ -205,19 +209,22 @@ class CollisionHandler {
     private void handleEnemyCollision() {
         Iterator<Enemy> iterator = level.getEnemies().iterator();
         while (iterator.hasNext()) {
-            Enemy e = iterator.next();
+            Enemy enemy = iterator.next();
 
-            handleEnemyBulletCollision(e, iterator);
+            handleEnemyBulletCollision(enemy, iterator);
 
             if (playerEnemyCollision) {
-                if (e.getBoundsTop().intersects(player.getBoundsBottom())) {
-                    handleEnemyTopCollision(e.getDamage(), e, iterator);
+                if (enemy.getBoundsTop().intersects(player.getBoundsBottom())) {
+                    handleEnemyTopCollision(enemy.getDamage(), enemy, iterator);
                 }
 
-                if (e.getBoundsRight().intersects(player.getBoundsLeft()) ||
-                        e.getBoundsBottom().intersects(player.getBoundsTop()) ||
-                        e.getBoundsLeft().intersects(player.getBoundsRight())) {
-                    handleEnemyCollision(e.getDamage());
+                if (enemy.getBoundsLeft().intersects(player.getBoundsRight())
+                        || enemy.getBoundsLeft().intersects(player.getBoundsLeft()) ||
+                        enemy.getBoundsRight().intersects(player.getBoundsLeft()) ||
+                        enemy.getBoundsRight().intersects(player.getBoundsRight()) ||
+                        enemy.getBoundsBottom().intersects(player.getBoundsTop())
+                        ) {
+                    handleEnemyCollision(enemy.getDamage());
                 }
             }
         }

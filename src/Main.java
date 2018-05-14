@@ -1,11 +1,18 @@
+import Game.CollisionHandler;
+import Highscores.FileHandler;
 import MainMenu.MainMenuController;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
+import java.io.File;
 
 public class Main extends Application {
+    FileHandler fileHandler = FileHandler.getInstance();
 
     /**
      * Starts the application
@@ -24,6 +31,12 @@ public class Main extends Application {
         primaryStage.setResizable(false);
 
         primaryStage.show();
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
+            }
+        });
     }
 
 

@@ -69,7 +69,7 @@ public class Level {
         char[][] map = loadMap(fileName);
         parseMap(map);
         playerChangeY = getPlayerStartPositionY();
-        bulletCounter = 0;
+        bulletCounter = 10;
     }
 
     /**
@@ -172,10 +172,10 @@ public class Level {
     }
 
     /**
-     * Decreases the enemy counter by 1
+     * Increases the enemy counter by 1
      */
-    public void decreaseEnemyCounter() {
-        this.enemyAmount--;
+    public void increaseEnemyCounter() {
+        this.enemyAmount++;
     }
 
     /**
@@ -262,11 +262,10 @@ public class Level {
      *
      * @param gc     the GraphicsContext
      * @param player the player object
-     * @param time   the time
      */
-    public void tick(GraphicsContext gc, Player player, double time) {
+    public void tick(GraphicsContext gc, Player player) {
         handleCameraVelocity(player);
-        render(gc, player, time);
+        render(gc, player);
         if (survival) spawnEnemies(player);
     }
 
@@ -315,9 +314,8 @@ public class Level {
      *
      * @param gc     the GraphicsContext
      * @param player the player object
-     * @param time   the time
      */
-    private void render(GraphicsContext gc, Player player, double time) {
+    private void render(GraphicsContext gc, Player player) {
         player.setY(player.getY() + cameraVelocityY);
         renderTiles(gc, player);
         renderCoins(gc, player);
@@ -578,11 +576,11 @@ public class Level {
     /**
      * Returns the amount of the current type in map
      *
-     * @param c        the type
+     * @param type        the type
      * @param pathName the map name
      * @return amount of the current type
      */
-    private int getNumberOfType(char c, String pathName) {
+    private int getNumberOfType(char type, String pathName) {
         Scanner scanner = null;
         int numberOfType = 0;
         try {
@@ -592,7 +590,7 @@ public class Level {
                 char[] line = scanner.nextLine().toLowerCase().toCharArray();
 
                 for (Character character : line) {
-                    if (character.equals(c)) {
+                    if (character.equals(type)) {
                         numberOfType++;
                     }
                 }

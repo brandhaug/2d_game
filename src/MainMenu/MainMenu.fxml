@@ -16,8 +16,8 @@
         <Button fx:id="exitButton" layoutX="21.0" layoutY="624.0" mnemonicParsing="false" onAction="#exit" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/exit.png');" styleClass="button" />
         <Button fx:id="playButtonLevel" layoutX="532.0" layoutY="228.0" mnemonicParsing="false" onAction="#openGameLevel" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/classic.png');" styleClass="button" />
         <Button fx:id="playButtonSurvival" layoutX="532.0" layoutY="328.0" mnemonicParsing="false" onAction="#chooseBullet" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/survival.png');" styleClass="button" />
-        <Button scaleX="0.7" scaleY="0.7" prefHeight="24.0" prefWidth="24.0" layoutX="546.0" layoutY="420.0" mouseTransparent="true" pickOnBounds="true" style="-fx-graphic: url('Resources/coin/killCoin.png');" />
-        <Label fx:id="killCoinInfo" layoutX="562.0" layoutY="378.0" mnemonicParsing="false" prefHeight="128.0" prefWidth="128.0" style="-fx-text-fill: white; -fx-alignment: center; -fx-font-size: 15;"/>
+        <Button scaleX="0.7" scaleY="0.7" prefHeight="24.0" prefWidth="24.0" layoutX="556.0" layoutY="420.0" mouseTransparent="true" pickOnBounds="true" style="-fx-graphic: url('Resources/coin/killCoin.png');" />
+        <Label fx:id="killCoinInfo" layoutX="582.0" layoutY="378.0" mnemonicParsing="false" prefHeight="128.0" prefWidth="128.0" style="-fx-text-fill: white; -fx-alignment: center; -fx-font-size: 15;"/>
         <Pane fx:id="chooseBulletPane" layoutX="351.0" layoutY="178.0" prefHeight="396.0" prefWidth="546.0" styleClass="chooseBulletPane" visible="false">
             <children>
                 <Button fx:id="exitChooseBulletPane" layoutX="490" layoutY="10" mnemonicParsing="false" onAction="#bulletSelected" prefHeight="32.0" prefWidth="32.0" style="-fx-graphic: url('Resources/buttons/exitPane.png');" styleClass="button" visible="true" />
