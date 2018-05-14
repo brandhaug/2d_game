@@ -1,19 +1,19 @@
 package Resources.soundEffects;
 
 import javax.sound.sampled.*;
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.util.prefs.Preferences;
+import java.io.InputStream;
 
 public enum SoundEffects {
 
-    COIN("./Resources/sounds/coinCollect.wav"),
-    HIT("./Resources/sounds/hit.wav"),
-    GAMEOVER("./Resources/sounds/gameOver.wav"),
-    RUN("./Resources/sounds/steps.wav"),
-    JUMP("./Resources/sounds/jump.wav"),
-    LANDING("./Resources/sounds/landing.wav"),
-    ENEMY_DEATH("./Resources/sounds/enemyDeath.wav");
+    COIN("/Resources/sounds/coinCollect.wav"),
+    HIT("/Resources/sounds/hit.wav"),
+    GAMEOVER("/Resources/sounds/gameOver.wav"),
+    RUN("/Resources/sounds/steps.wav"),
+    JUMP("/Resources/sounds/jump.wav"),
+    LANDING("/Resources/sounds/landing.wav"),
+    ENEMY_DEATH("/Resources/sounds/enemyDeath.wav");
 
     public static boolean mute;
     private Clip effectClip;
@@ -22,10 +22,11 @@ public enum SoundEffects {
 
     SoundEffects(String soundFileName) {
         try {
-            URL url = this.getClass().getClassLoader().getResource(soundFileName);
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
+            InputStream inputStream = getClass().getResourceAsStream(soundFileName);
+            InputStream bufferedInputStream = new BufferedInputStream(inputStream);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedInputStream);
             effectClip = AudioSystem.getClip();
-            effectClip.open(audioInputStream);
+            effectClip.open(audioStream);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }

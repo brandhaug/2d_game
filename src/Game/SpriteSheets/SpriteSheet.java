@@ -61,7 +61,7 @@ public class SpriteSheet {
      * @throws IOException
      */
     private void initializeSprites(String pathName) throws IOException {
-        BufferedImage spriteSheet = ImageIO.read(new File(getClass().getResource(pathName).getPath()));
+        BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream(pathName));
         sprites = new Image[cols];
         for (int i = 0; i < cols; i++) {
             sprites[i] = SwingFXUtils.toFXImage(spriteSheet.getSubimage(i * spriteWidth, 0, spriteWidth, spriteHeight), null);

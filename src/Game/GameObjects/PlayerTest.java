@@ -1,8 +1,5 @@
 package Game.GameObjects;
 
-
-import Game.GameObjects.Player;
-import Game.Levels.Level;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

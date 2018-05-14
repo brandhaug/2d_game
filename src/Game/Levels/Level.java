@@ -746,7 +746,7 @@ public class Level {
      * @return a char array represented as the map
      */
     private char[][] loadMap(String fileName) {
-        File file = new File(getClass().getResource("/Resources/maps/" + fileName).getPath());
+        File file = new File("./src/Resources/maps/" + fileName);
         return mapParser.getArrayFromFile(file);
     }
 

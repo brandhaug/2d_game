@@ -36,7 +36,7 @@ public class SceneChanger {
             Parent root = FXMLLoader.load(getClass().getResource(path));
 
             if (loadStyleSheet) {
-                root.getStylesheets().add(getClass().getResource("../styles.css").toExternalForm());
+                root.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
             }
 
             stage.setScene(new Scene(root));
