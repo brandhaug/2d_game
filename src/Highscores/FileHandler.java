@@ -473,6 +473,8 @@ public class FileHandler {
                 writeDecryptedTextToFile(FILE_PATH_SURVIVAL, new String(textDecrypted));
             } else if (filePath == this.progressPath) {
                 writeDecryptedTextToFile(PROGRESS_PATH, new String(textDecrypted));
+            } else {
+                writeDecryptedTextToFile(filePath.toString(), new String(textDecrypted));
             }
 
         } catch (InvalidKeyException | IOException e) {
@@ -520,7 +522,7 @@ public class FileHandler {
      * @return a byte array read from the file
      * @throws IOException
      */
-    private byte[] readBytesFromFile(File file) throws IOException {
+    byte[] readBytesFromFile(File file) throws IOException {
         InputStream is = new FileInputStream(file);
         long length = file.length();
         byte[] bytes = new byte[(int) length];
@@ -540,7 +542,7 @@ public class FileHandler {
      * @param bytes byte array to be written to file
      * @throws IOException
      */
-    private void writeBytesToFile(File file, byte[] bytes) throws IOException {
+    void writeBytesToFile(File file, byte[] bytes) throws IOException {
         FileOutputStream fos = new FileOutputStream(file);
         try (BufferedOutputStream bos = new BufferedOutputStream(fos)) {
             bos.write(bytes);
