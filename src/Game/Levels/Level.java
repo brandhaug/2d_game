@@ -49,6 +49,8 @@ public class Level {
     private boolean enemyAttack;
     private boolean survival = false;
 
+    final char TILE = '-';
+
     /**
      * Parses the map of specified filename.
      *
@@ -63,7 +65,7 @@ public class Level {
         disposeEnemies = new ArrayList<>();
         ammunition = new ArrayList<>();
         mapParser = new MapParser();
-        spawnSpots = new int[2][getNumberOfType('x',fileName)];
+        spawnSpots = new int[2][getNumberOfType('x', fileName)];
         char[][] map = loadMap(fileName);
         parseMap(map);
         playerChangeY = getPlayerStartPositionY();
@@ -178,6 +180,7 @@ public class Level {
 
     /**
      * Gets the bullet counter
+     *
      * @return bulletCounter
      */
     public int getBulletCounter() {
@@ -186,6 +189,7 @@ public class Level {
 
     /**
      * Gets the wave number
+     *
      * @return waveNr
      */
     public int getWaveNr() {
@@ -194,6 +198,7 @@ public class Level {
 
     /**
      * Adds bullets to the bullet counter
+     *
      * @param bullets the amount of bullets
      */
     public void addBulletCounter(int bullets) {
@@ -209,6 +214,7 @@ public class Level {
 
     /**
      * Gets the player start position x
+     *
      * @return playerStartPositionX
      */
     public int getPlayerStartPositionX() {
@@ -217,6 +223,7 @@ public class Level {
 
     /**
      * Gets the player start position y
+     *
      * @return playerStartPositionY
      */
     public int getPlayerStartPositionY() {
@@ -225,6 +232,7 @@ public class Level {
 
     /**
      * Sets survival to true or false
+     *
      * @param survival true if survival mode, false if not
      */
     public void setSurvival(boolean survival) {
@@ -233,6 +241,7 @@ public class Level {
 
     /**
      * Sets the bullet counter
+     *
      * @param bulletCounter the amount of bullets
      */
     public void setBulletCounter(int bulletCounter) {
@@ -241,6 +250,7 @@ public class Level {
 
     /**
      * Returns true if survival mode, false if not
+     *
      * @return survival
      */
     public boolean getSurvival() {
@@ -249,9 +259,10 @@ public class Level {
 
     /**
      * Handles the camera velocity, renders the game. Spawns enemies if survival
-     * @param gc the GraphicsContext
+     *
+     * @param gc     the GraphicsContext
      * @param player the player object
-     * @param time the time
+     * @param time   the time
      */
     public void tick(GraphicsContext gc, Player player, double time) {
         handleCameraVelocity(player);
@@ -262,6 +273,7 @@ public class Level {
     /**
      * Handles the camera velocity.
      * Makes sure player always has the same distance from the bottom of the application scene.
+     *
      * @param player the player object
      */
     private void handleCameraVelocity(Player player) {
@@ -290,6 +302,7 @@ public class Level {
 
     /**
      * Gets the change in player position Y
+     *
      * @return the change in player position Y
      */
     private int getPlayerChangeY() {
@@ -299,9 +312,10 @@ public class Level {
     /**
      * Renders the GraphicsContext
      * Renders all objects on maps according to player position.
-     * @param gc the GraphicsContext
+     *
+     * @param gc     the GraphicsContext
      * @param player the player object
-     * @param time the time
+     * @param time   the time
      */
     private void render(GraphicsContext gc, Player player, double time) {
         player.setY(player.getY() + cameraVelocityY);
@@ -321,7 +335,8 @@ public class Level {
 
     /**
      * Renders the tiles according to player position
-     * @param gc the GraphicsContext
+     *
+     * @param gc     the GraphicsContext
      * @param player the player objects
      */
     private void renderTiles(GraphicsContext gc, Player player) {
@@ -334,7 +349,8 @@ public class Level {
 
     /**
      * Renders the coins according to player position
-     * @param gc the GraphicsContext
+     *
+     * @param gc     the GraphicsContext
      * @param player the player objects
      */
     private void renderCoins(GraphicsContext gc, Player player) {
@@ -347,7 +363,8 @@ public class Level {
 
     /**
      * Renders the chest according to player position
-     * @param gc the GraphicsContext
+     *
+     * @param gc     the GraphicsContext
      * @param player the player objects
      */
     private void renderChest(GraphicsContext gc, Player player) {
@@ -360,7 +377,8 @@ public class Level {
 
     /**
      * Renders the ammunition according to player position
-     * @param gc the GraphicsContext
+     *
+     * @param gc     the GraphicsContext
      * @param player the player objects
      */
     private void renderAmmunition(GraphicsContext gc, Player player) {
@@ -373,7 +391,8 @@ public class Level {
 
     /**
      * Renders the enemies according to player position
-     * @param gc the GraphicsContext
+     *
+     * @param gc     the GraphicsContext
      * @param player the player objects
      */
     private void renderEnemies(GraphicsContext gc, Player player) {
@@ -412,6 +431,7 @@ public class Level {
 
     /**
      * Checks if an enemy spawns in illegal map position. Removes enemy and adds a new if true.
+     *
      * @param enemy the enemy object
      */
     private void checkOutOfBounds(Enemy enemy) {
@@ -424,6 +444,7 @@ public class Level {
 
     /**
      * Adds another wave of enemies in survival mode.
+     *
      * @param player the player object
      */
     private void wave(Player player) {
@@ -446,6 +467,7 @@ public class Level {
 
     /**
      * Spawns a enemy in a random place of the map.
+     *
      * @param player the player object
      * @return random spawn placement
      */
@@ -463,6 +485,7 @@ public class Level {
 
     /**
      * Spawns enemies in survival mode.
+     *
      * @param player the player object
      */
     private void spawnEnemies(Player player) {
@@ -480,8 +503,8 @@ public class Level {
             }
 
             if (enemyAmount <= 20 && enemyAmount > 0) {
-                    enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_A.getIdleH(), EnemyType.ENEMY_A));
-                    enemyAmount--;
+                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_A.getIdleH(), EnemyType.ENEMY_A));
+                enemyAmount--;
             } else if (enemyAmount <= 40 && enemyAmount > 20 && cameraVelocityY == 0) {
                 enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_B.getIdleH(), EnemyType.ENEMY_B));
                 enemyAmount--;
@@ -513,7 +536,8 @@ public class Level {
 
     /**
      * Renders the bullets according to player position
-     * @param gc the GraphicsContext
+     *
+     * @param gc     the GraphicsContext
      * @param player the player objects
      */
     private void renderBullets(GraphicsContext gc, Player player) {
@@ -544,6 +568,7 @@ public class Level {
 
     /**
      * Adds a bullet to the bullet list
+     *
      * @param b the bullet
      */
     public void addBullet(Bullet b) {
@@ -552,7 +577,8 @@ public class Level {
 
     /**
      * Returns the amount of the current type in map
-     * @param c the type
+     *
+     * @param c        the type
      * @param pathName the map name
      * @return amount of the current type
      */
@@ -560,7 +586,7 @@ public class Level {
         Scanner scanner = null;
         int numberOfType = 0;
         try {
-            scanner = new Scanner(new File("src/Resources/maps/"+pathName), "utf-8");
+            scanner = new Scanner(new File("src/Resources/maps/" + pathName), "utf-8");
 
             while (scanner.hasNext()) {
                 char[] line = scanner.nextLine().toLowerCase().toCharArray();
@@ -583,10 +609,10 @@ public class Level {
     /**
      * Parses the map given from the char array.
      * Loops through every element in the array, and adds objects to the different objects lists given by custom rules.
+     *
      * @param map the map represented by as char array.
      */
     private void parseMap(char[][] map) {
-        final char TILE = '-';
         final char COIN = 'C';
         final char SPAWN = 'x';
         final char ENEMYA = 'a';
@@ -601,43 +627,8 @@ public class Level {
             for (int x = 0; x < map[y].length; x++) {
                 switch (map[y][x]) {
                     case (TILE):
-                        if (y > 0 && map[y - 1][x] == TILE) {
-                            //Dirt
-                            if ((y < map.length - 1 && map[y + 1][x] != TILE) || y == map.length - 1) {
-                                // Bottom dirt
-                                if (((x > 0 && map[y][x - 1] == TILE)) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
-                                    // Bottom dirt with tiles on both sides
-                                    tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_BOTTOM));
-                                } else if ((x > 0 && map[y][x - 1] == TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
-                                    // Bottom dirt with tile on left
-                                    tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_RIGHT_CORNER));
-                                } else if ((x > 0 && map[y][x - 1] != TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
-                                    // Bottom dirt with tile on right
-                                    tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_LEFT_CORNER));
-                                }
-                            } else if ((x > 0 && map[y][x - 1] != TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
-                                // Not bottom dirt with tile on right
-                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_LEFT));
-                            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
-                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_RIGHT));
-                            } else if ((x > 0 && map[y][x - 1] != TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
-                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT_COLUMN));
-                            } else {
-                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.DIRT));
-                            }
-                        } else {
-                            //Grass
-                            if ((x > 0 && map[y][x - 1] != TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
-                                // Grass tile on right
-                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_LEFT));
-                            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
-                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_RIGHT));
-                            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
-                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_MID));
-                            } else {
-                                tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, TileType.GRASS_TOP));
-                            }
-                        }
+                        TileType tileType = getTileType(map, y, x);
+                        tiles.add(new Tile(x * GameController.TILE_SIZE, y * GameController.TILE_SIZE, tileType));
 
                         setSpikeTilesVariables(x, y);
                         break;
@@ -671,6 +662,56 @@ public class Level {
     }
 
     /**
+     * Get TileType based on neighbour tiles
+     *
+     * @param map 2d array
+     * @param y   index
+     * @param x   index
+     * @return tileType
+     */
+    public TileType getTileType(char[][] map, int y, int x) {
+        if (y > 0 && map[y - 1][x] == TILE) {
+            //Dirt
+            if ((y < map.length - 1 && map[y + 1][x] != TILE) || y == map.length - 1) {
+                // Bottom dirt
+                if (((x > 0 && map[y][x - 1] == TILE)) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
+                    // Bottom dirt with tiles on both sides
+                    return TileType.DIRT_BOTTOM;
+                } else if ((x > 0 && map[y][x - 1] == TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
+                    // Bottom dirt with tile on left
+                    return TileType.DIRT_RIGHT_CORNER;
+                } else if ((x > 0 && map[y][x - 1] != TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
+                    // Bottom dirt with tile on right
+                    return TileType.DIRT_LEFT_CORNER;
+                } else {
+                    return TileType.DIRT_COLUMN;
+                }
+            } else if ((x > 0 && map[y][x - 1] != TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
+                // Not bottom dirt with tile on right
+                return TileType.DIRT_LEFT;
+            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
+                return TileType.DIRT_RIGHT;
+            } else if ((x > 0 && map[y][x - 1] != TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
+                return TileType.DIRT_COLUMN;
+            } else {
+                return TileType.DIRT;
+            }
+        } else {
+            //Grass
+            if ((x > 0 && map[y][x - 1] != TILE || x == 0) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
+                // Grass tile on right
+                return TileType.GRASS_LEFT;
+            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] != TILE)) {
+                return TileType.GRASS_RIGHT;
+            } else if ((x > 0 && map[y][x - 1] == TILE) && (x < map[y].length - 1 && map[y][x + 1] == TILE)) {
+                return TileType.GRASS_MID;
+            }
+        }
+
+        return TileType.GRASS_TOP;
+    }
+
+    /**
      * Sets the spike tiles below the map which will kill you on intersection.
      */
     private void setSpikeTiles() {
@@ -682,6 +723,7 @@ public class Level {
 
     /**
      * Sets the variables needed to place the spike tiles.
+     *
      * @param x the x position
      * @param y the y position
      */
@@ -699,6 +741,7 @@ public class Level {
 
     /**
      * Loads a map given by the map name
+     *
      * @param fileName the map name
      * @return a char array represented as the map
      */
@@ -709,6 +752,7 @@ public class Level {
 
     /**
      * Gets the chest object
+     *
      * @return chest
      */
     public Chest getChest() {
