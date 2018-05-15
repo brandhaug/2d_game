@@ -1,15 +1,24 @@
 package Game.Levels;
 
+import ClassicLevels.ClassicLevelsController;
+import ClassicLevels.LevelColumn;
 import CreateLevel.MapParser;
 import Game.GameController;
 import Game.GameObjects.*;
+import Jar.JarUtil;
 import MainMenu.MainMenuController;
 import javafx.scene.canvas.GraphicsContext;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class Level {
     private List<Tile> tiles;
@@ -70,6 +79,7 @@ public class Level {
         parseMap(map);
         playerChangeY = getPlayerStartPositionY();
         bulletCounter = 10;
+
     }
 
     /**
@@ -287,7 +297,7 @@ public class Level {
                 if (GameController.CANVAS_HEIGHT - player.getY() < GameController.PLAYER_Y_MARGIN) {
                     cameraVelocityY = -13;
                 } else if (GameController.CANVAS_HEIGHT - player.getY() > GameController.PLAYER_Y_MARGIN + 30) {
-                    cameraVelocityY = 10;
+                    cameraVelocityY = 20;
                 } else {
                     cameraVelocityY = 0;
                     cameraStable = true;
@@ -396,10 +406,10 @@ public class Level {
     private void renderEnemies(GraphicsContext gc, Player player) {
         for (Enemy enemy : getEnemies()) {
 
-            if (survival)checkOutOfBounds(enemy);
+            if (survival) checkOutOfBounds(enemy);
 
             if (enemy.getX() < -enemy.getWidth() || enemy.getX() > GameController.CANVAS_WIDTH
-                        || (enemy.getY()+enemy.getHeight() > GameController.CANVAS_HEIGHT)) enemyAttack = false;
+                    || (enemy.getY() + enemy.getHeight() > GameController.CANVAS_HEIGHT)) enemyAttack = false;
 
             if (!enemy.getLeftCollision() && enemy.getX() > GameController.PLAYER_X_MARGIN && enemyAttack) {
                 enemy.setVelocityX(-enemy.getSpeed(), false);
@@ -577,15 +587,19 @@ public class Level {
     /**
      * Returns the amount of the current type in map
      *
-     * @param type        the type
-     * @param pathName the map name
+     * @param type     the type
+     * @param fileName the map name
      * @return amount of the current type
      */
-    private int getNumberOfType(char type, String pathName) {
+    private int getNumberOfType(char type, String fileName) {
         Scanner scanner = null;
         int numberOfType = 0;
         try {
-            scanner = new Scanner(new File("src/Resources/maps/" + pathName), "utf-8");
+            File file = new JarUtil().getFileFromJar(fileName);
+            if (file == null) {
+                file = new File("src/Resources/maps/" + fileName);
+            }
+            scanner = new Scanner(file, "utf-8");
 
             while (scanner.hasNext()) {
                 char[] line = scanner.nextLine().toLowerCase().toCharArray();
@@ -743,7 +757,12 @@ public class Level {
      * @return a char array represented as the map
      */
     private char[][] loadMap(String fileName) {
-        File file = new File("./src/Resources/maps/" + fileName);
+        File file = new JarUtil().getFileFromJar(fileName);
+
+        if (file == null) {
+            file = new File("./src/Resources/maps/" + fileName);
+        }
+
         return mapParser.getArrayFromFile(file);
     }
 

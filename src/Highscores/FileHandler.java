@@ -3,6 +3,7 @@ package Highscores;
 
 import CreateLevel.MapParser;
 import Game.GameController;
+import Jar.JarUtil;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
@@ -573,7 +574,10 @@ public class FileHandler {
             List<String> lines = Files.readAllLines(progressPath, StandardCharsets.ISO_8859_1);
             int progress = Integer.parseInt(lines.get(0));
 
-            File map = new File("src/Resources/maps/" + GameController.mapName);
+            File map = new JarUtil().getFileFromJar(GameController.mapName);
+            if (map == null) {
+                map = new File("src/Resources/maps/" + GameController.mapName);
+            }
             int levelProgress = mapParser.getValueFromFileHeader(map, "level");
 
             if (levelProgress == progress) {

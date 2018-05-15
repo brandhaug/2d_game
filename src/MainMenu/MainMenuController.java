@@ -2,6 +2,7 @@ package MainMenu;
 
 import Game.GameController;
 import Highscores.FileHandler;
+import Jar.JarUtil;
 import SceneChanger.SceneChanger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -117,6 +118,7 @@ public class MainMenuController {
     /**
      * Changes the scene to the classic level selection scene.
      * Stops the music.
+     *
      * @param event the ActionEvent
      */
     @FXML
@@ -127,22 +129,29 @@ public class MainMenuController {
 
     /**
      * Changes the scene to the survival game scene. Stops the music.
+     *
      * @param event the Action Event
      */
     @FXML
     private void openGameSurvival(ActionEvent event) {
         musicClip.stop();
-        GameController.setMapName("survivalfolder/survival");
+
+        if (new JarUtil().getJarFile().isFile()) {
+            GameController.setMapName("Resources/maps/survivalfolder/survival");
+        } else {
+            GameController.setMapName("survivalfolder/survival");
+        }
         sceneChanger.changeScene(event, "/Game/Game.fxml", true);
     }
 
     /**
      * Starts the game if the bullet is available. Forwards to bullet buy screen if user has enough money to buy.
+     *
      * @param selectedBulletType the selected bullet type
-     * @param bulletAvailable true if bullet is available, false if not
-     * @param bulletPrice the price of the bullet
-     * @param event the ActionEvent
-     * @param points the kill coins
+     * @param bulletAvailable    true if bullet is available, false if not
+     * @param bulletPrice        the price of the bullet
+     * @param event              the ActionEvent
+     * @param points             the kill coins
      */
     private void setBullet(String selectedBulletType, boolean bulletAvailable, Text bulletPrice, ActionEvent event, int points) {
         selectedBullet = selectedBulletType;
@@ -156,6 +165,7 @@ public class MainMenuController {
 
     /**
      * When selecting a bullet in Survival Mode, tries to either use it if its available or buy if its not.
+     *
      * @param event the ActionEvent
      */
     @FXML
@@ -177,6 +187,7 @@ public class MainMenuController {
 
     /**
      * Get the content of the survival file by decrypting, reading and encrypting.
+     *
      * @return ArrayList of Strings.
      */
     private ArrayList<String> getSurvivalFileContent() {
@@ -188,6 +199,7 @@ public class MainMenuController {
 
     /**
      * Gets the kill coins by reading the survival file. Gives user an error message if something goes wrong.
+     *
      * @return kill coins
      */
     private int getKillCoins() {
@@ -304,6 +316,7 @@ public class MainMenuController {
 
     /**
      * Opens the info scene. Stops the music.
+     *
      * @param event the ActionEvent
      */
     @FXML
@@ -314,6 +327,7 @@ public class MainMenuController {
 
     /**
      * Opens the create level scene. Stops the music.
+     *
      * @param event the ActionEvent
      */
     @FXML
@@ -324,6 +338,7 @@ public class MainMenuController {
 
     /**
      * Opens the high score scene. Stops the music.
+     *
      * @param event the ActionEvent
      */
     @FXML
@@ -336,6 +351,7 @@ public class MainMenuController {
      * Initializes a new SceneChanger.
      * Sets kill coin text.
      * Initializes music and sounds.
+     *
      * @see SceneChanger
      */
     @FXML

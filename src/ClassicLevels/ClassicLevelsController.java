@@ -3,10 +3,11 @@ package ClassicLevels;
 import CreateLevel.MapParser;
 import Game.GameController;
 import Highscores.FileHandler;
+import Jar.JarUtil;
+import SceneChanger.SceneChanger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import SceneChanger.SceneChanger;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -14,24 +15,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-import java.io.*;
-import java.net.URI;
+import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.CodeSource;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class ClassicLevelsController {
 
@@ -226,10 +216,13 @@ public class ClassicLevelsController {
                 standardLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
             errorLabel.setText("Level is not unlocked");
         } else if (standardLevelList.getSelectionModel().getSelectedItem() != null) {
-            openGameLevel("classic/standard/" + standardLevelList.getSelectionModel().getSelectedItem().getName());
+            String path = "classic/standard/";
+            if (new JarUtil().getJarFile().isFile()) {
+                path = "Resources/maps/classic/standard/";
+            }
+            openGameLevel(path + standardLevelList.getSelectionModel().getSelectedItem().getName());
         }
     }
-
 
     /**
      * Opens game with selected map
@@ -240,7 +233,11 @@ public class ClassicLevelsController {
                 customLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
             errorLabel.setText("Level is not unlocked");
         } else if (customLevelList.getSelectionModel().getSelectedItem() != null) {
-            openGameLevel("classic/custom/" + customLevelList.getSelectionModel().getSelectedItem().getName());
+            String path = "classic/custom/";
+            if (new JarUtil().getJarFile().isFile()) {
+                path = "Resources/maps/classic/custom/";
+            }
+            openGameLevel(path + customLevelList.getSelectionModel().getSelectedItem().getName());
         }
     }
 
