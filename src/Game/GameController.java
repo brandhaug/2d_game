@@ -497,7 +497,7 @@ public class GameController {
      */
     private void initializeBackground() {
         try {
-            BufferedImage bufferedBackground = ImageIO.read(new File(getClass().getResource("/Resources/background/background.png").getPath()));
+            BufferedImage bufferedBackground = ImageIO.read(getClass().getResourceAsStream("/Resources/background/background.png"));
             background = SwingFXUtils.toFXImage(bufferedBackground, null);
         } catch (IOException e) {
             e.printStackTrace();

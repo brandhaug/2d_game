@@ -15,6 +15,24 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.CodeSource;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 public class ClassicLevelsController {
 
     @FXML
@@ -30,6 +48,8 @@ public class ClassicLevelsController {
     private short progress;
     private MapParser mapParser;
 
+    private String[] standardLevels = new String[]{"1_Beginner", "2_Intermediate", "3_Hard", "4_Expert", "5_Legend"};
+
 
     /**
      * Closes application
@@ -42,6 +62,7 @@ public class ClassicLevelsController {
 
     /**
      * Set map name and change scene to Game
+     *
      * @param mapName
      */
     @FXML
@@ -52,6 +73,7 @@ public class ClassicLevelsController {
 
     /**
      * Change scene to Main Menu
+     *
      * @param event
      */
     @FXML
@@ -82,19 +104,52 @@ public class ClassicLevelsController {
     /**
      * Add levels from list to tables
      * Add columns to table
+     *
      * @param levelList
      * @param folderName
      */
     private void addLevelsToList(TableView<LevelColumn> levelList, String folderName) {
-        File levelFolder = new File("src/Resources/maps/classic/" + folderName);
-        File[] levelFiles = levelFolder.listFiles();
 
-        if (levelFiles != null && levelFiles.length != 0) {
-            for (File levelFile : levelFiles) {
-                String status = getStatusOnFile(levelFile, folderName);
+        final String path = "Resources/maps/classic/" + folderName;
+        final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 
-                LevelColumn levelColumn = new LevelColumn(levelFile.getName(), status);
-                levelList.getItems().add(levelColumn);
+        if (jarFile.isFile()) {
+            try {
+                final JarFile jar = new JarFile(jarFile);
+                final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
+                while (entries.hasMoreElements()) {
+                    final String filePath = entries.nextElement().getName();
+                    if (filePath.startsWith(path + "/")) { //filter according to the path
+                        String separator = "/";
+                        int pos = filePath.lastIndexOf(separator);
+                        String name = filePath.substring(pos + separator.length());
+
+                        if (name.length() > 0) {
+                            String status = getStatusOnName(name, folderName);
+                            LevelColumn levelColumn = new LevelColumn(name, status);
+                            levelList.getItems().add(levelColumn);
+                        }
+                    }
+                }
+
+                jar.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else { // Run with IDE
+            final URL url = ClassicLevelsController.class.getResource("/" + path);
+            if (url != null) {
+                try {
+                    final File levelFiles = new File(url.toURI());
+                    for (File levelFile : levelFiles.listFiles()) {
+                        String status = getStatusOnFile(levelFile, folderName);
+                        LevelColumn levelColumn = new LevelColumn(levelFile.getName(), status);
+                        levelList.getItems().add(levelColumn);
+                    }
+                } catch (URISyntaxException ex) {
+                    // never happens
+                }
             }
         }
 
@@ -103,6 +158,7 @@ public class ClassicLevelsController {
 
     /**
      * Set locked/unlocked on levels, based on progress
+     *
      * @param levelFile
      * @param folderName
      * @return
@@ -124,7 +180,31 @@ public class ClassicLevelsController {
     }
 
     /**
+     * Set locked/unlocked on levels, based on progress
+     *
+     * @param name
+     * @param folderName
+     * @return
+     */
+    private String getStatusOnName(String name, String folderName) {
+        int level;
+
+        if (folderName.equals("standard")) {
+            level = Integer.parseInt(String.valueOf(name.charAt(0)));
+        } else {
+            level = 0;
+        }
+
+        if (level > progress) {
+            return "Locked";
+        } else {
+            return "Unlocked";
+        }
+    }
+
+    /**
      * Adds columns and sets width for list
+     *
      * @param levelList
      */
     private void addColumnsToList(TableView<LevelColumn> levelList) {
@@ -166,6 +246,7 @@ public class ClassicLevelsController {
 
     /**
      * Get progress
+     *
      * @return progress
      */
     public short getProgress() {
@@ -174,6 +255,7 @@ public class ClassicLevelsController {
 
     /**
      * Get Standard level list
+     *
      * @return standard level list
      */
     public TableView<LevelColumn> getStandardLevelList() {
