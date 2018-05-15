@@ -49,7 +49,7 @@ public class CollisionHandler {
         Iterator<Coin> coinIterator = level.getCoins().iterator();
         while (coinIterator.hasNext()) {
             Coin coin = coinIterator.next();
-            if (intersectsWithPlayer(coin)) {
+            if (intersectsWithPlayer(coin) && level.getCameraStable()) {
                 coinIterator.remove();
                 level.addCoinCounter();
                 SoundEffects.COIN.play();
