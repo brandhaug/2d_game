@@ -13,20 +13,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public class ClassicLevelsController {
 
     @FXML
-    private TableView<LevelColumn> standardLevelList, customLevelList;
+    private TableView<LevelColumn> standardLevelList;
 
     @FXML
     private Label errorLabel;
@@ -87,63 +82,26 @@ public class ClassicLevelsController {
             progress = 1;
         }
 
-        addLevelsToList(standardLevelList, "standard");
-        addLevelsToList(customLevelList, "custom");
+        addStandardLevelsToList();
     }
 
     /**
      * Add levels from list to tables
      * Add columns to table
      *
-     * @param levelList
-     * @param folderName
      */
-    private void addLevelsToList(TableView<LevelColumn> levelList, String folderName) {
+    private void addStandardLevelsToList() {
+        final String path = "/Resources/maps/classic/standard";
 
-        final String path = "Resources/maps/classic/" + folderName;
-        final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-
-        if (jarFile.isFile()) {
-            try {
-                final JarFile jar = new JarFile(jarFile);
-                final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
-                while (entries.hasMoreElements()) {
-                    final String filePath = entries.nextElement().getName();
-                    if (filePath.startsWith(path + "/")) { //filter according to the path
-                        String separator = "/";
-                        int pos = filePath.lastIndexOf(separator);
-                        String name = filePath.substring(pos + separator.length());
-
-                        if (name.length() > 0) {
-                            String status = getStatusOnName(name, folderName);
-                            LevelColumn levelColumn = new LevelColumn(name, status);
-                            levelList.getItems().add(levelColumn);
-                        }
-                    }
-                }
-
-                jar.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        } else { // Run with IDE
-            final URL url = ClassicLevelsController.class.getResource("/" + path);
-            if (url != null) {
-                try {
-                    final File levelFiles = new File(url.toURI());
-                    for (File levelFile : levelFiles.listFiles()) {
-                        String status = getStatusOnFile(levelFile, folderName);
-                        LevelColumn levelColumn = new LevelColumn(levelFile.getName(), status);
-                        levelList.getItems().add(levelColumn);
-                    }
-                } catch (URISyntaxException ex) {
-                    // never happens
-                }
-            }
+        for (String level : standardLevels) {
+            String status = getStatusOnName(level);
+            LevelColumn levelColumn = new LevelColumn(level, status);
+            standardLevelList.getItems().add(levelColumn);
         }
 
-        addColumnsToList(levelList);
+
+
+        addColumnsToList();
     }
 
     /**
@@ -173,17 +131,10 @@ public class ClassicLevelsController {
      * Set locked/unlocked on levels, based on progress
      *
      * @param name
-     * @param folderName
      * @return
      */
-    private String getStatusOnName(String name, String folderName) {
-        int level;
-
-        if (folderName.equals("standard")) {
-            level = Integer.parseInt(String.valueOf(name.charAt(0)));
-        } else {
-            level = 0;
-        }
+    private String getStatusOnName(String name) {
+        int level = Integer.parseInt(String.valueOf(name.charAt(0)));
 
         if (level > progress) {
             return "Locked";
@@ -195,16 +146,15 @@ public class ClassicLevelsController {
     /**
      * Adds columns and sets width for list
      *
-     * @param levelList
      */
-    private void addColumnsToList(TableView<LevelColumn> levelList) {
+    private void addColumnsToList() {
         TableColumn<LevelColumn, String> firstCol = new TableColumn<>("Level");
         firstCol.setMinWidth(200);
         firstCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<LevelColumn, String> secondCol = new TableColumn<>("Status");
         secondCol.setMinWidth(95);
         secondCol.setCellValueFactory(new PropertyValueFactory<>("status"));
-        levelList.getColumns().addAll(firstCol, secondCol);
+        standardLevelList.getColumns().addAll(firstCol, secondCol);
     }
 
     /**
@@ -224,22 +174,23 @@ public class ClassicLevelsController {
         }
     }
 
+
     /**
      * Opens game with selected map
      * If selected map is not unlocked - Sends error message to user
      */
-    public void customTableClicked() {
-        if (customLevelList.getSelectionModel().getSelectedItem() != null &&
-                customLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
-            errorLabel.setText("Level is not unlocked");
-        } else if (customLevelList.getSelectionModel().getSelectedItem() != null) {
-            String path = "classic/custom/";
-            if (new JarUtil().getJarFile().isFile()) {
-                path = "Resources/maps/classic/custom/";
-            }
-            openGameLevel(path + customLevelList.getSelectionModel().getSelectedItem().getName());
-        }
-    }
+//    public void customTableClicked() {
+//        if (customLevelList.getSelectionModel().getSelectedItem() != null &&
+//                customLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
+//            errorLabel.setText("Level is not unlocked");
+//        } else if (customLevelList.getSelectionModel().getSelectedItem() != null) {
+//            String path = "classic/custom/";
+//            if (new JarUtil().getJarFile().isFile()) {
+//                path = "Resources/maps/classic/custom/";
+//            }
+//            openGameLevel(path + customLevelList.getSelectionModel().getSelectedItem().getName());
+//        }
+//    }
 
     /**
      * Get progress
@@ -257,5 +208,22 @@ public class ClassicLevelsController {
      */
     public TableView<LevelColumn> getStandardLevelList() {
         return standardLevelList;
+    }
+
+    public void loadCustomLevel() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load custom map");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showOpenDialog(standardLevelList.getScene().getWindow());
+
+        if (file != null) {
+            String path = "classic/standard/";
+            if (new JarUtil().getJarFile().isFile()) {
+                path = "Resources/maps/classic/standard/";
+            }
+            openGameLevel(file.getAbsolutePath());
+        }
     }
 }

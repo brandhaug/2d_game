@@ -1,24 +1,16 @@
 package Game.Levels;
 
-import ClassicLevels.ClassicLevelsController;
-import ClassicLevels.LevelColumn;
 import CreateLevel.MapParser;
 import Game.GameController;
 import Game.GameObjects.*;
 import Jar.JarUtil;
 import MainMenu.MainMenuController;
 import javafx.scene.canvas.GraphicsContext;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public class Level {
     private List<Tile> tiles;
@@ -760,7 +752,7 @@ public class Level {
         File file = new JarUtil().getFileFromJar(fileName);
 
         if (file == null) {
-            file = new File("./src/Resources/maps/" + fileName);
+            file = new File(fileName);
         }
 
         return mapParser.getArrayFromFile(file);

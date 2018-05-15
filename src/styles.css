@@ -18,6 +18,16 @@
     -fx-scale-x: 1.1;
 }
 
+.defaultButton {
+    -fx-border-color: gray;
+    -fx-background-color: #dddddd;
+}
+
+.defaultButton:hover {
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
 .pauseInfoPane {
     -fx-background-color: rgba(234, 234, 234, 0.7);
     -fx-border-color: black;

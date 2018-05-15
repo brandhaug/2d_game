@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
 import java.io.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,6 +165,7 @@ public class CreateLevelController {
 
     /**
      * Enable tool, update GUI1
+     *
      * @param tool
      */
     private void enableTool(char tool) {
@@ -247,6 +249,7 @@ public class CreateLevelController {
 
     /**
      * Change scene to main menu
+     *
      * @param event
      */
     @FXML
@@ -256,19 +259,13 @@ public class CreateLevelController {
 
     /**
      * Creates file chooser - used for save map and load map
+     *
      * @param title
      * @return
      */
     private FileChooser createMapFileChooser(String title) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
-//        System.out.println(getClass().getResource("/Resources/maps/classic/custom"));
-//        System.out.println(getClass().getResource("/Resources/maps/classic/custom").getPath());
-//        System.out.println(getClass().getResource("/Resources/maps/classic/custom").getFile());
-//        System.out.println(getClass().getResource("/Resources/maps/classic/custom").getFile());
-//        System.out.println(getClass().getResource("/Resources/maps/classic/custom").toURI());
-
-        fileChooser.setInitialDirectory(new File("./src/Resources/maps/classic/custom"));
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Text files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser;
@@ -277,6 +274,7 @@ public class CreateLevelController {
     /**
      * Validates map - checks if necessary points exists
      * Opens alert if something is missing
+     *
      * @throws InvalidMapException if map invalid
      */
     private void validateMap() throws InvalidMapException {
@@ -302,6 +300,7 @@ public class CreateLevelController {
 
     /**
      * Parse drawn grid/map to file content
+     *
      * @return
      */
     private String getMapContent() {
@@ -325,6 +324,7 @@ public class CreateLevelController {
 
     /**
      * Saves file
+     *
      * @param content
      * @param file
      */
@@ -342,6 +342,7 @@ public class CreateLevelController {
      * Updates GUI
      * Updates buttons
      * Updates toolEnabled
+     *
      * @param tool
      */
     private void updateGui(char tool) {
@@ -380,6 +381,7 @@ public class CreateLevelController {
      * Detects which cell in grid is clicked
      * Returns message in console if click is outside grid
      * Edits the cell with current toolEnabled
+     *
      * @param mouseEvent
      */
     public void mouseClicked(MouseEvent mouseEvent) {
@@ -402,6 +404,7 @@ public class CreateLevelController {
     /**
      * Drags grid if shift is down
      * Works as regular mouse clicks if shift is up
+     *
      * @param mouseEvent
      */
     public void mouseDragged(MouseEvent mouseEvent) {
@@ -417,6 +420,7 @@ public class CreateLevelController {
 
     /**
      * Detects coordinates and offsetcoordinates on press
+     *
      * @param mouseEvent
      */
     public void mousePressed(MouseEvent mouseEvent) {
@@ -466,6 +470,7 @@ public class CreateLevelController {
     /**
      * Clears cell
      * Add/erase content to cell based on tool enabled
+     *
      * @param x
      * @param y
      * @param tool
@@ -497,6 +502,7 @@ public class CreateLevelController {
     /**
      * Error handling for editCell
      * Opens alert if user tries to do invalid actions
+     *
      * @param tool
      * @throws Exception
      */
@@ -518,6 +524,7 @@ public class CreateLevelController {
 
     /**
      * Updates variables used for error handling, to prevent user from doing invalid actions
+     *
      * @param currentCellValue
      * @param tool
      */
@@ -537,6 +544,7 @@ public class CreateLevelController {
 
     /**
      * Adds step, used for undoing and redoing
+     *
      * @param x
      * @param y
      * @param tool
@@ -557,6 +565,7 @@ public class CreateLevelController {
     /**
      * Renders canvas
      * Updates grid based on offsetX and offsetY
+     *
      * @param initialize
      */
     private void render(boolean initialize) {
@@ -577,6 +586,7 @@ public class CreateLevelController {
 
     /**
      * Render cell based on toolEnabled and currentImage
+     *
      * @param x
      * @param y
      */
