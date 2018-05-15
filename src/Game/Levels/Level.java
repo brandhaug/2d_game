@@ -403,9 +403,6 @@ public class Level {
                 enemyAttack = false;
             }
 
-            System.out.println("P: " + player.getX());
-            System.out.println("E: "+ enemy.getX());
-
             if (!enemy.getLeftCollision() && enemy.getX() > GameController.PLAYER_X_MARGIN && enemyAttack) {
                 enemy.setVelocityX(-enemy.getSpeed(), false);
                 enemy.setRightCollision(false);
@@ -652,8 +649,6 @@ public class Level {
                     case (SPAWN):
                         spawnSpots[0][spawnIndex] = x * GameController.TILE_SIZE;
                         spawnSpots[1][spawnIndex] = y * GameController.TILE_SIZE;
-                        System.out.print("spawnX: " + spawnSpots[0][spawnIndex] + " ");
-                        System.out.println("spawnY: " + spawnSpots[1][spawnIndex]);
                         spawnIndex++;
                         break;
                     case (END):
