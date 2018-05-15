@@ -122,6 +122,12 @@ public class GameController {
     private StopWatch stopWatch;
 
     /**
+     * Bullets
+     */
+    private BulletType bulletType;
+    private byte fireRate = 100;
+
+    /**
      * GUI
      */
     private Font smallFont = new Font("Calibri", 14);
@@ -254,8 +260,28 @@ public class GameController {
         }
     }
 
-    private byte fireRate = 100;
-    private BulletType bulletType;
+    /**
+     * Keeps track of the fireRate of the selected bullet selected
+     * @see Bullet
+     * @see BulletType
+     */
+    private void fireRateTimer(){
+        if (fireRate < 100) {
+            fireRate += bulletType.getFireRate();
+        }
+    }
+
+
+    /**
+     * Start the players run sound, if the player is running.
+     */
+    private void setPlayerRunningSound() {
+        if (player.isRunning()) {
+            SoundEffects.RUN.playLoop();
+        } else if (!player.isRunning() || gameOver) {
+            SoundEffects.RUN.stopLoop();
+        }
+    }
 
     /**
      * Initializes necessary variables and object of the game.
@@ -294,18 +320,6 @@ public class GameController {
         }.start();
     }
 
-
-    /**
-     * Start the players run sound, if the player is running.
-     */
-    private void setPlayerRunningSound() {
-        if (player.isRunning()) {
-            SoundEffects.RUN.playLoop();
-        } else if (!player.isRunning() || gameOver) {
-            SoundEffects.RUN.stopLoop();
-        }
-    }
-
     /**
      * Keeps the game running by drawing canvas according to state of the game.
      *
@@ -321,14 +335,13 @@ public class GameController {
         collisionHandler.tick();
         level.tick(gc, player);
         player.tick(gc);
+        fireRateTimer();
         setPlayerRunningSound();
         renderGUI();
         checkGameOver();
         checkGameWon();
-        if (fireRate < 100) {
-            fireRate += bulletType.getFireRate();
-        }
     }
+
 
     /**
      * Renders the GUI.
