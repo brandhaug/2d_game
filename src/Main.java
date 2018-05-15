@@ -25,7 +25,6 @@ public class Main extends Application {
         primaryStage.setTitle("Red Runner");
         primaryStage.getIcons().add(new Image("/Resources/icon/RedRunnerIcon.png"));
 
-        MainMenuController mainMenuController = new MainMenuController();
         Parent root = FXMLLoader.load(getClass().getResource("MainMenu/MainMenu.fxml"));
         root.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
 

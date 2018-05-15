@@ -8,84 +8,84 @@
 <AnchorPane prefHeight="720.0" prefWidth="1280.0" style="-fx-background-image: url('Resources/background/background.png');" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Info.InfoController">
     <children>
         <Button fx:id="mainMenuButton" layoutX="32.0" layoutY="624.0" mnemonicParsing="false" onAction="#openMainMenu" prefHeight="64.0" prefWidth="64.0" style="-fx-graphic: url('Resources/buttons/home.png');" styleClass="button" />
-      <AnchorPane fx:id="infoPane" layoutX="392.0" layoutY="84.0" prefHeight="540.0" prefWidth="497.0" styleClass="chooseBulletPane">
+      <AnchorPane fx:id="infoPane" layoutX="392.0" layoutY="40.0" prefHeight="625.0" prefWidth="497.0" styleClass="chooseBulletPane">
          <children>
-            <Text layoutX="88.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Information">
+            <Text layoutX="118.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Information">
                <font>
-                  <Font name="Tahoma" size="60.0" />
+                  <Font name="Tahoma" size="50.0" />
                </font>
             </Text>
-            <Text layoutX="195.0" layoutY="150.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mission" textAlignment="CENTER">
-               <font>
-                  <Font name="Tahoma" size="30.0" />
-               </font>
-            </Text>
-            <Text layoutX="187.0" layoutY="348.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Controls" textAlignment="CENTER" wrappingWidth="113.4130859375">
+            <Text layoutX="108.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Classic Mode Mission" textAlignment="CENTER">
                <font>
                   <Font name="Tahoma" size="30.0" />
                </font>
             </Text>
-            <Text layoutX="144.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Avoid enemies" textAlignment="CENTER" wrappingWidth="199.171875">
+            <Text layoutX="108.0" layoutY="275.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Survival Mode Mission" textAlignment="CENTER">
+               <font>
+                  <Font name="Tahoma" size="30.0" />
+               </font>
+            </Text>
+            <Text layoutX="187.0" layoutY="442.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Controls" textAlignment="CENTER" wrappingWidth="113.4130859375">
+               <font>
+                  <Font name="Tahoma" size="30.0" />
+               </font>
+            </Text>
+            <Text layoutX="144.0" layoutY="158.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Avoid Enemies or kill them to earn KillCoins | Collect Coins | Finish course as fast as you can" textAlignment="CENTER" wrappingWidth="199.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="143.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Collect coins" textAlignment="CENTER" wrappingWidth="199.171875">
+            <Text layoutX="144.0" layoutY="305.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Kill as many Enemies as possible | Earn KillCoins to buy new Bullets | Survive as many Waves as possible" textAlignment="CENTER" wrappingWidth="199.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="103.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Finish course as fast as you can" textAlignment="CENTER" wrappingWidth="280.171875">
+            <Text layoutX="120.0" layoutY="477.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Left" textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="120.0" layoutY="399.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Left" textAlignment="CENTER" wrappingWidth="134.171875">
+            <Text layoutX="120.0" layoutY="504.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Right" textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="120.0" layoutY="431.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Right" textAlignment="CENTER" wrappingWidth="134.171875">
+            <Text layoutX="120.0" layoutY="529.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jump" textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="120.0" layoutY="462.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Jump" textAlignment="CENTER" wrappingWidth="134.171875">
+            <Text layoutX="120.0" layoutY="552.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shoot" textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="120.0" layoutY="493.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shoot" textAlignment="CENTER" wrappingWidth="134.171875">
+            <Text layoutX="120.0" layoutY="579.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pause" textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="120.0" layoutY="524.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Pause" textAlignment="CENTER" wrappingWidth="134.171875">
+            <Text layoutX="264.0" layoutY="477.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A / ←" textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="264.0" layoutY="399.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A / ←" textAlignment="CENTER" wrappingWidth="134.171875">
+            <Text layoutX="264.0" layoutY="504.0" strokeType="OUTSIDE" strokeWidth="0.0" text="D / →" textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="264.0" layoutY="430.0" strokeType="OUTSIDE" strokeWidth="0.0" text="D / →" textAlignment="CENTER" wrappingWidth="134.171875">
+            <Text layoutX="264.0" layoutY="529.0" strokeType="OUTSIDE" strokeWidth="0.0" text="W / ↑" textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="264.0" layoutY="461.0" strokeType="OUTSIDE" strokeWidth="0.0" text="W " textAlignment="CENTER" wrappingWidth="134.171875">
+            <Text layoutX="264.0" layoutY="552.0" strokeType="OUTSIDE" strokeWidth="0.0" text="E / CTRL " textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="264.0" layoutY="492.0" strokeType="OUTSIDE" strokeWidth="0.0" text="E " textAlignment="CENTER" wrappingWidth="134.171875">
-               <font>
-                  <Font name="Tahoma" size="17.0" />
-               </font>
-            </Text>
-            <Text layoutX="264.0" layoutY="523.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SPACE " textAlignment="CENTER" wrappingWidth="134.171875">
+            <Text layoutX="264.0" layoutY="579.0" strokeType="OUTSIDE" strokeWidth="0.0" text="SPACE " textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>
