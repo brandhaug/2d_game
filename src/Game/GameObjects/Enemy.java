@@ -8,7 +8,7 @@ import java.awt.*;
 
 import static javafx.scene.paint.Color.RED;
 
-public class Enemy extends GameObject {
+public class Enemy extends GameObject{
 
     private int hp;
     private int speed;
@@ -22,7 +22,7 @@ public class Enemy extends GameObject {
     private boolean rightCollision = false;
     private boolean leftCollision = false;
     private boolean firstCollision = false;
-    private boolean lastSpriteRight = true;
+    private boolean lastSpriteRight = false;
     private boolean isAlive = true;
     private EnemyType enemyType;
 
@@ -80,7 +80,7 @@ public class Enemy extends GameObject {
         this.hp = hp;
     }
 
-    public void decreaseHp() {
+    public void decreaseHp(){
         this.hp--;
     }
 
@@ -122,7 +122,6 @@ public class Enemy extends GameObject {
 
     /**
      * Gets the height hit of the enemy
-     *
      * @return heightHit
      */
     public int getHeightHit() {
@@ -131,7 +130,6 @@ public class Enemy extends GameObject {
 
     /**
      * Gets the speed of the enemy
-     *
      * @return speed
      */
     public int getSpeed() {
@@ -140,16 +138,14 @@ public class Enemy extends GameObject {
 
     /**
      * Gets the points of the enemy
-     *
      * @return points
      */
-    public int getPoints() {
+    public int getPoints(){
         return points;
     }
 
     /**
      * Sets enemy to alive or dead
-     *
      * @param isAlive true if alive, false if dead
      */
     public void setAlive(boolean isAlive) {
@@ -159,38 +155,35 @@ public class Enemy extends GameObject {
     /**
      * Sets the first collision of the enemy to true
      */
-    public void setFirstCollision() {
+    public void setFirstCollision(){
         firstCollision = true;
     }
 
     /**
      * Returns true if enemy has had its first collision
-     *
      * @return firstCollision
      */
-    public boolean getFirstCollision() {
+    public boolean getFirstCollision(){
         return firstCollision;
     }
 
     /**
      * Sets the enemy hit
-     *
      * @param enemyHit true if enemy has been hit, false if enemy has not been hit
      */
-    public void setEnemyHit(boolean enemyHit) {
+    public void setEnemyHit(boolean enemyHit){
         this.enemyHit = enemyHit;
     }
 
     /**
      * Beeing called on every tick. Handles velocity x and y of enemy. Renders the graphics.
-     *
      * @param gc The GraphicsContext
      * @see GraphicsContext
      */
     public void tick(GraphicsContext gc) {
         handleVelocityX();
         handleVelocityY();
-        if (getVelocityY() <= 0) {
+        if(getVelocityY()<=0) {
             setVelocityY(10);
         }
         render(gc);
@@ -237,15 +230,15 @@ public class Enemy extends GameObject {
                 setCurrentSpriteState(ENEMY_IDLING_LEFT);
                 setCurrentSpriteSheet(idleLeftSpriteSheet);
             }
-        } else if (enemyHit) {
-            if (getVelocityX() > 0 || getVelocityX() == 0 && lastSpriteRight) {
+        } else if(enemyHit){
+            if(getVelocityX() > 0 || getVelocityX() == 0 && lastSpriteRight) {
                 setCurrentSpriteState(ENEMY_HIT_RIGHT);
                 setCurrentSpriteSheet(hitRightSpriteSheet);
-            } else {
+            }else {
                 setCurrentSpriteState(ENEMY_HIT_LEFT);
                 setCurrentSpriteSheet(hitLeftSpriteSheet);
             }
-        } else if (getVelocityY() < 0 && (getVelocityX() > 0 || getVelocityX() == 0 && lastSpriteRight)) {
+        }else if (getVelocityY() < 0 && (getVelocityX() > 0 || getVelocityX() == 0 && lastSpriteRight)) {
             lastSpriteRight = true;
             setCurrentSpriteState(ENEMY_JUMPING_RIGHT);
             setCurrentSpriteSheet(runRightSpriteSheet);
@@ -276,17 +269,16 @@ public class Enemy extends GameObject {
      * Initializes all the sprite sheets for enemy.
      */
     public void initializeSpriteSheets() {
-        idleRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName() + "/monster_" + enemyType.getFileName() + "_idleRight.png", 4, enemyType.getIdleW(), enemyType.getIdleH());
-        idleLeftSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName() + "/monster_" + enemyType.getFileName() + "_idleLeft.png", 4, enemyType.getIdleW(), enemyType.getIdleH());
-        runRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName() + "/monster_" + enemyType.getFileName() + "_runRight.png", 4, enemyType.getRunW(), enemyType.getRunH());
-        runLeftSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName() + "/monster_" + enemyType.getFileName() + "_runLeft.png", 4, enemyType.getRunW(), enemyType.getRunH());
-        hitRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName() + "/monster_" + enemyType.getFileName() + "_hitRight.png", 2, enemyType.getHitW(), enemyType.getHitH());
-        hitLeftSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName() + "/monster_" + enemyType.getFileName() + "_hitLeft.png", 2, enemyType.getHitW(), enemyType.getHitH());
+        idleLeftSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_idleLeft.png" , 4, enemyType.getIdleW(), enemyType.getIdleH());
+        idleRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_idleRight.png", 4, enemyType.getIdleW(), enemyType.getIdleH());
+        runRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_runRight.png", 4, enemyType.getRunW(), enemyType.getRunH());
+        runLeftSpriteSheet = new SpriteSheet("/Resources/enemies/"  + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_runLeft.png", 4, enemyType.getRunW(), enemyType.getRunH());
+        hitRightSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_hitRight.png", 2, enemyType.getHitW(), enemyType.getHitH());
+        hitLeftSpriteSheet = new SpriteSheet("/Resources/enemies/" + enemyType.getFileName()+ "/monster_" + enemyType.getFileName() + "_hitLeft.png", 2, enemyType.getHitW(), enemyType.getHitH());
     }
 
     /**
      * Sets the right collision of the enemy
-     *
      * @param rightCollision the right collision
      */
     public void setRightCollision(boolean rightCollision) {
@@ -295,7 +287,6 @@ public class Enemy extends GameObject {
 
     /**
      * Sets the left collision of the enemy
-     *
      * @param leftCollision the left collision
      */
     public void setLeftCollision(boolean leftCollision) {
@@ -304,43 +295,32 @@ public class Enemy extends GameObject {
 
     /**
      * Gets the right collision of the enemy
-     *
      * @return true if enemy has a right collision, false if not
      */
-    public boolean getRightCollision() {
+    public boolean getRightCollision(){
         return rightCollision;
     }
 
     /**
      * Gets the left collision of the enemy
-     *
      * @return true if enemy has a left collision, false if not
      */
-    public boolean getLeftCollision() {
+    public boolean getLeftCollision(){
         return leftCollision;
     }
 
     /**
      * Renders the current sprite sheet
-     *
      * @param gc the GraphicsContext
      * @see GraphicsContext
      */
     @Override
     public void render(GraphicsContext gc) {
         getCurrentSpriteSheet().render(gc, getX(), getY(), getCurrentSpriteState(), getLastSpriteState());
-
-        // Draw bounds
-//        gc.strokeRect(getX(), getY() + enemyType.getRunH() - 20, enemyType.getRunW(), 20);
-//        gc.strokeRect(getX(), getY(), enemyType.getIdleW(), 20);
-//        gc.strokeRect(getX() + enemyType.getRunW() - 30, getY() + 20, 20, enemyType.getRunH() - 40);
-//        gc.strokeRect(getX() + 10, getY() + 20, 20, enemyType.getRunH() - 40);
-
     }
 
     /**
      * Get bounds bottom for enemy
-     *
      * @return bottom Rectangle
      */
     @Override
@@ -350,31 +330,28 @@ public class Enemy extends GameObject {
 
     /**
      * Get bounds top for enemy
-     *
      * @return top Rectangle
      */
     @Override
     public Rectangle getBoundsTop() {
-        return new Rectangle(getX(), getY(), enemyType.getIdleW(), 20);
+        return new Rectangle(getX(), getY()-10, enemyType.getIdleW(), 20);
     }
 
     /**
      * Get bounds right for enemy
-     *
      * @return right Rectangle
      */
     @Override
     public Rectangle getBoundsRight() {
-        return new Rectangle(getX() + enemyType.getRunW() - 30, getY() + 20, 20, enemyType.getRunH() - 40);
+        return new Rectangle(getX()+enemyType.getRunW()-30, getY() + 20, 20, enemyType.getRunH()-40);
     }
 
     /**
      * Get bounds left for enemy
-     *
      * @return left Rectangle
      */
     @Override
     public Rectangle getBoundsLeft() {
-        return new Rectangle(getX() + 10, getY() + 20, 20, enemyType.getRunH() - 40);
+        return new Rectangle(getX()+10, getY() + 20, 20,  enemyType.getRunH()-40);
     }
 }

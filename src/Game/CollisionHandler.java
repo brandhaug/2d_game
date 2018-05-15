@@ -321,6 +321,7 @@ public class CollisionHandler {
 
     /**
      * Decreases players HP by the enemy damage done. Sets player to dead if HP is below 0.
+     * EnemyHit is 10 times more in Classic Mode
      * Sets velocityY to -10.
      * @param enemyDamage the damage done by the enemy
      * @param damage true if damage should be taken, will only set velocityY if false.
@@ -329,7 +330,11 @@ public class CollisionHandler {
         player.setVelocityY(-10);
         if (damage) {
             SoundEffects.HIT.play();
-            player.setHp(player.getHp() - enemyDamage);
+            if(level.getSurvival()){
+                player.setHp(player.getHp() - enemyDamage);
+            }else{
+                player.setHp(player.getHp() - enemyDamage*10);
+            }
             if (player.getHp() <= 0) player.setAlive(false);
         }
     }

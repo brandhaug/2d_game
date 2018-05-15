@@ -395,10 +395,16 @@ public class Level {
      */
     private void renderEnemies(GraphicsContext gc, Player player) {
         for (Enemy enemy : getEnemies()) {
+
             if (survival) checkOutOfBounds(enemy);
 
-            if (enemy.getX() < -enemy.getWidth() || enemy.getX() > player.getX() + GameController.PLAYER_X_MARGIN)
+            if (enemy.getX() < -enemy.getWidth() || enemy.getX() > player.getX() + GameController.PLAYER_X_MARGIN
+                    || (enemy.getY()+enemy.getHeight() > GameController.CANVAS_HEIGHT)){
                 enemyAttack = false;
+            }
+
+            System.out.println("P: " + player.getX());
+            System.out.println("E: "+ enemy.getX());
 
             if (!enemy.getLeftCollision() && enemy.getX() > GameController.PLAYER_X_MARGIN && enemyAttack) {
                 enemy.setVelocityX(-enemy.getSpeed(), false);
@@ -457,7 +463,7 @@ public class Level {
         for (int i = 0; i < waveNr / 2; i++) {
             random = randomSpawn(player);
             spawnX = spawnSpots[0][random];
-            spawnY = spawnSpots[1][random] - getPlayerChangeY() - 76;
+            spawnY = spawnSpots[1][random] - getPlayerChangeY() - GameController.TILE_SIZE;
             ammunition.add(new Ammunition(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY));
 
         }

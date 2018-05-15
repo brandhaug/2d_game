@@ -10,6 +10,7 @@ import java.awt.*;
 public class Player extends GameObject {
 
     private final int WIDTH = 72;
+    private final int HEIGHT = 76;
 
     /**
      * States

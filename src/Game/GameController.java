@@ -334,9 +334,6 @@ public class GameController {
      * Renders the GUI.
      */
     private void renderGUI() {
-        gc.setFill(Color.BLACK);
-        //gc.fillRect(10,10,10,20);
-
         if (!level.getSurvival()) {
             coinCounter.setVisible(true);
             gc.fillText(level.getCoinCounter() + "/" + coinAmount, 60, 35);
