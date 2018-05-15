@@ -396,12 +396,10 @@ public class Level {
     private void renderEnemies(GraphicsContext gc, Player player) {
         for (Enemy enemy : getEnemies()) {
 
-            if (survival) checkOutOfBounds(enemy);
+            if (survival)checkOutOfBounds(enemy);
 
-            if (enemy.getX() < -enemy.getWidth() || enemy.getX() > player.getX() + GameController.PLAYER_X_MARGIN
-                    || (enemy.getY()+enemy.getHeight() > GameController.CANVAS_HEIGHT)){
-                enemyAttack = false;
-            }
+            if (enemy.getX() < -enemy.getWidth() || enemy.getX() > GameController.CANVAS_WIDTH
+                        || (enemy.getY()+enemy.getHeight() > GameController.CANVAS_HEIGHT)) enemyAttack = false;
 
             if (!enemy.getLeftCollision() && enemy.getX() > GameController.PLAYER_X_MARGIN && enemyAttack) {
                 enemy.setVelocityX(-enemy.getSpeed(), false);
