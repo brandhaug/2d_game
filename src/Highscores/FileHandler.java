@@ -83,7 +83,7 @@ public class FileHandler {
             addFirstPlacement(mapName, time, coins);
         } else {
             addNewPlacement(mapName, time, coins);
-            deleteOverload();
+            deleteOverload(mapName);
         }
 
         encryptFile(highScorePath);
@@ -92,31 +92,33 @@ public class FileHandler {
     /**
      * Deletes every score in the high score files that is not top 3.
      */
-    private void deleteOverload() {
+    private void deleteOverload(String map) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(HIGH_SCORE_PATH));
+            List<String> lines = Files.readAllLines(highScorePath, StandardCharsets.ISO_8859_1);
+            boolean mapFound = false;
             int position = 0;
-            String line = reader.readLine();
 
-            while (line != null) {
-                if (line.contains("map=")) {
-                    for (int i = 0; i < NUMBER_OF_PLACEMENTS; i++) {
-                        reader.readLine();
-                        position++;
-                    }
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
 
-                    line = reader.readLine();
+                if (mapFound) {
                     position++;
-                    if (line != null && !line.contains("map=")) {
-                        List<String> lines = Files.readAllLines(highScorePath, StandardCharsets.ISO_8859_1);
-                        lines.remove(position);
+
+                    if (line.contains("map=") && position <= NUMBER_OF_PLACEMENTS) {
+                        break;
+                    } else if (!line.contains("map=") && position > NUMBER_OF_PLACEMENTS) {
+                        lines.remove(i);
                         Files.write(highScorePath, lines, StandardCharsets.ISO_8859_1);
                         break;
                     }
-                } else {
-                    position++;
+                }
+
+                if (line.equals("map=" + map)) {
+                    mapFound = true;
                 }
             }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
