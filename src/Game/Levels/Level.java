@@ -514,7 +514,7 @@ public class Level {
             }
 
             if (enemyAmount <= 20 && enemyAmount > 0) {
-                spawnEnemyType(player,EnemyType.ENEMY_I);
+                spawnEnemyType(player,EnemyType.ENEMY_A);
             } else if (enemyAmount <= 40 && enemyAmount > 20 && cameraVelocityY == 0) {
                 spawnEnemyType(player,EnemyType.ENEMY_B);
             } else if (enemyAmount <= 60 && enemyAmount > 40 && cameraVelocityY == 0) {
