@@ -3,10 +3,7 @@ package CreateLevel;
 
 import org.junit.Test;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,10 +17,12 @@ public class MapParserTest {
             bw.write("width: 30 height: 40 level: 2");
             bw.close();
 
+            InputStream inputStream = new FileInputStream(tempFile);
+
             MapParser mapParser = new MapParser();
-            int width = mapParser.getValueFromFileHeader(tempFile, "width");
-            int height = mapParser.getValueFromFileHeader(tempFile, "height");
-            int level = mapParser.getValueFromFileHeader(tempFile, "level");
+            int width = mapParser.getValueFromInputStreamHeader(inputStream, "width");
+            int height = mapParser.getValueFromInputStreamHeader(inputStream, "height");
+            int level = mapParser.getValueFromInputStreamHeader(inputStream, "level");
 
             assertEquals(30, width);
             assertEquals(40, height);
@@ -43,10 +42,12 @@ public class MapParserTest {
             bw.write("width30 heiht: 40 level 2");
             bw.close();
 
+            InputStream inputStream = new FileInputStream(tempFile);
+
             MapParser mapParser = new MapParser();
-            int width = mapParser.getValueFromFileHeader(tempFile, "width");
-            int height = mapParser.getValueFromFileHeader(tempFile, "height");
-            int level = mapParser.getValueFromFileHeader(tempFile, "level");
+            int width = mapParser.getValueFromInputStreamHeader(inputStream, "width");
+            int height = mapParser.getValueFromInputStreamHeader(inputStream, "height");
+            int level = mapParser.getValueFromInputStreamHeader(inputStream, "level");
 
             assertEquals(-1, width);
             assertEquals(-1, height);

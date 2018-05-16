@@ -15,7 +15,7 @@
             <Font name="Arial Black" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="errorLabel" layoutX="302.0" layoutY="123.0" prefHeight="78.0" prefWidth="662.0" textAlignment="CENTER" textFill="RED">
+      <Label fx:id="errorLabel" layoutX="516.0" layoutY="127.0" prefHeight="78.0" prefWidth="285.0" textAlignment="CENTER" textFill="RED">
          <font>
             <Font name="Arial Black" size="14.0" />
          </font>

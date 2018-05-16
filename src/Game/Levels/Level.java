@@ -1,5 +1,6 @@
 package Game.Levels;
 
+import CreateLevel.InvalidMapException;
 import CreateLevel.MapParser;
 import Game.GameController;
 import Game.GameObjects.*;
@@ -7,8 +8,7 @@ import Jar.JarUtil;
 import MainMenu.MainMenuController;
 import javafx.scene.canvas.GraphicsContext;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -71,7 +71,6 @@ public class Level {
         parseMap(map);
         playerChangeY = getPlayerStartPositionY();
         bulletCounter = 10;
-
     }
 
     /**
@@ -586,13 +585,18 @@ public class Level {
     private int getNumberOfType(char type, String fileName) {
         Scanner scanner = null;
         int numberOfType = 0;
-        try {
-            File file = new JarUtil().getFileFromJar(fileName);
-            if (file == null) {
-                file = new File("src/Resources/maps/" + fileName);
-            }
-            scanner = new Scanner(file, "utf-8");
+        InputStream inputStream = new JarUtil().getFileFromJar(fileName);
 
+        if (inputStream == null) {
+            inputStream = getClass().getResourceAsStream(fileName);
+        }
+
+        try {
+            if (inputStream == null) {
+                File file = new File(fileName);
+                inputStream = new FileInputStream(file);
+            }
+            scanner = new Scanner(inputStream, "utf-8");
             while (scanner.hasNext()) {
                 char[] line = scanner.nextLine().toLowerCase().toCharArray();
 
@@ -602,13 +606,14 @@ public class Level {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } finally {
-            if (scanner != null) scanner.close();
         }
 
+        scanner.close();
         return numberOfType;
+
+
     }
 
     /**
@@ -749,13 +754,32 @@ public class Level {
      * @return a char array represented as the map
      */
     private char[][] loadMap(String fileName) {
-        File file = new JarUtil().getFileFromJar(fileName);
+        InputStream inputStream = new JarUtil().getFileFromJar(fileName);
 
-        if (file == null) {
-            file = new File(fileName);
+        if (inputStream == null) {
+            inputStream = getClass().getResourceAsStream(fileName);
         }
 
-        return mapParser.getArrayFromFile(file);
+        try {
+            if (inputStream == null) {
+                File file = new File(fileName);
+                inputStream = new FileInputStream(file);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        char[][] map = mapParser.getArrayFromInputStream(inputStream);
+
+        if (map == null) {
+            try {
+                throw new InvalidMapException("Invalid map file");
+            } catch (InvalidMapException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return map;
     }
 
     /**

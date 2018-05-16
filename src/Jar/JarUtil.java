@@ -1,7 +1,5 @@
 package Jar;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,9 +7,6 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-/**
- * Created by stgr99 on 15.05.2018.
- */
 public class JarUtil {
 
     /**
@@ -19,8 +14,8 @@ public class JarUtil {
      * @param fileName the filepath
      * @return File if running with JAR, null if not.
      */
-    public File getFileFromJar(String fileName) {
-        File file = null;
+    public InputStream getFileFromJar(String fileName) {
+        InputStream inputStream = null;
         final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
         if (jarFile.isFile()) {
             try {
@@ -30,9 +25,7 @@ public class JarUtil {
                     final String filePath = entries.nextElement().getName();
 
                     if (filePath.equals(fileName)) { //filter according to the path
-                        file = new File(filePath);
-                        InputStream inputStream = getClass().getResourceAsStream("/" + filePath);
-                        FileUtils.copyInputStreamToFile(inputStream, file);
+                        inputStream = getClass().getResourceAsStream("/" + filePath);
                     }
                 }
                 jar.close();
@@ -40,7 +33,7 @@ public class JarUtil {
                 e.printStackTrace();
             }
         }
-        return file;
+        return inputStream;
     }
 
     /**

@@ -32,6 +32,10 @@ public class Chest extends GameObject {
         isAnimated = true;
     }
 
+    /**
+     * Get is animated
+     * @return isAnimated
+     */
     public boolean isAnimated() {
         return isAnimated;
     }

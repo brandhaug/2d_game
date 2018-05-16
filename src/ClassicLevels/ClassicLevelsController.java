@@ -33,7 +33,7 @@ public class ClassicLevelsController {
     private short progress;
     private MapParser mapParser;
 
-    private String[] standardLevels = new String[]{"1_Beginner", "2_Intermediate", "3_Hard", "4_Expert", "5_Legend"};
+    private String[] standardLevels = new String[]{"1_Beginner.txt", "2_Intermediate.txt", "3_Hard.txt", "4_Expert.txt", "5_Legend.txt"};
 
 
     /**
@@ -88,7 +88,6 @@ public class ClassicLevelsController {
     /**
      * Add levels from list to tables
      * Add columns to table
-     *
      */
     private void addStandardLevelsToList() {
         final String path = "/Resources/maps/classic/standard";
@@ -100,31 +99,7 @@ public class ClassicLevelsController {
         }
 
 
-
         addColumnsToList();
-    }
-
-    /**
-     * Set locked/unlocked on levels, based on progress
-     *
-     * @param levelFile
-     * @param folderName
-     * @return
-     */
-    private String getStatusOnFile(File levelFile, String folderName) {
-        int level;
-
-        if (folderName.equals("standard")) {
-            level = mapParser.getValueFromFileHeader(levelFile, "level");
-        } else {
-            level = 0;
-        }
-
-        if (level > progress) {
-            return "Locked";
-        } else {
-            return "Unlocked";
-        }
     }
 
     /**
@@ -145,7 +120,6 @@ public class ClassicLevelsController {
 
     /**
      * Adds columns and sets width for list
-     *
      */
     private void addColumnsToList() {
         TableColumn<LevelColumn, String> firstCol = new TableColumn<>("Level");
@@ -166,31 +140,10 @@ public class ClassicLevelsController {
                 standardLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
             errorLabel.setText("Level is not unlocked");
         } else if (standardLevelList.getSelectionModel().getSelectedItem() != null) {
-            String path = "classic/standard/";
-            if (new JarUtil().getJarFile().isFile()) {
-                path = "Resources/maps/classic/standard/";
-            }
+            String path = "/Resources/maps/classic/standard/";
             openGameLevel(path + standardLevelList.getSelectionModel().getSelectedItem().getName());
         }
     }
-
-
-    /**
-     * Opens game with selected map
-     * If selected map is not unlocked - Sends error message to user
-     */
-//    public void customTableClicked() {
-//        if (customLevelList.getSelectionModel().getSelectedItem() != null &&
-//                customLevelList.getSelectionModel().getSelectedItem().getStatus().equals("Locked")) {
-//            errorLabel.setText("Level is not unlocked");
-//        } else if (customLevelList.getSelectionModel().getSelectedItem() != null) {
-//            String path = "classic/custom/";
-//            if (new JarUtil().getJarFile().isFile()) {
-//                path = "Resources/maps/classic/custom/";
-//            }
-//            openGameLevel(path + customLevelList.getSelectionModel().getSelectedItem().getName());
-//        }
-//    }
 
     /**
      * Get progress
@@ -219,11 +172,14 @@ public class ClassicLevelsController {
         File file = fileChooser.showOpenDialog(standardLevelList.getScene().getWindow());
 
         if (file != null) {
-            String path = "classic/standard/";
-            if (new JarUtil().getJarFile().isFile()) {
-                path = "Resources/maps/classic/standard/";
+            MapParser mapParser = new MapParser();
+            boolean validMap = mapParser.validateInputStreamMap(file.getAbsolutePath());
+
+            if (!validMap) {
+                errorLabel.setText("Invalid map");
+            } else {
+                openGameLevel(file.getAbsolutePath());
             }
-            openGameLevel(file.getAbsolutePath());
         }
     }
 }

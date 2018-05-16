@@ -219,10 +219,19 @@ public class CreateLevelController {
         File file = fileChooser.showOpenDialog(canvas.getScene().getWindow());
 
         if (file != null) {
-            map = mapParser.getArrayFromFile(file);
-            startingPointExists = true;
-            endPointExists = true;
-            render(false);
+            try {
+                InputStream inputStream = new FileInputStream(file);
+                map = mapParser.getArrayFromInputStream(inputStream);
+
+                if (map == null) {
+                    throw new InvalidMapException("Invalid map file");
+                }
+                startingPointExists = true;
+                endPointExists = true;
+                render(false);
+            } catch (FileNotFoundException | InvalidMapException e) {
+                e.printStackTrace();
+            }
         }
     }
 
