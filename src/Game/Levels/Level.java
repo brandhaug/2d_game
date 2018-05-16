@@ -452,6 +452,17 @@ public class Level {
     }
 
     /**
+     * Will spawn the specified enemyType at the spawnX and spawnY
+     *
+     * @param player the player objects
+     * @param enemyType the EnemyType
+     */
+    private void spawnEnemyType(Player player, EnemyType enemyType){
+        enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - enemyType.getIdleH(), enemyType));
+        enemyAmount--;
+    }
+
+    /**
      * Adds another wave of enemies in survival mode.
      *
      * @param player the player object
@@ -512,32 +523,23 @@ public class Level {
             }
 
             if (enemyAmount <= 20 && enemyAmount > 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_A.getIdleH(), EnemyType.ENEMY_A));
-                enemyAmount--;
+                spawnEnemyType(player,EnemyType.ENEMY_A);
             } else if (enemyAmount <= 40 && enemyAmount > 20 && cameraVelocityY == 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_B.getIdleH(), EnemyType.ENEMY_B));
-                enemyAmount--;
+                spawnEnemyType(player,EnemyType.ENEMY_B);
             } else if (enemyAmount <= 60 && enemyAmount > 40 && cameraVelocityY == 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_C.getIdleH(), EnemyType.ENEMY_C));
-                enemyAmount--;
+                spawnEnemyType(player,EnemyType.ENEMY_C);
             } else if (enemyAmount <= 80 && enemyAmount > 60 && cameraVelocityY == 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_D.getIdleH(), EnemyType.ENEMY_D));
-                enemyAmount--;
+                spawnEnemyType(player,EnemyType.ENEMY_D);
             } else if (enemyAmount <= 100 && enemyAmount > 80 && cameraVelocityY == 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_E.getIdleH(), EnemyType.ENEMY_E));
-                enemyAmount--;
+                spawnEnemyType(player,EnemyType.ENEMY_E);
             } else if (enemyAmount <= 120 && enemyAmount > 100 && cameraVelocityY == 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_F.getIdleH(), EnemyType.ENEMY_F));
-                enemyAmount--;
+                spawnEnemyType(player,EnemyType.ENEMY_F);
             } else if (enemyAmount <= 140 && enemyAmount > 120 && cameraVelocityY == 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_G.getIdleH(), EnemyType.ENEMY_G));
-                enemyAmount--;
+                spawnEnemyType(player,EnemyType.ENEMY_G);
             } else if (enemyAmount <= 160 && enemyAmount > 140 && cameraVelocityY == 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_H.getIdleH(), EnemyType.ENEMY_H));
-                enemyAmount--;
+                spawnEnemyType(player,EnemyType.ENEMY_H);
             } else if (enemyAmount <= 180 && enemyAmount > 160 && cameraVelocityY == 0) {
-                enemies.add(new Enemy(spawnX - player.getX() + GameController.PLAYER_X_MARGIN, spawnY - EnemyType.ENEMY_I.getIdleH(), EnemyType.ENEMY_I));
-                enemyAmount--;
+                spawnEnemyType(player,EnemyType.ENEMY_I);
             }
         }
     }
