@@ -80,7 +80,7 @@
                   <Font name="Tahoma" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="264.0" layoutY="552.0" strokeType="OUTSIDE" strokeWidth="0.0" text="E / CTRL " textAlignment="CENTER" wrappingWidth="134.171875">
+            <Text layoutX="264.0" layoutY="552.0" strokeType="OUTSIDE" strokeWidth="0.0" text="E / M " textAlignment="CENTER" wrappingWidth="134.171875">
                <font>
                   <Font name="Tahoma" size="17.0" />
                </font>

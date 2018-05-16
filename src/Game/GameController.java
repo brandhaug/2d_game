@@ -222,7 +222,7 @@ public class GameController {
                 player.setVelocityY(-35);
                 SoundEffects.JUMP.play();
             }
-            if ((code == KeyCode.E || code == KeyCode.CONTROL)) {
+            if ((code == KeyCode.E || code == KeyCode.M)) {
                 if (level.getBulletCounter() > 0 && fireRate == 100) {
                     if (player.getCurrentSpriteState() == Player.PLAYER_IDLING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_FALLING_RIGHT ||
                             player.getCurrentSpriteState() == Player.PLAYER_RUNNING_RIGHT || player.getCurrentSpriteState() == Player.PLAYER_JUMPING_RIGHT) {
