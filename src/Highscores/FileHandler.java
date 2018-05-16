@@ -574,11 +574,17 @@ public class FileHandler {
             List<String> lines = Files.readAllLines(progressPath, StandardCharsets.ISO_8859_1);
             int progress = Integer.parseInt(lines.get(0));
 
-            File map = new JarUtil().getFileFromJar(GameController.mapName);
+            InputStream map = new JarUtil().getFileFromJar(GameController.mapName);
             if (map == null) {
-                map = new File("src/Resources/maps/" + GameController.mapName);
+                map = getClass().getResourceAsStream(GameController.mapName);
             }
-            int levelProgress = mapParser.getValueFromFileHeader(map, "level");
+
+            if (map == null) {
+                File file = new File(GameController.mapName);
+                map = new FileInputStream(file);
+            }
+
+            int levelProgress = mapParser.getValueFromInputStreamHeader(map, "level");
 
             if (levelProgress == progress) {
                 lines.add(0, Integer.toString(progress + 1));

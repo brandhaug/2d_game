@@ -265,7 +265,7 @@ public class GameController {
      * @see Bullet
      * @see BulletType
      */
-    private void fireRateTimer(){
+    private void fireRateTimer() {
         if (fireRate < 100) {
             fireRate += bulletType.getFireRate();
         }

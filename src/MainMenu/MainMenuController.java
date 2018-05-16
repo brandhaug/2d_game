@@ -136,11 +136,8 @@ public class MainMenuController {
     private void openGameSurvival(ActionEvent event) {
         musicClip.stop();
 
-        if (new JarUtil().getJarFile().isFile()) {
-            GameController.setMapName("Resources/maps/survivalfolder/survival");
-        } else {
-            GameController.setMapName("survivalfolder/survival");
-        }
+        GameController.setMapName("/Resources/maps/survivalfolder/survival");
+
         sceneChanger.changeScene(event, "/Game/Game.fxml", true);
     }
 
