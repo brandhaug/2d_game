@@ -120,6 +120,7 @@ public class GameController {
     private int bulletAmount;
     private int timeSeconds;
     private StopWatch stopWatch;
+    public static boolean addKillCoins;
 
     /**
      * Bullets
@@ -154,7 +155,8 @@ public class GameController {
      */
     @FXML
     protected void openMainMenu(ActionEvent event) {
-        fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
+        if(addKillCoins)fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
+        addKillCoins = false;
         sceneChanger.changeScene(event, "/MainMenu/MainMenu.fxml", true);
     }
 
@@ -299,6 +301,8 @@ public class GameController {
         coinAmount = level.getCoins().size();
         collisionHandler = new CollisionHandler(player, level);
         fileHandler = FileHandler.getInstance();
+        CollisionHandler.killCoins = 0;
+        addKillCoins = true;
         toggleSound();
 
         if (mapName.contains("survival")) {
@@ -340,6 +344,7 @@ public class GameController {
         renderGUI();
         checkGameOver();
         checkGameWon();
+        System.out.println(CollisionHandler.killCoins);
     }
 
 
@@ -370,7 +375,10 @@ public class GameController {
         if (!player.getAlive()) {
             gameOver = true;
             gameOverPane.setVisible(true);
-            fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
+            if(addKillCoins){
+                fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
+                addKillCoins = false;
+            }
             canvas.setOpacity(0.7f);
             SoundEffects.GAMEOVER.play();
         }
@@ -394,6 +402,7 @@ public class GameController {
                 killAmount.setText(killAmount.getText() + String.valueOf(level.getKillCounter()));
                 gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
                 fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
+                addKillCoins = false;
 
                 if (fileHandler.isNewHighScore(mapName, timeSeconds, level.getKillCounter())) {
                     gameWonHighScore.setText("Congratulations, it's a new high score!");
@@ -409,6 +418,8 @@ public class GameController {
             gameWonCoinImage.setVisible(true);
             gameWonCoins.setText(gameWonCoins.getText() + String.valueOf(level.getCoinCounter()));
             gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
+            fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
+            addKillCoins = false;
             fileHandler.setProgress();
 
             if (fileHandler.isNewHighScore(mapName, timeSeconds, level.getCoinCounter())) {
