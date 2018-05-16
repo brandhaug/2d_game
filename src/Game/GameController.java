@@ -375,10 +375,8 @@ public class GameController {
         if (!player.getAlive()) {
             gameOver = true;
             gameOverPane.setVisible(true);
-            if(addKillCoins){
-                fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
-                addKillCoins = false;
-            }
+            if(addKillCoins) fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
+            addKillCoins = false;
             canvas.setOpacity(0.7f);
             SoundEffects.GAMEOVER.play();
         }
@@ -401,7 +399,7 @@ public class GameController {
                 killAmount.setVisible(true);
                 killAmount.setText(killAmount.getText() + String.valueOf(level.getKillCounter()));
                 gameWonTime.setText(gameWonTime.getText() + String.valueOf(timeSeconds));
-                fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
+                if(addKillCoins)fileHandler.addSurvivalInfo(CollisionHandler.killCoins);
                 addKillCoins = false;
 
                 if (fileHandler.isNewHighScore(mapName, timeSeconds, level.getKillCounter())) {
